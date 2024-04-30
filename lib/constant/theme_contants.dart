@@ -21,8 +21,6 @@ class ThemeConstant {
   );
 
   // Helper methods for light and dark variations
-  static TextStyle get smallTextSizeLight =>
-      smallTextSize.copyWith(color: whiteColor);
-  static TextStyle get smallTextSizeDark =>
-      smallTextSize.copyWith(color: Colors.black);
+  static TextStyle get smallTextSizeLight => smallTextSize.copyWith(color: whiteColor);
+  static TextStyle get smallTextSizeDark => smallTextSize.copyWith(color: Colors.black);
 }
