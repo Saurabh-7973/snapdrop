@@ -360,11 +360,18 @@ class _DropDownViewState extends State<DropDownView> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Permission Required'),
-          content: const SingleChildScrollView(
+          backgroundColor: ThemeConstant.whiteColor,
+          content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('This app requires Storage Permission to Work.'),
-                Text('Would you like to allow the Permission? '),
+                Text(
+                  'This app requires Storage Permission to Work.',
+                  style: ThemeConstant.smallTextSizeDark,
+                ),
+                Text(
+                  'Would you like to allow the Permission? ',
+                  style: ThemeConstant.smallTextSizeDark,
+                ),
               ],
             ),
           ),

@@ -1,5 +1,5 @@
-import 'package:photo_manager/photo_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class PermissionProviderServices {
   Future<bool> requestMediaAccessPermission() async {
