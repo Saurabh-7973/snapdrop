@@ -1,4 +1,4 @@
-package com.example.snapdrop
+package com.saurabh7973.snapdrop
 
 import android.content.Intent
 import android.os.Bundle
