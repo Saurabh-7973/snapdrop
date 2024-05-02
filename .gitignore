@@ -46,3 +46,7 @@ app.*.map.json
 # Ignore .zip files
 *.zip
 *.rar
+
+# key signed files
+*.properties
+*.jks
