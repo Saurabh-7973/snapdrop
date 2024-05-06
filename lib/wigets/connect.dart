@@ -5,6 +5,7 @@ import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
 import '../screen/home_screen.dart';
+import '../services/first_time_login.dart';
 import '../services/socket_service.dart';
 
 class SendButton extends StatefulWidget {
@@ -35,7 +36,10 @@ class _SendButtonState extends State<SendButton> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_six, _seven, _eight]));
+    var firstTimeOpen = FirstTimeLogin.checkFirstTimeLogin();
+    if (firstTimeOpen == true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_six, _seven, _eight]));
+    }
   }
 
   @override

@@ -9,6 +9,7 @@ import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
 import '../screen/send_file_screen.dart';
+import '../services/first_time_login.dart';
 import '../services/socket_service.dart';
 
 class QRScanner extends StatefulWidget {
@@ -43,7 +44,10 @@ class _QRScannerState extends State<QRScanner> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_four, _five]));
+    var firstTimeOpen = FirstTimeLogin.checkFirstTimeLogin();
+    if (firstTimeOpen == true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_four, _five]));
+    }
   }
 
   @override

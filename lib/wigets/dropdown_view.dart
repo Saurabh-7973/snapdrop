@@ -10,6 +10,7 @@ import '../constant/theme_contants.dart';
 import '../screen/qr_screen.dart';
 import '../screen/send_file_screen.dart';
 import '../services/file_image.dart';
+import '../services/first_time_login.dart';
 import '../services/media_provider.dart';
 import '../services/permission_provider.dart';
 import '../services/socket_service.dart';
@@ -47,7 +48,10 @@ class _DropDownViewState extends State<DropDownView> {
   void initState() {
     initialMethod(hasAll);
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_one, _two, _three]));
+    var firstTimeOpen = FirstTimeLogin.checkFirstTimeLogin();
+    if (firstTimeOpen == true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_one, _two, _three]));
+    }
   }
 
   @override

@@ -1,10 +1,15 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'screen/home_screen.dart';
 import 'screen/intent_sharing_screen.dart';
+import 'screen/onboarding_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -18,10 +23,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   // Use the static instance provided by the package
   ReceiveSharingIntent receiveSharingIntent = ReceiveSharingIntent.instance;
+  bool? firstTimeAppOpen;
 
   @override
   void initState() {
     super.initState();
+    // Obtain shared preferences.
+    firstTimeInstallation();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -40,8 +48,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
     if (state == AppLifecycleState.resumed) {
       log('App Resumed Triggered');
-      receiveSharingIntent.getMediaStream().listen(
-          (List<SharedMediaFile> listOfMedia) async {
+      receiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> listOfMedia) async {
         if (listOfMedia.isNotEmpty) {
           Navigator.pop(context);
           await Navigator.push(
@@ -62,22 +69,35 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MaterialApp(
       home: FutureBuilder<List<SharedMediaFile>>(
         future: receiveSharingIntent.getInitialMedia(),
-        builder: (BuildContext context,
-            AsyncSnapshot<List<SharedMediaFile>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<SharedMediaFile>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               return IntentSharingScreen(listOfMedia: snapshot.data);
             } else {
-              return HomeScreen(
-                socketService: null,
-              );
+              return firstTimeAppOpen == true
+                  ? const OnBoardingPage()
+                  : HomeScreen(
+                      socketService: null,
+                    );
             }
           } else {
-            return const SizedBox(
-                height: 10, width: 10, child: CircularProgressIndicator());
+            return const SizedBox(height: 10, width: 10, child: CircularProgressIndicator());
           }
         },
       ),
     );
+  }
+
+  firstTimeInstallation() async {
+    // Obtain shared preferences.
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    firstTimeAppOpen = await prefs.getBool('firstTimeAppOpen');
+    if (firstTimeAppOpen == null) {
+      await prefs.setBool('firstTimeAppOpen', true);
+    } else if (firstTimeAppOpen == true) {
+      await prefs.setBool('firstTimeAppOpen', false);
+    }
+    firstTimeAppOpen = await prefs.getBool('firstTimeAppOpen');
+    setState(() {});
   }
 }
