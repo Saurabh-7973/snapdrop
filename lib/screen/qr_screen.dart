@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../wigets/app_bar_widget.dart';
 import '../wigets/figma_display_helper.dart';
@@ -11,11 +12,8 @@ class QRScreen extends StatefulWidget {
   List<AssetEntity>? selectedAssetList;
   bool isIntentSharing = false;
   List<SharedMediaFile>? listOfMedia;
-  QRScreen(
-      {super.key,
-      this.selectedAssetList,
-      required this.isIntentSharing,
-      this.listOfMedia});
+
+  QRScreen({super.key, this.selectedAssetList, required this.isIntentSharing, this.listOfMedia});
 
   @override
   State<QRScreen> createState() => _QRScreenState();
@@ -40,10 +38,7 @@ class _QRScreenState extends State<QRScreen> {
             child: Column(
               children: [
                 const AppBarWidget(),
-                HeroText(
-                    firstLine: "Scan QR Code",
-                    secondLine: "to Continue",
-                    thirdLine: ""),
+                HeroText(firstLine: "Scan QR Code", secondLine: "to Continue", thirdLine: ""),
                 const FigmaDisplayHelper(),
                 const SizedBox(
                   height: 5,
@@ -58,9 +53,18 @@ class _QRScreenState extends State<QRScreen> {
                       )
                     : Expanded(
                         flex: 6,
-                        child: QRScanner(
-                          isIntentSharing: widget.isIntentSharing,
-                          selectedAssetList: widget.selectedAssetList!,
+                        // child: QRScanner(
+                        //   isIntentSharing: widget.isIntentSharing,
+                        //   selectedAssetList: widget.selectedAssetList!,
+                        // ),
+                        child: ShowCaseWidget(
+                          blurValue: 1,
+                          builder: Builder(
+                            builder: (context) => QRScanner(
+                              isIntentSharing: widget.isIntentSharing,
+                              selectedAssetList: widget.selectedAssetList!,
+                            ),
+                          ),
                         ),
                       ),
               ],

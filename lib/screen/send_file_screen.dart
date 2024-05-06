@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../services/socket_service.dart';
 import '../wigets/app_bar_widget.dart';
@@ -47,33 +48,30 @@ class SendFile extends StatelessWidget {
             child: Column(
               children: [
                 const AppBarWidget(),
-                HeroText(
-                    firstLine: 'Transfer $imageCount',
-                    secondLine: 'Images',
-                    thirdLine: ''),
+                HeroText(firstLine: 'Transfer $imageCount', secondLine: 'Images', thirdLine: ''),
                 RoomDisplayer(roomId: roomId, message: 'CONNECTED TO'),
                 const SizedBox(
                   height: 10,
                 ),
-                RoomDisplayer(
-                    roomId: socketService!.userId, message: 'YOUR ID'),
+                RoomDisplayer(roomId: socketService!.userId, message: 'YOUR ID'),
                 const SizedBox(
                   height: 10,
                 ),
                 Expanded(
                   flex: 1,
                   child: Container(
-                      height: screenHeight / 2.2,
-                      color: Colors.transparent,
-                      child: isIntentSharing == true
-                          ? IntentFileDisplayer(
-                              isIntentSharing: true,
-                              listOfMedia: listOfMedia,
-                              connectDisplayer: false,
-                            )
-                          : SelectedImagesViewer(
-                              selectedAssetList: selectedAssetList!,
-                            )),
+                    height: screenHeight / 2.2,
+                    color: Colors.transparent,
+                    child: isIntentSharing == true
+                        ? IntentFileDisplayer(
+                            isIntentSharing: true,
+                            listOfMedia: listOfMedia,
+                            connectDisplayer: false,
+                          )
+                        : SelectedImagesViewer(
+                            selectedAssetList: selectedAssetList!,
+                          ),
+                  ),
                 ),
                 const SizedBox(
                   height: 10,
@@ -84,10 +82,19 @@ class SendFile extends StatelessWidget {
                         listOfMedia: listOfMedia,
                         isIntentSharing: isIntentSharing,
                       )
-                    : SendButton(
-                        socketService: socketService,
-                        selectedAssetList: selectedAssetList!,
-                        isIntentSharing: isIntentSharing,
+                    : ShowCaseWidget(
+                        blurValue: 1,
+                        builder: Builder(
+                          builder: (context) => SendButton(
+                            socketService: socketService,
+                            selectedAssetList: selectedAssetList!,
+                            isIntentSharing: isIntentSharing,
+                          ),
+                        ),
+                        autoPlayDelay: const Duration(seconds: 3),
+                        // child: DropDownView(
+                        //   socketService: widget.socketService,
+                        // ),
                       ),
               ],
             ),

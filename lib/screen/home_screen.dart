@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../services/socket_service.dart';
 import '../wigets/app_bar_widget.dart';
@@ -52,8 +53,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Expanded(
                   flex: 9,
-                  child: DropDownView(
-                    socketService: widget.socketService,
+                  child: ShowCaseWidget(
+                    blurValue: 1,
+                    builder: Builder(
+                      builder: (context) => DropDownView(
+                        socketService: widget.socketService,
+                      ),
+                    ),
+                    autoPlayDelay: const Duration(seconds: 3),
+                    // child: DropDownView(
+                    //   socketService: widget.socketService,
+                    // ),
                   ),
                 ),
               ],

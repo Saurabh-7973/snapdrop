@@ -3,8 +3,7 @@ import 'package:photo_manager/photo_manager.dart';
 class MediaProviderServices {
   Future<List<AssetPathEntity>> loadAlbums(bool hasAll) async {
     List<AssetPathEntity> albumList = [];
-    albumList = await PhotoManager.getAssetPathList(
-        type: RequestType.image, hasAll: hasAll);
+    albumList = await PhotoManager.getAssetPathList(type: RequestType.image, hasAll: hasAll);
     return albumList;
   }
 
@@ -19,15 +18,13 @@ class MediaProviderServices {
     int assetCount = await selectedAlbum.assetCountAsync;
 
     // Use the retrieved asset count to get the asset list
-    List<AssetEntity> assetList = await selectedAlbum.getAssetListRange(
-        start: 0,
-        end: assetCount - 1); // Adjust end index for zero-based counting
+    List<AssetEntity> assetList = await selectedAlbum.getAssetListRange(start: 0, end: assetCount); // Adjust end index for zero-based counting
     return assetList;
   }
 
   static Future<int> getAssetCount(AssetPathEntity selectedAlbum) async {
     int assetCount;
     assetCount = await selectedAlbum.assetCountAsync;
-    return assetCount - 1;
+    return assetCount;
   }
 }
