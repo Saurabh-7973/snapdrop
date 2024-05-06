@@ -44,10 +44,11 @@ class _QRScannerState extends State<QRScanner> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    var firstTimeOpen = FirstTimeLogin.checkFirstTimeLogin();
-    if (firstTimeOpen == true) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_four, _five]));
-    }
+    FirstTimeLogin.checkFirstTimeLogin().then((value) {
+      if (value == true) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_four, _five]));
+      }
+    });
   }
 
   @override

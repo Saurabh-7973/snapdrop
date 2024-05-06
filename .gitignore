@@ -50,3 +50,17 @@ app.*.map.json
 # key signed files
 *.properties
 *.jks
+
+# Flutter generated files
+**/flutter-plugins
+**/flutter-plugins-dependencies
+**/generated_plugin_registrant.*
+**/package_config.json
+**/package_config_subset.dart_tool
+pubspec.lock
+
+# Other files
+*.iml
+misc.xml
+snapdrop.iml
+version

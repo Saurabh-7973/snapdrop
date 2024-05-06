@@ -48,10 +48,11 @@ class _DropDownViewState extends State<DropDownView> {
   void initState() {
     initialMethod(hasAll);
     super.initState();
-    var firstTimeOpen = FirstTimeLogin.checkFirstTimeLogin();
-    if (firstTimeOpen == true) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_one, _two, _three]));
-    }
+    FirstTimeLogin.checkFirstTimeLogin().then((value) {
+      if (value == true) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_one, _two, _three]));
+      }
+    });
   }
 
   @override

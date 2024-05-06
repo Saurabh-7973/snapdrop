@@ -36,10 +36,11 @@ class _SendButtonState extends State<SendButton> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    var firstTimeOpen = FirstTimeLogin.checkFirstTimeLogin();
-    if (firstTimeOpen == true) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_six, _seven, _eight]));
-    }
+    FirstTimeLogin.checkFirstTimeLogin().then((value) {
+      if (value == true) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_six, _seven, _eight]));
+      }
+    });
   }
 
   @override
