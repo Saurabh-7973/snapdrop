@@ -19,6 +19,10 @@ class QRScanner extends StatefulWidget {
   List<SharedMediaFile>? listOfMedia;
   bool isIntentSharing = false;
 
+  //For Showcase Widget
+  final GlobalKey _four = GlobalKey();
+  final GlobalKey _five = GlobalKey();
+
   QRScanner({super.key, this.selectedAssetList, required this.isIntentSharing, this.listOfMedia});
 
   @override
@@ -36,17 +40,13 @@ class _QRScannerState extends State<QRScanner> {
   bool connectionStatus = false;
   SocketService? socketService;
 
-  //For Showcase Widget
-  final GlobalKey _four = GlobalKey();
-  final GlobalKey _five = GlobalKey();
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
-        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_four, _five]));
+        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([widget._four, widget._five]));
       }
     });
   }
@@ -69,7 +69,7 @@ class _QRScannerState extends State<QRScanner> {
           },
           child: Showcase(
             targetPadding: const EdgeInsets.all(4),
-            key: _four,
+            key: widget._four,
             title: "QR Scanner",
             description: 'CLick to Scan QR Code',
             onBarrierClick: () => debugPrint('qr scanner clicked'),
@@ -109,7 +109,7 @@ class _QRScannerState extends State<QRScanner> {
         ),
         Showcase(
           targetPadding: const EdgeInsets.all(4),
-          key: _five,
+          key: widget._five,
           title: "Connect Button",
           description: 'Indicates successful QR code scan',
           onBarrierClick: () => debugPrint('qr connect clicked'),

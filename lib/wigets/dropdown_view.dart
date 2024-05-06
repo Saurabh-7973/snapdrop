@@ -23,6 +23,12 @@ class DropDownView extends StatefulWidget {
   final PermissionProviderServices _permissionProviderServices = PermissionProviderServices();
   final MediaProviderServices _mediaProviderServices = MediaProviderServices();
   final ThemeConstant _themeConstant = ThemeConstant();
+  //For Showcase Widget
+  final GlobalKey _one = GlobalKey();
+  final GlobalKey _two = GlobalKey();
+  final GlobalKey _three = GlobalKey();
+
+  final scrollController = ScrollController();
 
   @override
   State<DropDownView> createState() => _DropDownViewState();
@@ -37,27 +43,20 @@ class _DropDownViewState extends State<DropDownView> {
   bool hasNoData = false;
   bool hasDataLoaded = false;
 
-  //For Showcase Widget
-  final GlobalKey _one = GlobalKey();
-  final GlobalKey _two = GlobalKey();
-  final GlobalKey _three = GlobalKey();
-
-  final scrollController = ScrollController();
-
   @override
   void initState() {
     initialMethod(hasAll);
     super.initState();
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
-        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_one, _two, _three]));
+        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([widget._one, widget._two, widget._three]));
       }
     });
   }
 
   @override
   void dispose() {
-    scrollController.dispose();
+    widget.scrollController.dispose();
     super.dispose();
   }
 
@@ -83,7 +82,7 @@ class _DropDownViewState extends State<DropDownView> {
                     children: [
                       Showcase(
                         targetPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: -5),
-                        key: _one,
+                        key: widget._one,
                         title: "Dropdown Button",
                         description: 'Select albums you wan to choose photos from',
                         onBarrierClick: () => debugPrint('menu clicked'),
@@ -158,7 +157,7 @@ class _DropDownViewState extends State<DropDownView> {
                 ? Expanded(
                     child: Stack(children: [
                       GridView.builder(
-                          controller: scrollController,
+                          controller: widget.scrollController,
                           itemCount: assetList.length,
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3, mainAxisSpacing: 6, crossAxisSpacing: 6, childAspectRatio: (2 / 3)),
@@ -177,7 +176,7 @@ class _DropDownViewState extends State<DropDownView> {
                               },
                               child: Showcase(
                                 targetPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                                key: _two,
+                                key: widget._two,
                                 title: "Select Images",
                                 description: 'Select Images you want to share',
                                 onBarrierClick: () => debugPrint('image clicked'),
@@ -285,7 +284,7 @@ class _DropDownViewState extends State<DropDownView> {
                               children: [
                                 Showcase(
                                   targetPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: -5),
-                                  key: _three,
+                                  key: widget._three,
                                   title: "Connect Button",
                                   description: 'Proceed to next step',
                                   onBarrierClick: () => debugPrint('connect clicked'),
