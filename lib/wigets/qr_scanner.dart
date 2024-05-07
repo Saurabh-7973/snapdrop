@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:typed_data';
 
+import 'package:Snapdrop/constant/global_showcase_key.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -18,10 +19,6 @@ class QRScanner extends StatefulWidget {
   List<AssetEntity>? selectedAssetList;
   List<SharedMediaFile>? listOfMedia;
   bool isIntentSharing = false;
-
-  //For Showcase Widget
-  final GlobalKey _four = GlobalKey();
-  final GlobalKey _five = GlobalKey();
 
   QRScanner({super.key, this.selectedAssetList, required this.isIntentSharing, this.listOfMedia});
 
@@ -46,7 +43,8 @@ class _QRScannerState extends State<QRScanner> {
     super.initState();
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
-        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([widget._four, widget._five]));
+        WidgetsBinding.instance.addPostFrameCallback(
+            (_) => ShowCaseWidget.of(context).startShowCase([GlobalShowcaseKeys.showcaseFour, GlobalShowcaseKeys.showcaseFive]));
       }
     });
   }
@@ -69,7 +67,7 @@ class _QRScannerState extends State<QRScanner> {
           },
           child: Showcase(
             targetPadding: const EdgeInsets.all(4),
-            key: widget._four,
+            key: GlobalShowcaseKeys.showcaseFour,
             title: "QR Scanner",
             description: 'CLick to Scan QR Code',
             onBarrierClick: () => debugPrint('qr scanner clicked'),
@@ -109,7 +107,7 @@ class _QRScannerState extends State<QRScanner> {
         ),
         Showcase(
           targetPadding: const EdgeInsets.all(4),
-          key: widget._five,
+          key: GlobalShowcaseKeys.showcaseFive,
           title: "Connect Button",
           description: 'Indicates successful QR code scan',
           onBarrierClick: () => debugPrint('qr connect clicked'),

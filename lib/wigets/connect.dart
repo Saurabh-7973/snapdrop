@@ -1,3 +1,4 @@
+import 'package:Snapdrop/constant/global_showcase_key.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -16,11 +17,6 @@ class SendButton extends StatefulWidget {
   List<SharedMediaFile>? listOfMedia;
   bool transferCompleted = false;
 
-  //For Showcase Widget
-  final GlobalKey _six = GlobalKey();
-  final GlobalKey _seven = GlobalKey();
-  final GlobalKey _eight = GlobalKey();
-
   SendButton({super.key, required this.isIntentSharing, this.listOfMedia, required this.socketService, this.selectedAssetList});
 
   @override
@@ -38,7 +34,8 @@ class _SendButtonState extends State<SendButton> {
     super.initState();
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
-        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([widget._six, widget._seven, widget._eight]));
+        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context)
+            .startShowCase([GlobalShowcaseKeys.showcaseSix, GlobalShowcaseKeys.showcaseSeven, GlobalShowcaseKeys.showcaseEight]));
       }
     });
   }
@@ -52,7 +49,7 @@ class _SendButtonState extends State<SendButton> {
     return widget.transferCompleted == false
         ? Showcase(
             targetPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-            key: widget._six,
+            key: GlobalShowcaseKeys.showcaseSix,
             title: "Send Button",
             description: 'Send selected images to Figma',
             onBarrierClick: () => debugPrint('send figma button clicked'),
@@ -98,7 +95,7 @@ class _SendButtonState extends State<SendButton> {
                 const Spacer(),
                 Showcase(
                   targetPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-                  key: widget._seven,
+                  key: GlobalShowcaseKeys.showcaseSeven,
                   title: "Close Button",
                   description: 'Exits the application',
                   onBarrierClick: () => debugPrint('close button clicked'),
@@ -142,7 +139,7 @@ class _SendButtonState extends State<SendButton> {
                 ),
                 Showcase(
                   targetPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-                  key: widget._eight,
+                  key: GlobalShowcaseKeys.showcaseEight,
                   title: "Send Button",
                   description: 'Send more images',
                   onBarrierClick: () => debugPrint('close button clicked'),

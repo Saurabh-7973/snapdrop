@@ -6,6 +6,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 
+import '../constant/global_showcase_key.dart';
 import '../constant/theme_contants.dart';
 import '../screen/qr_screen.dart';
 import '../screen/send_file_screen.dart';
@@ -23,10 +24,6 @@ class DropDownView extends StatefulWidget {
   final PermissionProviderServices _permissionProviderServices = PermissionProviderServices();
   final MediaProviderServices _mediaProviderServices = MediaProviderServices();
   final ThemeConstant _themeConstant = ThemeConstant();
-  //For Showcase Widget
-  final GlobalKey _one = GlobalKey();
-  final GlobalKey _two = GlobalKey();
-  final GlobalKey _three = GlobalKey();
 
   final scrollController = ScrollController();
 
@@ -49,7 +46,8 @@ class _DropDownViewState extends State<DropDownView> {
     super.initState();
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
-        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([widget._one, widget._two, widget._three]));
+        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context)
+            .startShowCase([GlobalShowcaseKeys.showcaseOne, GlobalShowcaseKeys.showcaseTwo, GlobalShowcaseKeys.showcaseThree]));
       }
     });
   }
@@ -82,7 +80,7 @@ class _DropDownViewState extends State<DropDownView> {
                     children: [
                       Showcase(
                         targetPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: -5),
-                        key: widget._one,
+                        key: GlobalShowcaseKeys.showcaseOne,
                         title: "Dropdown Button",
                         description: 'Select albums you wan to choose photos from',
                         onBarrierClick: () => debugPrint('menu clicked'),
@@ -174,95 +172,178 @@ class _DropDownViewState extends State<DropDownView> {
                                   });
                                 }
                               },
-                              child: Showcase(
-                                targetPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                                key: widget._two,
-                                title: "Select Images",
-                                description: 'Select Images you want to share',
-                                onBarrierClick: () => debugPrint('image clicked'),
-                                child: Stack(children: [
-                                  Positioned.fill(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(5),
-                                      child: AssetEntityImage(
-                                        assetList[index],
-                                        thumbnailSize: const ThumbnailSize.square(250),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  if (selectedAssetList.contains(assetList[index]) == true)
-                                    Container(
-                                      height: double.infinity,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.black.withOpacity(0.5)),
-                                    ),
-                                  selectedAssetList.contains(assetList[index]) == true
-                                      ? const Align(
-                                          alignment: Alignment.topRight,
-                                          child: Padding(
-                                            padding: EdgeInsets.all(6.0),
-                                            child: Icon(
-                                              Icons.check_circle_rounded,
-                                              size: 30,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        )
-                                      : Align(
-                                          alignment: Alignment.topRight,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Container(
-                                              height: 25,
-                                              width: 25,
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.black.withOpacity(0.4),
-                                                  border: Border.all(color: Colors.white, width: 2)),
-                                              child: Container(),
+                              child: index == 0
+                                  ? Showcase(
+                                      targetPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                                      key: GlobalShowcaseKeys.showcaseTwo,
+                                      title: "Select Images",
+                                      description: 'Select Images you want to share',
+                                      onBarrierClick: () => debugPrint('image clicked'),
+                                      child: Stack(children: [
+                                        Positioned.fill(
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(5),
+                                            child: AssetEntityImage(
+                                              assetList[index],
+                                              thumbnailSize: const ThumbnailSize.square(250),
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
                                         ),
-                                  if (selectedAssetList.contains(assetList[index]) == true)
-                                    FutureBuilder(
-                                        future: FileImageServices().getImageSize(assetList[index]),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
-                                            return Align(
-                                              alignment: Alignment.bottomRight,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  decoration:
-                                                      BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.grey.withOpacity(0.8)),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(4),
-                                                    child: Text(
-                                                      "${snapshot.data} MB",
-                                                      style: ThemeConstant.smallTextSizeLight,
-                                                    ),
+                                        if (selectedAssetList.contains(assetList[index]) == true)
+                                          Container(
+                                            height: double.infinity,
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.black.withOpacity(0.5)),
+                                          ),
+                                        selectedAssetList.contains(assetList[index]) == true
+                                            ? const Align(
+                                                alignment: Alignment.topRight,
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(6.0),
+                                                  child: Icon(
+                                                    Icons.check_circle_rounded,
+                                                    size: 30,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              )
+                                            : Align(
+                                                alignment: Alignment.topRight,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Container(
+                                                    height: 25,
+                                                    width: 25,
+                                                    decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Colors.black.withOpacity(0.4),
+                                                        border: Border.all(color: Colors.white, width: 2)),
+                                                    child: Container(),
                                                   ),
                                                 ),
                                               ),
-                                            );
-                                          }
-                                          return const Align(
-                                            alignment: Alignment.bottomRight,
-                                            child: Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                height: 10,
-                                                width: 10,
-                                                child: CircularProgressIndicator(
+                                        if (selectedAssetList.contains(assetList[index]) == true)
+                                          FutureBuilder(
+                                              future: FileImageServices().getImageSize(assetList[index]),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasData) {
+                                                  return Align(
+                                                    alignment: Alignment.bottomRight,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(15), color: Colors.grey.withOpacity(0.8)),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(4),
+                                                          child: Text(
+                                                            "${snapshot.data} MB",
+                                                            style: ThemeConstant.smallTextSizeLight,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                                return const Align(
+                                                  alignment: Alignment.bottomRight,
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(8.0),
+                                                    child: SizedBox(
+                                                      height: 10,
+                                                      width: 10,
+                                                      child: CircularProgressIndicator(
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                      ]),
+                                    )
+                                  : Stack(children: [
+                                      Positioned.fill(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(5),
+                                          child: AssetEntityImage(
+                                            assetList[index],
+                                            thumbnailSize: const ThumbnailSize.square(250),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      if (selectedAssetList.contains(assetList[index]) == true)
+                                        Container(
+                                          height: double.infinity,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.black.withOpacity(0.5)),
+                                        ),
+                                      selectedAssetList.contains(assetList[index]) == true
+                                          ? const Align(
+                                              alignment: Alignment.topRight,
+                                              child: Padding(
+                                                padding: EdgeInsets.all(6.0),
+                                                child: Icon(
+                                                  Icons.check_circle_rounded,
+                                                  size: 30,
                                                   color: Colors.white,
                                                 ),
                                               ),
+                                            )
+                                          : Align(
+                                              alignment: Alignment.topRight,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Container(
+                                                  height: 25,
+                                                  width: 25,
+                                                  decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Colors.black.withOpacity(0.4),
+                                                      border: Border.all(color: Colors.white, width: 2)),
+                                                  child: Container(),
+                                                ),
+                                              ),
                                             ),
-                                          );
-                                        }),
-                                ]),
-                              ),
+                                      if (selectedAssetList.contains(assetList[index]) == true)
+                                        FutureBuilder(
+                                            future: FileImageServices().getImageSize(assetList[index]),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) {
+                                                return Align(
+                                                  alignment: Alignment.bottomRight,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Container(
+                                                      decoration:
+                                                          BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.grey.withOpacity(0.8)),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(4),
+                                                        child: Text(
+                                                          "${snapshot.data} MB",
+                                                          style: ThemeConstant.smallTextSizeLight,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                              return const Align(
+                                                alignment: Alignment.bottomRight,
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: SizedBox(
+                                                    height: 10,
+                                                    width: 10,
+                                                    child: CircularProgressIndicator(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                    ]),
                             );
                           }),
                       if (selectedAssetList.isNotEmpty)
@@ -284,7 +365,7 @@ class _DropDownViewState extends State<DropDownView> {
                               children: [
                                 Showcase(
                                   targetPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: -5),
-                                  key: widget._three,
+                                  key: GlobalShowcaseKeys.showcaseThree,
                                   title: "Connect Button",
                                   description: 'Proceed to next step',
                                   onBarrierClick: () => debugPrint('connect clicked'),
