@@ -33,7 +33,8 @@ class OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 
-  Widget _buildImage(String assetName, [double width = 350, double height = 400]) {
+  Widget _buildImage(String assetName,
+      [double width = 350, double height = 400]) {
     return SvgPicture.asset(
       'assets/svg_asset/$assetName',
       width: width,
@@ -49,7 +50,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
       titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
       bodyTextStyle: bodyStyle,
       bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-      pageColor: Colors.white,
+      pageColor: ThemeConstant.greenAccentColor,
       imagePadding: EdgeInsets.zero,
       // boxDecoration: BoxDecoration(
       //     gradient: LinearGradient(
@@ -62,7 +63,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
 
     return IntroductionScreen(
       //key: introKey,
-      globalBackgroundColor: Colors.white,
+      globalBackgroundColor: ThemeConstant.greenAccentColor,
       allowImplicitScrolling: true,
       autoScrollDuration: 3000,
       infiniteAutoScroll: true,
@@ -71,7 +72,9 @@ class OnBoardingPageState extends State<OnBoardingPage> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(top: 16, right: 16),
-            child: ClipRRect(borderRadius: BorderRadius.circular(15), child: _buildImage('snapdrop_logo.svg', 50, 50)),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: _buildImage('snapdrop_logo.svg', 50, 50)),
           ),
         ),
       ),
@@ -113,7 +116,8 @@ class OnBoardingPageState extends State<OnBoardingPage> {
         ),
         PageViewModel(
           title: " Generate & Scan the Code",
-          body: "1. Search Snapdrop Plugin on Figma. \n 2. Scan it with your phone's camera to Connect.",
+          body:
+              "1. Search Snapdrop Plugin on Figma. \n 2. Scan it with your phone's camera to Connect.",
           decoration: pageDecoration.copyWith(
             bodyFlex: 2,
             imageFlex: 3,
@@ -144,12 +148,16 @@ class OnBoardingPageState extends State<OnBoardingPage> {
       showBackButton: false,
       //rtl: true, // Display as right-to-left
       back: const Icon(Icons.arrow_back),
-      skip: const Text('Skip', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
+      skip: const Text('Skip',
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
       next: const Icon(Icons.arrow_forward, color: Colors.black87),
-      done: const Text('Done', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
+      done: const Text('Done',
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
       curve: Curves.fastLinearToSlowEaseIn,
       controlsMargin: const EdgeInsets.all(16),
-      controlsPadding: kIsWeb ? const EdgeInsets.all(12.0) : const EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
+      controlsPadding: kIsWeb
+          ? const EdgeInsets.all(12.0)
+          : const EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
       dotsDecorator: const DotsDecorator(
         size: Size(10.0, 10.0),
         color: Colors.black87,
@@ -162,7 +170,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
         ),
       ),
       dotsContainerDecorator: ShapeDecoration(
-        color: ThemeConstant.greenAccentColor.withOpacity(0.6),
+        color: ThemeConstant.whiteColor.withOpacity(0.6),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
         ),

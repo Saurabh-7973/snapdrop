@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/global_showcase_key.dart';
@@ -21,7 +22,8 @@ class DropDownView extends StatefulWidget {
   SocketService? socketService;
   DropDownView({super.key, this.socketService});
 
-  final PermissionProviderServices _permissionProviderServices = PermissionProviderServices();
+  final PermissionProviderServices _permissionProviderServices =
+      PermissionProviderServices();
   final MediaProviderServices _mediaProviderServices = MediaProviderServices();
   final ThemeConstant _themeConstant = ThemeConstant();
 
@@ -46,8 +48,12 @@ class _DropDownViewState extends State<DropDownView> {
     super.initState();
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
-        WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context)
-            .startShowCase([GlobalShowcaseKeys.showcaseOne, GlobalShowcaseKeys.showcaseTwo, GlobalShowcaseKeys.showcaseThree]));
+        WidgetsBinding.instance.addPostFrameCallback(
+            (_) => ShowCaseWidget.of(context).startShowCase([
+                  GlobalShowcaseKeys.showcaseOne,
+                  GlobalShowcaseKeys.showcaseTwo,
+                  GlobalShowcaseKeys.showcaseThree
+                ]));
       }
     });
   }
@@ -69,20 +75,29 @@ class _DropDownViewState extends State<DropDownView> {
         albumList.isEmpty == true
             ? hasNoData == true
                 ? const SizedBox.shrink()
-                : const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
+                : const Column(
+                    children: [
+                      Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      )
+                    ],
                   )
             : hasNoData == true
                 ? const SizedBox.shrink()
                 : Row(
                     children: [
                       Showcase(
-                        targetPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: -5),
+                        targetPadding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: -5),
                         key: GlobalShowcaseKeys.showcaseOne,
                         title: "Dropdown Button",
-                        description: 'Select albums you wan to choose photos from',
+                        description:
+                            'Select albums you wan to choose photos from',
                         onBarrierClick: () => debugPrint('menu clicked'),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<AssetPathEntity>(
@@ -93,7 +108,9 @@ class _DropDownViewState extends State<DropDownView> {
                                 color: Colors.white,
                                 size: 28,
                               ),
-                              items: albumList.map<DropdownMenuItem<AssetPathEntity>>((album) {
+                              items: albumList
+                                  .map<DropdownMenuItem<AssetPathEntity>>(
+                                      (album) {
                                 return DropdownMenuItem<AssetPathEntity>(
                                   value: album,
                                   child: Text(
@@ -108,7 +125,9 @@ class _DropDownViewState extends State<DropDownView> {
                                   hasDataLoaded = false;
                                 });
 
-                                widget._mediaProviderServices.loadAsset(selectedAlbum!).then((value) {
+                                widget._mediaProviderServices
+                                    .loadAsset(selectedAlbum!)
+                                    .then((value) {
                                   setState(() {
                                     assetList = value;
                                     hasDataLoaded = true;
@@ -157,12 +176,17 @@ class _DropDownViewState extends State<DropDownView> {
                       GridView.builder(
                           controller: widget.scrollController,
                           itemCount: assetList.length,
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3, mainAxisSpacing: 6, crossAxisSpacing: 6, childAspectRatio: (2 / 3)),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 6,
+                                  crossAxisSpacing: 6,
+                                  childAspectRatio: (2 / 3)),
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {
-                                if (selectedAssetList.contains(assetList[index])) {
+                                if (selectedAssetList
+                                    .contains(assetList[index])) {
                                   setState(() {
                                     selectedAssetList.remove(assetList[index]);
                                   });
@@ -174,29 +198,43 @@ class _DropDownViewState extends State<DropDownView> {
                               },
                               child: index == 0
                                   ? Showcase(
-                                      targetPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                                      targetPadding: const EdgeInsets.symmetric(
+                                          horizontal: 0, vertical: 0),
                                       key: GlobalShowcaseKeys.showcaseTwo,
                                       title: "Select Images",
-                                      description: 'Select Images you want to share',
-                                      onBarrierClick: () => debugPrint('image clicked'),
+                                      description:
+                                          'Select Images you want to share',
+                                      onBarrierClick: () =>
+                                          debugPrint('image clicked'),
                                       child: Stack(children: [
                                         Positioned.fill(
                                           child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(5),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                             child: AssetEntityImage(
                                               assetList[index],
-                                              thumbnailSize: const ThumbnailSize.square(250),
+                                              thumbnailSize:
+                                                  const ThumbnailSize.square(
+                                                      250),
                                               fit: BoxFit.cover,
                                             ),
                                           ),
                                         ),
-                                        if (selectedAssetList.contains(assetList[index]) == true)
+                                        if (selectedAssetList
+                                                .contains(assetList[index]) ==
+                                            true)
                                           Container(
                                             height: double.infinity,
                                             width: double.infinity,
-                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.black.withOpacity(0.5)),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                color: Colors.black
+                                                    .withOpacity(0.5)),
                                           ),
-                                        selectedAssetList.contains(assetList[index]) == true
+                                        selectedAssetList.contains(
+                                                    assetList[index]) ==
+                                                true
                                             ? const Align(
                                                 alignment: Alignment.topRight,
                                                 child: Padding(
@@ -211,35 +249,55 @@ class _DropDownViewState extends State<DropDownView> {
                                             : Align(
                                                 alignment: Alignment.topRight,
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
                                                   child: Container(
                                                     height: 25,
                                                     width: 25,
                                                     decoration: BoxDecoration(
                                                         shape: BoxShape.circle,
-                                                        color: Colors.black.withOpacity(0.4),
-                                                        border: Border.all(color: Colors.white, width: 2)),
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
+                                                        border: Border.all(
+                                                            color: Colors.white,
+                                                            width: 2)),
                                                     child: Container(),
                                                   ),
                                                 ),
                                               ),
-                                        if (selectedAssetList.contains(assetList[index]) == true)
+                                        if (selectedAssetList
+                                                .contains(assetList[index]) ==
+                                            true)
                                           FutureBuilder(
-                                              future: FileImageServices().getImageSize(assetList[index]),
+                                              future: FileImageServices()
+                                                  .getImageSize(
+                                                      assetList[index]),
                                               builder: (context, snapshot) {
                                                 if (snapshot.hasData) {
                                                   return Align(
-                                                    alignment: Alignment.bottomRight,
+                                                    alignment:
+                                                        Alignment.bottomRight,
                                                     child: Padding(
-                                                      padding: const EdgeInsets.all(8.0),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
                                                       child: Container(
                                                         decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(15), color: Colors.grey.withOpacity(0.8)),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15),
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.8)),
                                                         child: Padding(
-                                                          padding: const EdgeInsets.all(4),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(4),
                                                           child: Text(
                                                             "${snapshot.data} MB",
-                                                            style: ThemeConstant.smallTextSizeLight,
+                                                            style: ThemeConstant
+                                                                .smallTextSizeLight,
                                                           ),
                                                         ),
                                                       ),
@@ -247,13 +305,16 @@ class _DropDownViewState extends State<DropDownView> {
                                                   );
                                                 }
                                                 return const Align(
-                                                  alignment: Alignment.bottomRight,
+                                                  alignment:
+                                                      Alignment.bottomRight,
                                                   child: Padding(
-                                                    padding: EdgeInsets.all(8.0),
+                                                    padding:
+                                                        EdgeInsets.all(8.0),
                                                     child: SizedBox(
                                                       height: 10,
                                                       width: 10,
-                                                      child: CircularProgressIndicator(
+                                                      child:
+                                                          CircularProgressIndicator(
                                                         color: Colors.white,
                                                       ),
                                                     ),
@@ -265,21 +326,31 @@ class _DropDownViewState extends State<DropDownView> {
                                   : Stack(children: [
                                       Positioned.fill(
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(5),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
                                           child: AssetEntityImage(
                                             assetList[index],
-                                            thumbnailSize: const ThumbnailSize.square(250),
+                                            thumbnailSize:
+                                                const ThumbnailSize.square(250),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
                                       ),
-                                      if (selectedAssetList.contains(assetList[index]) == true)
+                                      if (selectedAssetList
+                                              .contains(assetList[index]) ==
+                                          true)
                                         Container(
                                           height: double.infinity,
                                           width: double.infinity,
-                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.black.withOpacity(0.5)),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: Colors.black
+                                                  .withOpacity(0.5)),
                                         ),
-                                      selectedAssetList.contains(assetList[index]) == true
+                                      selectedAssetList
+                                                  .contains(assetList[index]) ==
+                                              true
                                           ? const Align(
                                               alignment: Alignment.topRight,
                                               child: Padding(
@@ -294,35 +365,53 @@ class _DropDownViewState extends State<DropDownView> {
                                           : Align(
                                               alignment: Alignment.topRight,
                                               child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
                                                 child: Container(
                                                   height: 25,
                                                   width: 25,
                                                   decoration: BoxDecoration(
                                                       shape: BoxShape.circle,
-                                                      color: Colors.black.withOpacity(0.4),
-                                                      border: Border.all(color: Colors.white, width: 2)),
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      border: Border.all(
+                                                          color: Colors.white,
+                                                          width: 2)),
                                                   child: Container(),
                                                 ),
                                               ),
                                             ),
-                                      if (selectedAssetList.contains(assetList[index]) == true)
+                                      if (selectedAssetList
+                                              .contains(assetList[index]) ==
+                                          true)
                                         FutureBuilder(
-                                            future: FileImageServices().getImageSize(assetList[index]),
+                                            future: FileImageServices()
+                                                .getImageSize(assetList[index]),
                                             builder: (context, snapshot) {
                                               if (snapshot.hasData) {
                                                 return Align(
-                                                  alignment: Alignment.bottomRight,
+                                                  alignment:
+                                                      Alignment.bottomRight,
                                                   child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
                                                     child: Container(
-                                                      decoration:
-                                                          BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.grey.withOpacity(0.8)),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(15),
+                                                          color: Colors.grey
+                                                              .withOpacity(
+                                                                  0.8)),
                                                       child: Padding(
-                                                        padding: const EdgeInsets.all(4),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(4),
                                                         child: Text(
                                                           "${snapshot.data} MB",
-                                                          style: ThemeConstant.smallTextSizeLight,
+                                                          style: ThemeConstant
+                                                              .smallTextSizeLight,
                                                         ),
                                                       ),
                                                     ),
@@ -330,13 +419,15 @@ class _DropDownViewState extends State<DropDownView> {
                                                 );
                                               }
                                               return const Align(
-                                                alignment: Alignment.bottomRight,
+                                                alignment:
+                                                    Alignment.bottomRight,
                                                 child: Padding(
                                                   padding: EdgeInsets.all(8.0),
                                                   child: SizedBox(
                                                     height: 10,
                                                     width: 10,
-                                                    child: CircularProgressIndicator(
+                                                    child:
+                                                        CircularProgressIndicator(
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -364,38 +455,54 @@ class _DropDownViewState extends State<DropDownView> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Showcase(
-                                  targetPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: -5),
+                                  targetPadding: const EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: -5),
                                   key: GlobalShowcaseKeys.showcaseThree,
                                   title: "Connect Button",
                                   description: 'Proceed to next step',
-                                  onBarrierClick: () => debugPrint('connect clicked'),
+                                  onBarrierClick: () =>
+                                      debugPrint('connect clicked'),
                                   child: Container(
                                     width: screenWidth / 2.6,
                                     height: 40,
-                                    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
                                     child: ElevatedButton(
                                       onPressed: () {
                                         if (selectedAssetList.length >= 10) {
                                           var snackbarLimit = SnackBar(
-                                              backgroundColor: const Color(0xff206946),
+                                              backgroundColor:
+                                                  const Color(0xff206946),
                                               content: Text(
                                                 "Can Only select upto 10 Images !",
-                                                style: ThemeConstant.smallTextSizeLight,
+                                                style: ThemeConstant
+                                                    .smallTextSizeLight,
                                                 textAlign: TextAlign.center,
                                               ));
-                                          ScaffoldMessenger.of(context).showSnackBar(snackbarLimit);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackbarLimit);
                                         } else {
-                                          FileImageServices().getTotalImageSize(selectedAssetList).then((value) {
+                                          FileImageServices()
+                                              .getTotalImageSize(
+                                                  selectedAssetList)
+                                              .then((value) {
                                             if (value < 5.0) {
-                                              if (widget.socketService != null) {
-                                                String? roomId = widget.socketService!.roomId;
+                                              if (widget.socketService !=
+                                                  null) {
+                                                String? roomId = widget
+                                                    .socketService!.roomId;
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) => SendFile(
-                                                      socketService: widget.socketService,
-                                                      selectedAssetList: selectedAssetList,
-                                                      imageCount: selectedAssetList.length,
+                                                    builder: (context) =>
+                                                        SendFile(
+                                                      socketService:
+                                                          widget.socketService,
+                                                      selectedAssetList:
+                                                          selectedAssetList,
+                                                      imageCount:
+                                                          selectedAssetList
+                                                              .length,
                                                       isIntentSharing: false,
                                                       roomId: roomId!,
                                                     ),
@@ -405,8 +512,10 @@ class _DropDownViewState extends State<DropDownView> {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) => QRScreen(
-                                                      selectedAssetList: selectedAssetList,
+                                                    builder: (context) =>
+                                                        QRScreen(
+                                                      selectedAssetList:
+                                                          selectedAssetList,
                                                       isIntentSharing: false,
                                                     ),
                                                   ),
@@ -414,24 +523,32 @@ class _DropDownViewState extends State<DropDownView> {
                                               }
                                             } else {
                                               var snackbarLimit = SnackBar(
-                                                  backgroundColor: const Color(0xff206946),
+                                                  backgroundColor:
+                                                      const Color(0xff206946),
                                                   content: Text(
                                                     "File Size Limit Exceded (${value.toStringAsFixed(2)}) > 5 MB",
-                                                    style: ThemeConstant.smallTextSizeLight,
+                                                    style: ThemeConstant
+                                                        .smallTextSizeLight,
                                                   ));
-                                              ScaffoldMessenger.of(context).showSnackBar(snackbarLimit);
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackbarLimit);
                                             }
                                           });
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+                                          backgroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30))),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text(
                                             "Connect",
-                                            style: ThemeConstant.smallTextSizeDark,
+                                            style:
+                                                ThemeConstant.smallTextSizeDark,
                                           ),
                                           const Icon(
                                             Icons.arrow_forward_rounded,
@@ -449,18 +566,42 @@ class _DropDownViewState extends State<DropDownView> {
                         ),
                     ]),
                   )
-                : const Expanded(
-                    child: Center(
-                        child: CircularProgressIndicator(
-                      color: ThemeConstant.whiteColor,
-                    )),
+                : Expanded(
+                    child: Shimmer.fromColors(
+                      baseColor: ThemeConstant.primaryThemeColor,
+                      highlightColor: ThemeConstant.greenAccentColor,
+                      child: GridView.builder(
+                        itemCount: 9, // Number of shimmering items
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 6,
+                          crossAxisSpacing: 6,
+                          childAspectRatio: (2 / 3),
+                        ),
+                        itemBuilder: (context, index) => Container(
+                          decoration: BoxDecoration(
+                            color: ThemeConstant.primaryThemeColor,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      ),
+                    ),
                   )
+        // : const Expanded(
+        //     child: Center(
+        //         child: CircularProgressIndicator(
+        //       color: ThemeConstant.whiteColor,
+        //     )),
+        //   )
       ],
     );
   }
 
   initialMethod(bool hasAll) {
-    widget._permissionProviderServices.requestMediaAccessPermission().then((permission) async {
+    widget._permissionProviderServices
+        .requestMediaAccessPermission()
+        .then((permission) async {
       if (permission == true) {
         widget._mediaProviderServices.loadAlbums(hasAll).then((listOfAlbum) {
           if (listOfAlbum.isNotEmpty) {
@@ -469,7 +610,9 @@ class _DropDownViewState extends State<DropDownView> {
               selectedAlbum = listOfAlbum[0];
               hasDataLoaded = true;
             });
-            widget._mediaProviderServices.loadAsset(selectedAlbum!).then((listOfAsset) {
+            widget._mediaProviderServices
+                .loadAsset(selectedAlbum!)
+                .then((listOfAsset) {
               setState(() {
                 assetList = listOfAsset;
               });

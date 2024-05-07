@@ -7,6 +7,8 @@ class ThemeConstant {
   // Green accent color constant
   static const Color greenAccentColor = Color(0xff39C679);
 
+  static const Color primaryThemeColor = Color(0xff14291E);
+
   // Text styles
   static const TextStyle largeTextSize = TextStyle(
     fontSize: 32.0, // Use double precision for better rendering
@@ -21,6 +23,8 @@ class ThemeConstant {
   );
 
   // Helper methods for light and dark variations
-  static TextStyle get smallTextSizeLight => smallTextSize.copyWith(color: whiteColor);
-  static TextStyle get smallTextSizeDark => smallTextSize.copyWith(color: Colors.black);
+  static TextStyle get smallTextSizeLight =>
+      smallTextSize.copyWith(color: whiteColor);
+  static TextStyle get smallTextSizeDark =>
+      smallTextSize.copyWith(color: Colors.black);
 }
