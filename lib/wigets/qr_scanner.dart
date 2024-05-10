@@ -10,6 +10,7 @@ import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
 import '../screen/send_file_screen.dart';
+import '../services/check_internet_connectivity.dart';
 import '../services/first_time_login.dart';
 import '../services/socket_service.dart';
 
@@ -115,10 +116,23 @@ class _QRScannerState extends State<QRScanner> {
             width: screenWidth / 1.3,
             height: 40,
             child: ElevatedButton(
-                onPressed: () {
-                  if (result != null) {
-                    connectSocket();
-                  }
+                onPressed: () async {
+                  await CheckInternetConnectivity.hasNetwork().then((value) {
+                    if (value) {
+                      if (result != null) {
+                        connectSocket();
+                      }
+                    } else {
+                      var snackbarLimit = SnackBar(
+                        backgroundColor: const Color(0xff206946),
+                        content: Text(
+                          "Check your Internet Connection and try again!",
+                          style: ThemeConstant.smallTextSizeLight,
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackbarLimit);
+                    }
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: result != null ? Colors.green : Colors.white,

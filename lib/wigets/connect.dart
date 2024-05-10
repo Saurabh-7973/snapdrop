@@ -6,6 +6,7 @@ import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
 import '../screen/home_screen.dart';
+import '../services/check_internet_connectivity.dart';
 import '../services/first_time_login.dart';
 import '../services/socket_service.dart';
 
@@ -58,25 +59,37 @@ class _SendButtonState extends State<SendButton> {
               height: 40,
               child: ElevatedButton(
                   onPressed: () async {
-                    if (widget.isIntentSharing) {
-                      await sendFilesToServerIntent();
-                      await widget.socketService!.transferCompleted().then((value) {
-                        if (value == true) {
-                          setState(() {
-                            widget.transferCompleted = true;
+                    await CheckInternetConnectivity.hasNetwork().then((value) async {
+                      if (value) {
+                        if (widget.isIntentSharing) {
+                          await sendFilesToServerIntent();
+                          await widget.socketService!.transferCompleted().then((value) {
+                            if (value == true) {
+                              setState(() {
+                                widget.transferCompleted = true;
+                              });
+                            } else {}
                           });
-                        } else {}
-                      });
-                    } else {
-                      await sendFilesToServer();
-                      await widget.socketService!.transferCompleted().then((value) {
-                        if (value == true) {
-                          setState(() {
-                            widget.transferCompleted = true;
+                        } else {
+                          await sendFilesToServer();
+                          await widget.socketService!.transferCompleted().then((value) {
+                            if (value == true) {
+                              setState(() {
+                                widget.transferCompleted = true;
+                              });
+                            }
                           });
                         }
-                      });
-                    }
+                      } else {
+                        var snackbarLimit = SnackBar(
+                            backgroundColor: const Color(0xff206946),
+                            content: Text(
+                              "Check your Internet Connection and try again!",
+                              style: ThemeConstant.smallTextSizeLight,
+                            ));
+                        ScaffoldMessenger.of(context).showSnackBar(snackbarLimit);
+                      }
+                    });
                   },
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
