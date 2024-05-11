@@ -3,7 +3,7 @@
   "packages": [
     {
       "name": "archive",
-      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/archive-3.5.0",
+      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/archive-3.5.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -153,7 +153,7 @@
     },
     {
       "name": "flutter_lints",
-      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-3.0.2",
+      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-4.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
@@ -213,9 +213,9 @@
     },
     {
       "name": "lints",
-      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/lints-3.0.0",
+      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/lints-4.0.0",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.1"
     },
     {
       "name": "logging",
@@ -536,7 +536,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2024-05-07T15:55:27.682859Z",
+  "generated": "2024-05-10T15:49:55.932146Z",
   "generator": "pub",
   "generatorVersion": "3.2.3"
 }

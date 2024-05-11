@@ -1,7 +1,7 @@
 archive
 3.0
-file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/archive-3.5.0/
-file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/archive-3.5.0/lib/
+file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/archive-3.5.1/
+file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/archive-3.5.1/lib/
 args
 3.0
 file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/args-2.5.0/
@@ -96,8 +96,8 @@ file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_launcher_
 file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_launcher_icons-0.13.1/lib/
 flutter_lints
 3.1
-file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-3.0.2/
-file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-3.0.2/lib/
+file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-4.0.0/
+file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-4.0.0/lib/
 flutter_svg
 2.19
 file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_svg-2.0.10+1/
@@ -127,9 +127,9 @@ json_annotation
 file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/json_annotation-4.9.0/
 file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/json_annotation-4.9.0/lib/
 lints
-3.0
-file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/lints-3.0.0/
-file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/lints-3.0.0/lib/
+3.1
+file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/lints-4.0.0/
+file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/lints-4.0.0/lib/
 logging
 2.19
 file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/logging-1.2.0/

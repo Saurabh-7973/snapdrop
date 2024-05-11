@@ -11,7 +11,7 @@ class ThemeConstant {
 
   // Text styles
   static const TextStyle largeTextSize = TextStyle(
-    fontSize: 32.0, // Use double precision for better rendering
+    fontSize: 40.0, // Use double precision for better rendering
     color: whiteColor,
     fontWeight: FontWeight.w600,
     fontFamily: 'Inter',
@@ -22,9 +22,18 @@ class ThemeConstant {
     fontFamily: 'Inter',
   );
 
+  static const TextStyle smallTextSizeFontWidth = TextStyle(
+      fontSize: 18.0, // Double precision for consistency
+      fontFamily: 'Inter',
+      fontWeight: FontWeight.w600);
+
   // Helper methods for light and dark variations
   static TextStyle get smallTextSizeLight =>
       smallTextSize.copyWith(color: whiteColor);
   static TextStyle get smallTextSizeDark =>
       smallTextSize.copyWith(color: Colors.black);
+  static TextStyle get smallTextSizeDarkFontWidth =>
+      smallTextSizeFontWidth.copyWith(color: Colors.black);
+  static TextStyle get smallTextSizeWhiteFontWidth =>
+      smallTextSizeFontWidth.copyWith(color: Colors.white);
 }

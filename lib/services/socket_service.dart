@@ -73,14 +73,15 @@ class SocketService {
     });
   }
 
-  Future<bool> transferCompleted() async {
-    Completer<bool> completer = Completer<bool>();
+  Stream<bool> imageReceivedStream() {
+    final controller = StreamController<bool>();
 
     socket!.on('image_received_to_figma', (data) {
-      completer.complete(true);
+      log('image_received_to_Figma ${data}');
+      controller.add(true);
     });
 
-    return completer.future;
+    return controller.stream;
   }
 
   String? get userId => _userId;

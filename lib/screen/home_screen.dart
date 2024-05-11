@@ -9,7 +9,9 @@ import '../wigets/hero_text.dart';
 
 class HomeScreen extends StatefulWidget {
   SocketService? socketService;
-  HomeScreen({super.key, required this.socketService});
+  bool isIntentSharing = false;
+  HomeScreen(
+      {super.key, required this.socketService, required this.isIntentSharing});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -58,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: Builder(
                       builder: (context) => DropDownView(
                         socketService: widget.socketService,
+                        isIntentSharing: widget.isIntentSharing,
                       ),
                     ),
                     autoPlayDelay: const Duration(seconds: 3),

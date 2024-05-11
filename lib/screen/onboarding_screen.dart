@@ -21,6 +21,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
       MaterialPageRoute(
           builder: (_) => HomeScreen(
                 socketService: null,
+                isIntentSharing: false,
               )),
     );
   }
