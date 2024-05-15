@@ -49,7 +49,7 @@ class SendFile extends StatelessWidget {
               children: [
                 const AppBarWidget(),
                 HeroText(
-                    firstLine: 'Transfer $imageCount',
+                    firstLine: 'Transfered $imageCount',
                     secondLine: 'Images',
                     thirdLine: ''),
                 RoomDisplayer(roomId: roomId, message: 'CONNECTED TO'),

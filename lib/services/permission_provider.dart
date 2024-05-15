@@ -10,7 +10,7 @@ class PermissionProviderServices {
 
   Future<bool> requestMediaAccessPermission() async {
     final deviceInfo = await deviceInfoPlugin.deviceInfo;
-    log(deviceInfo.data.toString());
+    // log(deviceInfo.data.toString());
     final version = deviceInfo.data['version']['release'];
     PermissionStatus status;
 

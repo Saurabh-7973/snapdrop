@@ -77,7 +77,7 @@ class SocketService {
     final controller = StreamController<bool>();
 
     socket!.on('image_received_to_figma', (data) {
-      log('image_received_to_Figma ${data}');
+      // log('image_received_to_Figma ${data}');
       controller.add(true);
     });
 
@@ -100,7 +100,7 @@ class SocketService {
       Uint8List buffer = await file.readAsBytes();
       return buffer;
     } catch (e) {
-      log('Error reading file: $e');
+      // log('Error reading file: $e');
       return null;
     }
   }

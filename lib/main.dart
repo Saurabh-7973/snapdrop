@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'screen/home_screen.dart';
 import 'screen/intent_sharing_screen.dart';
 import 'screen/onboard_screen.dart';
-import 'screen/onboarding_screen.dart';
 import 'screen/qr_screen.dart';
 
 void main() {
@@ -43,13 +42,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    log('State : $state');
+    // log('State : $state');
 
     if (state == AppLifecycleState.paused) {
-      log('App Paused Triggered');
+      // log('App Paused Triggered');
     }
     if (state == AppLifecycleState.resumed) {
-      log('App Resumed Triggered');
+      // log('App Resumed Triggered');
       receiveSharingIntent.getMediaStream().listen(
           (List<SharedMediaFile> listOfMedia) async {
         if (listOfMedia.isNotEmpty) {
@@ -57,7 +56,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => IntentSharingScreen(
+                  builder: (context) => QRScreen(
+                        isIntentSharing: true,
                         listOfMedia: listOfMedia,
                       )));
         }

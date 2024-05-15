@@ -26,7 +26,7 @@ class QRScreen extends StatefulWidget {
 class _QRScreenState extends State<QRScreen> {
   @override
   Widget build(BuildContext context) {
-    print('Intent Sharing : ${widget.isIntentSharing}');
+    // print('Intent Sharing : ${widget.isIntentSharing}');
     return SafeArea(
       child: Container(
         decoration: const BoxDecoration(

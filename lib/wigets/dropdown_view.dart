@@ -102,46 +102,44 @@ class _DropDownViewState extends State<DropDownView> {
                         description:
                             'Select albums you wan to choose photos from',
                         onBarrierClick: () => debugPrint('menu clicked'),
-                        child: Expanded(
-                          child: Container(
-                            width: screenWidth / 1.1,
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<AssetPathEntity>(
-                                  isExpanded: true,
-                                  dropdownColor: const Color(0xff161616),
-                                  value: selectedAlbum,
-                                  icon: const Icon(
-                                    Icons.keyboard_arrow_down_rounded,
-                                    color: Colors.white,
-                                    size: 28,
-                                  ),
-                                  items: albumList
-                                      .map<DropdownMenuItem<AssetPathEntity>>(
-                                          (album) {
-                                    return DropdownMenuItem<AssetPathEntity>(
-                                      value: album,
-                                      child: Text(
-                                        "${album.name}",
-                                        style: ThemeConstant.smallTextSizeLight,
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (AssetPathEntity? album) {
-                                    setState(() {
-                                      selectedAlbum = album;
-                                      hasDataLoaded = false;
-                                    });
+                        child: SizedBox(
+                          width: screenWidth / 1.1,
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<AssetPathEntity>(
+                                isExpanded: true,
+                                dropdownColor: const Color(0xff161616),
+                                value: selectedAlbum,
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: Colors.white,
+                                  size: 28,
+                                ),
+                                items: albumList
+                                    .map<DropdownMenuItem<AssetPathEntity>>(
+                                        (album) {
+                                  return DropdownMenuItem<AssetPathEntity>(
+                                    value: album,
+                                    child: Text(
+                                      "${album.name}",
+                                      style: ThemeConstant.smallTextSizeLight,
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (AssetPathEntity? album) {
+                                  setState(() {
+                                    selectedAlbum = album;
+                                    hasDataLoaded = false;
+                                  });
 
-                                    widget._mediaProviderServices
-                                        .loadAsset(selectedAlbum!)
-                                        .then((value) {
-                                      setState(() {
-                                        assetList = value;
-                                        hasDataLoaded = true;
-                                      });
+                                  widget._mediaProviderServices
+                                      .loadAsset(selectedAlbum!)
+                                      .then((value) {
+                                    setState(() {
+                                      assetList = value;
+                                      hasDataLoaded = true;
                                     });
-                                  }),
-                            ),
+                                  });
+                                }),
                           ),
                         ),
                       ),
@@ -413,13 +411,15 @@ class _DropDownViewState extends State<DropDownView> {
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(15),
-                                                          color: Colors.grey
+                                                          color: Colors.black
                                                               .withOpacity(
-                                                                  0.8)),
+                                                                  0.3)),
                                                       child: Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                .all(4),
+                                                                .symmetric(
+                                                                vertical: 4,
+                                                                horizontal: 8),
                                                         child: Text(
                                                           "${snapshot.data} MB",
                                                           style: ThemeConstant

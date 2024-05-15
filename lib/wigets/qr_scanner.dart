@@ -159,8 +159,8 @@ class _QRScannerState extends State<QRScanner> {
   connectSocket() async {
     '${result!.code}'.toString().split('=')[1];
 
-    log('URL : ${result!.code}');
-    log('URL : ${result!.code.toString().split('=')[1]}');
+    // log('URL : ${result!.code}');
+    // log('URL : ${result!.code.toString().split('=')[1]}');
 
     socketService = SocketService(url: '${result!.code}');
     socketService!.connectToSocketServer();
@@ -198,7 +198,7 @@ class _QRScannerState extends State<QRScanner> {
     for (int i = 0; i < selectedAssetList.length; i++) {
       selectedAssetList[i].originBytes.then((value) async {
         bufferList!.add(value!);
-        log(bufferList![i].toString());
+        // log(bufferList![i].toString());
       });
     }
   }
