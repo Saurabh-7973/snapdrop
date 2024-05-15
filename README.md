@@ -68,25 +68,38 @@ A High-level overview of the project structure:
 
 lib/                     # Root Package
 |
-├─ Constant/                 # For data handling
-│  ├─ global_showcase_key/              # sample used for testing
-│  ├─ models/            # Objects representing data
-│  ├─ repositories/      # Source of data
+├─ Constant/                             # Constant files to use across the app
+│  ├─ global_showcase_key/               # global key used for showcase view
+│  ├─ theme_constant/                    # theme file
+│
+├─ Screen/                               # Contain all the main screens of the app
+│  ├─ home_screen/                       # home screen for the app
+│  ├─ intent_sharing_screen/             # Images send directly from other app
+│  ├─ onboard_screen/                    # Onboarding user for the first time
+│  ├─ qr_screen/                         # QR Screen
+│  ├─ send_file_screen/                  # Review selected images screen
 |
-├─ redux/                # manages app state
-│  ├─ component/         # app building block
-│     ├─ actions         # methods to update app state
-|     ├─ middleware      # run in response to actions, execute before reducer
-|     ├─ reducer         # intercepts actions, responsible for updating the state
-|     ├─ selectors       # read data from the state, queries against your 'state database'
-|     ├─ state           # immutable object that lives at the top of the widget hierarchy
+├─ Services/                             # Services used for the app
+│  ├─ check_internet_connectivity/       # to check internet connectivity before sending the images
+│  ├─ file_image/                        # used to identify the size of the image
+│  ├─ first_time_login/                  # check first time login to display showcase view and onboarding screen
+│  ├─ media_provider/                    # this class provides app with the album list and the images that are present in the album
+│  ├─ permission_provider/               # To ask user to grant permission for storage and camera for picking images and scanning qr code
+│  ├─ socket_service/                    # To transfer all the images from phone to your figma design file
 |
-├─ ui/                   # app views
-│  ├─ component/         # views for different components
-│    ├─ view/            # generel view for component
-│    ├─ edit/            # change values on the views fields
+├─ Widgets/                              # Widgets used multiple times throught the application is present here
+│  ├─ app_bar_widget/                    # app bar for the app
+│  ├─ connect/                           # connect to connecting to socket and sending images from phone to figma
+│  ├─ dropdown_view/                     # dropdown used to display all the albums present with in the application and the images in a gridview
+│  ├─ figma_display_helper/              # for displaing figma info
+│  ├─ hero_text/                         # To display info throughtout every screen
+│  ├─ intent_file_diplayer/              # Display images which is shared from other apps to Snapdrop
+│  ├─ intro_widget/                      # used in the intro screen to display info
+│  ├─ qr_scanner/                        # actual qr scanning code
+│  ├─ room_displayer/                    # to display the room id when connected to figma
+│  ├─ selected_images/                   # review images displayer
 |
-├─ main/                # Main classes
+├─ main/                # Main class
 
 ```
 
