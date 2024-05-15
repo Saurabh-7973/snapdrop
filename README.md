@@ -61,7 +61,7 @@
 
 
 
-### File Structure
+### 6. File Structure
 
 A High-level overview of the project structure:
 ```
@@ -103,6 +103,22 @@ lib/                     # Root Package
 
 ```
 
+# 7. Libraries
+
+- [photo_manager](https://pub.dev/packages/photo_manager)
+- [flutter_svg](https://pub.dev/packages/flutter_svg)
+- [qr_code_scanner](https://pub.dev/packages/qr_code_scanner)
+- [socket_io_client](https://pub.dev/packages/socket_io_client)
+- [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons)
+- [receive_sharing_intent](https://pub.dev/packages/receive_sharing_intent)
+- [photo_manager_image_provider](https://pub.dev/packages/photo_manager_image_provider)
+- [permission_handler](https://pub.dev/packages/permission_handler)
+- [lottie](https://pub.dev/packages/lottie)
+- [device_info_plus](https://pub.dev/packages/device_info_plus)
+- [showcaseview](https://pub.dev/packages/showcaseview)
+- [shared_preferences](https://pub.dev/packages/shared_preferences)
+- [introduction_screen](https://pub.dev/packages/introduction_screen)
+- [shimmer](https://pub.dev/packages/shimmer)
 
 </a>
 
