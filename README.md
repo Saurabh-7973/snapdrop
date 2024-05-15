@@ -35,27 +35,27 @@
 <table>
   <tr>
     <td>
-      <img src="assets/app_screenshots/splashscreen.jpeg" alt="Splashscreen" width="300">
+      <img src="assets/app_screenshots/splashscreen.jpeg" alt="Splashscreen" width="200">
     </td>
-    <td>
-      <img src="assets/app_screenshots/home_screen.jpeg" alt="HomeScreen"  width="300">
+        <td>
+      <img src="assets/app_screenshots/void_error.jpeg" alt="HomeScreen" width="200">
+    </td>
+        <td>
+      <img src="assets/app_screenshots/home_screen.jpeg" alt="HomeScreen"  width="200">
     </td>
   </tr>
    <tr>
     <td>
-      <img src="assets/app_screenshots/multiple_selection.jpeg" alt="Splashscreen" width="300">
+      <img src="assets/app_screenshots/multiple_selection.jpeg" alt="Splashscreen" width="200">
     </td>
     <td>
-      <img src="assets/app_screenshots/qr_screen.jpeg" alt="HomeScreen" width="300">
+      <img src="assets/app_screenshots/qr_screen.jpeg" alt="HomeScreen" width="200">
+    </td>
+      <td>
+      <img src="assets/app_screenshots/review_images_2.jpeg" alt="Splashscreen" width="200">
     </td>
   </tr>
      <tr>
-    <td>
-      <img src="assets/app_screenshots/review_images_2.jpeg" alt="Splashscreen" width="300">
-    </td>
-    <td>
-      <img src="assets/app_screenshots/void_error.jpeg" alt="HomeScreen" width="300">
-    </td>
   </tr>
 </table>
 
