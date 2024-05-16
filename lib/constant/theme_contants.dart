@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ThemeConstant {
+  //App Primary Colors
+  static const Color primaryAppColor = Color(0xff206946);
+  static const Color primaryAppColorGradient2 = Color(0xff071414);
+  static const Color primaryAppColorGradient3 = Color(0xff040807);
+
   // White color constant for consistency
   static const Color whiteColor = Colors.white;
 
@@ -28,8 +33,12 @@ class ThemeConstant {
       fontWeight: FontWeight.w600);
 
   // Helper methods for light and dark variations
-  static TextStyle get smallTextSizeLight => smallTextSize.copyWith(color: whiteColor);
-  static TextStyle get smallTextSizeDark => smallTextSize.copyWith(color: Colors.black);
-  static TextStyle get smallTextSizeDarkFontWidth => smallTextSizeFontWidth.copyWith(color: Colors.black);
-  static TextStyle get smallTextSizeWhiteFontWidth => smallTextSizeFontWidth.copyWith(color: Colors.white);
+  static TextStyle get smallTextSizeLight =>
+      smallTextSize.copyWith(color: whiteColor);
+  static TextStyle get smallTextSizeDark =>
+      smallTextSize.copyWith(color: Colors.black);
+  static TextStyle get smallTextSizeDarkFontWidth =>
+      smallTextSizeFontWidth.copyWith(color: Colors.black);
+  static TextStyle get smallTextSizeWhiteFontWidth =>
+      smallTextSizeFontWidth.copyWith(color: Colors.white);
 }

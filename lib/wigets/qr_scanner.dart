@@ -20,7 +20,11 @@ class QRScanner extends StatefulWidget {
   List<SharedMediaFile>? listOfMedia;
   bool isIntentSharing = false;
 
-  QRScanner({super.key, this.selectedAssetList, required this.isIntentSharing, this.listOfMedia});
+  QRScanner(
+      {super.key,
+      this.selectedAssetList,
+      required this.isIntentSharing,
+      this.listOfMedia});
 
   @override
   State<QRScanner> createState() => _QRScannerState();
@@ -43,13 +47,18 @@ class _QRScannerState extends State<QRScanner> {
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
-          ShowCaseWidget.of(context).startShowCase([GlobalShowcaseKeys.showcaseFour]);
+          ShowCaseWidget.of(context)
+              .startShowCase([GlobalShowcaseKeys.showcaseFour]);
         });
       } else {
-        setState(() {
-          scannerVisible = scannerVisible == true ? false : true;
-        });
+        activateQrScanner();
       }
+    });
+  }
+
+  activateQrScanner() {
+    setState(() {
+      scannerVisible = scannerVisible == true ? false : true;
     });
   }
 
@@ -63,14 +72,16 @@ class _QRScannerState extends State<QRScanner> {
         widget.isIntentSharing == true
             ? qrContainer(screenHeight, screenWidth)
             : Showcase(
-                targetPadding: const EdgeInsets.all(4),
-                targetShapeBorder: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                ),
                 key: GlobalShowcaseKeys.showcaseFour,
+                targetBorderRadius: const BorderRadius.all(Radius.circular(15)),
+                tooltipBackgroundColor: const Color(0xff161616),
+                textColor: ThemeConstant.whiteColor,
                 title: "QR Scanner",
-                description: 'CLick to Scan QR Code',
-                onBarrierClick: () => debugPrint('qr scanner clicked'),
+                description: 'Click to Scan QR Code',
+                disposeOnTap: true,
+                onBarrierClick: () => activateQrScanner(),
+                onTargetClick: () => activateQrScanner(),
+                onToolTipClick: () => activateQrScanner(),
                 child: qrContainer(screenHeight, screenWidth)),
         const SizedBox(
           height: 10,
@@ -80,6 +91,8 @@ class _QRScannerState extends State<QRScanner> {
             : Showcase(
                 targetPadding: const EdgeInsets.all(4),
                 key: GlobalShowcaseKeys.showcaseFive,
+                tooltipBackgroundColor: const Color(0xff161616),
+                textColor: ThemeConstant.whiteColor,
                 title: "Connect Button",
                 description: 'Indicates successful QR code scan',
                 onBarrierClick: () => debugPrint('qr connect clicked'),
@@ -123,7 +136,8 @@ class _QRScannerState extends State<QRScanner> {
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        '${result!.code}'.toString().split('=')[1], // If userId is null, an empty string is used
+                        '${result!.code}'.toString().split('=')[
+                            1], // If userId is null, an empty string is used
                         style: ThemeConstant.smallTextSizeLight,
                       ),
                     )
@@ -154,7 +168,9 @@ class _QRScannerState extends State<QRScanner> {
     socketService!.connectToSocketServer();
 
     setState(() {
-      socketService != null ? connectionStatus = true : connectionStatus = false;
+      socketService != null
+          ? connectionStatus = true
+          : connectionStatus = false;
     });
 
     Future.delayed(const Duration(seconds: 2), () {
@@ -192,7 +208,9 @@ class _QRScannerState extends State<QRScanner> {
     return Container(
       height: screenHeight / 2.8,
       width: screenWidth / 1.3,
-      decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 2), borderRadius: BorderRadius.circular(15)),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey, width: 2),
+          borderRadius: BorderRadius.circular(15)),
       child: scannerVisible == false
           ? const Center(
               child: CircleAvatar(
@@ -228,7 +246,7 @@ class _QRScannerState extends State<QRScanner> {
                 }
               } else {
                 var snackbarLimit = SnackBar(
-                  backgroundColor: const Color(0xff206946),
+                  backgroundColor: ThemeConstant.primaryAppColor,
                   content: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
@@ -242,12 +260,16 @@ class _QRScannerState extends State<QRScanner> {
             });
           },
           style: ElevatedButton.styleFrom(
-              backgroundColor: result != null ? Colors.green : Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+              backgroundColor: result != null ? Colors.green : Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30))),
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
               result != null ? "Connected SuccessFully" : "Scanning...",
-              style: result != null ? ThemeConstant.smallTextSizeWhiteFontWidth : ThemeConstant.smallTextSizeDarkFontWidth,
+              style: result != null
+                  ? ThemeConstant.smallTextSizeWhiteFontWidth
+                  : ThemeConstant.smallTextSizeDarkFontWidth,
             ),
           )),
     );

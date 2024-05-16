@@ -3,6 +3,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:showcaseview/showcaseview.dart';
 
+import '../constant/theme_contants.dart';
 import '../services/socket_service.dart';
 import '../wigets/app_bar_widget.dart';
 import '../wigets/connect.dart';
@@ -36,7 +37,11 @@ class SendFile extends StatelessWidget {
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xff206946), Color(0xff071414), Color(0xff040807)],
+            colors: [
+              ThemeConstant.primaryAppColor,
+              ThemeConstant.primaryAppColorGradient2,
+              ThemeConstant.primaryAppColorGradient3
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -48,12 +53,16 @@ class SendFile extends StatelessWidget {
             child: Column(
               children: [
                 const AppBarWidget(),
-                HeroText(firstLine: 'Transfered $imageCount', secondLine: 'Images', thirdLine: ''),
+                HeroText(
+                    firstLine: 'Transfered $imageCount',
+                    secondLine: 'Images',
+                    thirdLine: ''),
                 RoomDisplayer(roomId: roomId, message: 'CONNECTED TO'),
                 const SizedBox(
                   height: 10,
                 ),
-                RoomDisplayer(roomId: socketService!.userId, message: 'YOUR ID'),
+                RoomDisplayer(
+                    roomId: socketService!.userId, message: 'YOUR ID'),
                 const SizedBox(
                   height: 10,
                 ),
@@ -92,9 +101,6 @@ class SendFile extends StatelessWidget {
                           ),
                         ),
                         autoPlayDelay: const Duration(seconds: 3),
-                        // child: DropDownView(
-                        //   socketService: widget.socketService,
-                        // ),
                       ),
               ],
             ),

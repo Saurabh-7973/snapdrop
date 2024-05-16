@@ -17,7 +17,11 @@ class OnboardScreen extends StatelessWidget {
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xff206946), Color(0xff071414), Color(0xff040807)],
+            colors: [
+              ThemeConstant.primaryAppColor,
+              ThemeConstant.primaryAppColorGradient2,
+              ThemeConstant.primaryAppColorGradient3
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -83,7 +87,8 @@ class OnboardScreen extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                       minimumSize: Size(screenWidth / 3, screenHeight / 16),
                       backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,

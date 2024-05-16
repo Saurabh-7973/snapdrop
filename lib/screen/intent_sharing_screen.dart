@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import '../constant/theme_contants.dart';
 import '../wigets/app_bar_widget.dart';
 import '../wigets/hero_text.dart';
 import '../wigets/intent_file_displayer.dart';
@@ -30,7 +31,11 @@ class _IntentSharingScreenState extends State<IntentSharingScreen> {
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xff206946), Color(0xff071414), Color(0xff040807)],
+            colors: [
+              ThemeConstant.primaryAppColor,
+              ThemeConstant.primaryAppColorGradient2,
+              ThemeConstant.primaryAppColorGradient3
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
