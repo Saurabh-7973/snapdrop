@@ -21,9 +21,12 @@ class IntroWidget extends StatelessWidget {
         const SizedBox(
           width: 10,
         ),
-        Text(
-          text,
-          style: ThemeConstant.smallTextSizeWhiteFontWidth,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            text,
+            style: ThemeConstant.smallTextSizeWhiteFontWidth,
+          ),
         )
       ],
     );
