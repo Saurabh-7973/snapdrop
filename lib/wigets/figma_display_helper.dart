@@ -8,8 +8,6 @@ class FigmaDisplayHelper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeConstant themeConstant = ThemeConstant();
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

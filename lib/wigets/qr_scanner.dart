@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:Snapdrop/constant/global_showcase_key.dart';
@@ -21,11 +20,7 @@ class QRScanner extends StatefulWidget {
   List<SharedMediaFile>? listOfMedia;
   bool isIntentSharing = false;
 
-  QRScanner(
-      {super.key,
-      this.selectedAssetList,
-      required this.isIntentSharing,
-      this.listOfMedia});
+  QRScanner({super.key, this.selectedAssetList, required this.isIntentSharing, this.listOfMedia});
 
   @override
   State<QRScanner> createState() => _QRScannerState();
@@ -44,48 +39,39 @@ class _QRScannerState extends State<QRScanner> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
-        WidgetsBinding.instance.addPostFrameCallback((_) =>
-            ShowCaseWidget.of(context).startShowCase([
-              GlobalShowcaseKeys.showcaseFour,
-              GlobalShowcaseKeys.showcaseFive
-            ]));
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          ShowCaseWidget.of(context).startShowCase([GlobalShowcaseKeys.showcaseFour]);
+        });
+      } else {
+        setState(() {
+          scannerVisible = scannerVisible == true ? false : true;
+        });
       }
-    });
-    setState(() {
-      scannerVisible = scannerVisible == true ? false : true;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // QRViewController qrViewController;
-
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    ThemeConstant themeConstant = ThemeConstant();
 
     return Column(
       children: [
-        InkWell(
-          onTap: () {
-            // setState(() {
-            //   scannerVisible = scannerVisible == true ? false : true;
-            // });
-          },
-          child: widget.isIntentSharing == true
-              ? qrContainer(screenHeight, screenWidth)
-              : Showcase(
-                  targetPadding: const EdgeInsets.all(4),
-                  key: GlobalShowcaseKeys.showcaseFour,
-                  title: "QR Scanner",
-                  description: 'CLick to Scan QR Code',
-                  onBarrierClick: () => debugPrint('qr scanner clicked'),
-                  child: qrContainer(screenHeight, screenWidth)),
-        ),
+        widget.isIntentSharing == true
+            ? qrContainer(screenHeight, screenWidth)
+            : Showcase(
+                targetPadding: const EdgeInsets.all(4),
+                targetShapeBorder: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                ),
+                key: GlobalShowcaseKeys.showcaseFour,
+                title: "QR Scanner",
+                description: 'CLick to Scan QR Code',
+                onBarrierClick: () => debugPrint('qr scanner clicked'),
+                child: qrContainer(screenHeight, screenWidth)),
         const SizedBox(
           height: 10,
         ),
@@ -118,9 +104,12 @@ class _QRScannerState extends State<QRScanner> {
                   SizedBox(
                     width: 10,
                   ),
-                  Text(
-                    'Connected Successfully',
-                    style: TextStyle(color: Colors.white70),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      'Connected Successfully',
+                      style: TextStyle(color: Colors.white70),
+                    ),
                   ),
                 ],
               ),
@@ -131,10 +120,12 @@ class _QRScannerState extends State<QRScanner> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      '${result!.code}'.toString().split(
-                          '=')[1], // If userId is null, an empty string is used
-                      style: ThemeConstant.smallTextSizeLight,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '${result!.code}'.toString().split('=')[1], // If userId is null, an empty string is used
+                        style: ThemeConstant.smallTextSizeLight,
+                      ),
                     )
                   ],
                 ),
@@ -159,16 +150,11 @@ class _QRScannerState extends State<QRScanner> {
   connectSocket() async {
     '${result!.code}'.toString().split('=')[1];
 
-    // log('URL : ${result!.code}');
-    // log('URL : ${result!.code.toString().split('=')[1]}');
-
     socketService = SocketService(url: '${result!.code}');
     socketService!.connectToSocketServer();
 
     setState(() {
-      socketService != null
-          ? connectionStatus = true
-          : connectionStatus = false;
+      socketService != null ? connectionStatus = true : connectionStatus = false;
     });
 
     Future.delayed(const Duration(seconds: 2), () {
@@ -198,7 +184,6 @@ class _QRScannerState extends State<QRScanner> {
     for (int i = 0; i < selectedAssetList.length; i++) {
       selectedAssetList[i].originBytes.then((value) async {
         bufferList!.add(value!);
-        // log(bufferList![i].toString());
       });
     }
   }
@@ -207,15 +192,9 @@ class _QRScannerState extends State<QRScanner> {
     return Container(
       height: screenHeight / 2.8,
       width: screenWidth / 1.3,
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 2),
-          borderRadius: BorderRadius.circular(15)),
+      decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 2), borderRadius: BorderRadius.circular(15)),
       child: scannerVisible == false
           ? const Center(
-              // child: SvgPicture.asset(
-              //   'assets/svg_asset/camera.svg',
-              //   color: Colors.white,
-              // ),
               child: CircleAvatar(
                 foregroundColor: Colors.transparent,
                 backgroundColor: Colors.transparent,
@@ -223,7 +202,6 @@ class _QRScannerState extends State<QRScanner> {
                   Icons.camera_alt_rounded,
                   color: Colors.grey,
                   size: 18,
-                  //size: 36,
                 ),
               ),
             )
@@ -251,9 +229,12 @@ class _QRScannerState extends State<QRScanner> {
               } else {
                 var snackbarLimit = SnackBar(
                   backgroundColor: const Color(0xff206946),
-                  content: Text(
-                    "Check your Internet Connection and try again!",
-                    style: ThemeConstant.smallTextSizeDarkFontWidth,
+                  content: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "Check your Internet Connection and try again!",
+                      style: ThemeConstant.smallTextSizeDarkFontWidth,
+                    ),
                   ),
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackbarLimit);
@@ -261,14 +242,13 @@ class _QRScannerState extends State<QRScanner> {
             });
           },
           style: ElevatedButton.styleFrom(
-              backgroundColor: result != null ? Colors.green : Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30))),
-          child: Text(
-            result != null ? "Connected SuccessFully" : "Scanning...",
-            style: result != null
-                ? ThemeConstant.smallTextSizeWhiteFontWidth
-                : ThemeConstant.smallTextSizeDarkFontWidth,
+              backgroundColor: result != null ? Colors.green : Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              result != null ? "Connected SuccessFully" : "Scanning...",
+              style: result != null ? ThemeConstant.smallTextSizeWhiteFontWidth : ThemeConstant.smallTextSizeDarkFontWidth,
+            ),
           )),
     );
   }

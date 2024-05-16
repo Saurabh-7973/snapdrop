@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../wigets/app_bar_widget.dart';
 import '../wigets/hero_text.dart';
-import '../wigets/into_widget.dart';
+import '../wigets/intro_widget.dart';
 import 'home_screen.dart';
 
 class OnboardScreen extends StatelessWidget {
@@ -41,29 +41,32 @@ class OnboardScreen extends StatelessWidget {
                   flex: 9,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 64.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        IntroWidget(
-                          icon: Icons.image_outlined,
-                          text: 'Select Image',
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        IntroWidget(
-                          icon: Icons.qr_code_scanner_outlined,
-                          text: 'Scan QR in Figma Plugin',
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        IntroWidget(
-                          icon: Icons.send_rounded,
-                          text: 'Share',
-                        )
-                      ],
+                    child: SizedBox(
+                      width: screenWidth,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          IntroWidget(
+                            icon: Icons.image_outlined,
+                            text: 'Select Image',
+                          ),
+                          const SizedBox(
+                            height: 50,
+                          ),
+                          IntroWidget(
+                            icon: Icons.qr_code_scanner_outlined,
+                            text: 'Scan QR in Figma Plugin',
+                          ),
+                          const SizedBox(
+                            height: 50,
+                          ),
+                          IntroWidget(
+                            icon: Icons.send_rounded,
+                            text: 'Share',
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -80,15 +83,17 @@ class OnboardScreen extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                       minimumSize: Size(screenWidth / 3, screenHeight / 16),
                       backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30))),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        "Get Started",
-                        style: ThemeConstant.smallTextSizeDarkFontWidth,
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          "Get Started",
+                          style: ThemeConstant.smallTextSizeDarkFontWidth,
+                        ),
                       ),
                     ],
                   ),

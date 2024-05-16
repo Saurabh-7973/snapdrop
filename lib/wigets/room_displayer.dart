@@ -8,7 +8,6 @@ class RoomDisplayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         Row(
@@ -24,9 +23,12 @@ class RoomDisplayer extends StatelessWidget {
             const SizedBox(
               width: 5,
             ),
-            Text(
-              message,
-              style: const TextStyle(color: Colors.white70),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                message,
+                style: const TextStyle(color: Colors.white70),
+              ),
             ),
           ],
         ),
@@ -36,9 +38,12 @@ class RoomDisplayer extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              roomId!,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                roomId!,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+              ),
             )
           ],
         ),

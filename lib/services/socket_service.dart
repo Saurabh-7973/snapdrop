@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -22,8 +21,7 @@ class SocketService {
   }
 
   void _socketConnection() {
-    socket = io.io('https://getsnapdrop.in/',
-        OptionBuilder().setTransports(['websocket']).setTimeout(10000).build());
+    socket = io.io('https://getsnapdrop.in/', OptionBuilder().setTransports(['websocket']).setTimeout(10000).build());
 
     socket!.connect();
   }
@@ -55,8 +53,7 @@ class SocketService {
     });
   }
 
-  void sendImages(
-      {String? name, String? type, Uint8List? file, String? userId}) {
+  void sendImages({String? name, String? type, Uint8List? file, String? userId}) {
     String? imageName = name;
     String? imageType = type;
 
@@ -77,7 +74,6 @@ class SocketService {
     final controller = StreamController<bool>();
 
     socket!.on('image_received_to_figma', (data) {
-      // log('image_received_to_Figma ${data}');
       controller.add(true);
     });
 
@@ -100,7 +96,6 @@ class SocketService {
       Uint8List buffer = await file.readAsBytes();
       return buffer;
     } catch (e) {
-      // log('Error reading file: $e');
       return null;
     }
   }

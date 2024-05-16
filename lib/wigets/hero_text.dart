@@ -8,17 +8,10 @@ class HeroText extends StatelessWidget {
   String thirdLine;
   int? size;
 
-  HeroText(
-      {super.key,
-      required this.firstLine,
-      required this.secondLine,
-      required this.thirdLine,
-      this.size});
+  HeroText({super.key, required this.firstLine, required this.secondLine, required this.thirdLine, this.size});
 
   @override
   Widget build(BuildContext context) {
-    final themeConstant = ThemeConstant();
-
     return Container(
       // color: Colors.amber,
       margin: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15),
@@ -30,24 +23,33 @@ class HeroText extends StatelessWidget {
         children: [
           firstLine == ''
               ? Container()
-              : Text(
-                  firstLine,
-                  style: ThemeConstant.largeTextSize,
+              : FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    firstLine,
+                    style: ThemeConstant.largeTextSize,
+                  ),
                 ),
           secondLine == ''
               ? Container()
-              : Text(
-                  secondLine,
-                  style: ThemeConstant.largeTextSize,
+              : FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    secondLine,
+                    style: ThemeConstant.largeTextSize,
+                  ),
                 ),
           const SizedBox(
             height: 10,
           ),
           thirdLine == ''
               ? Container()
-              : Text(
-                  thirdLine,
-                  style: ThemeConstant.smallTextSizeLight,
+              : FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    thirdLine,
+                    style: ThemeConstant.smallTextSizeLight,
+                  ),
                 ),
         ],
       ),

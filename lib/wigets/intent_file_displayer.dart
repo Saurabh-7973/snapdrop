@@ -24,9 +24,7 @@ class IntentFileDisplayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    ThemeConstant themeConstant = ThemeConstant();
 
     return Stack(
       children: [
@@ -92,9 +90,12 @@ class IntentFileDisplayer extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          "Connect",
-                          style: ThemeConstant.smallTextSizeDark,
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            "Connect",
+                            style: ThemeConstant.smallTextSizeDark,
+                          ),
                         ),
                         // const Spacer(),
                         const Icon(

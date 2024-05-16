@@ -13,11 +13,7 @@ class QRScreen extends StatefulWidget {
   bool isIntentSharing = false;
   List<SharedMediaFile>? listOfMedia;
 
-  QRScreen(
-      {super.key,
-      this.selectedAssetList,
-      required this.isIntentSharing,
-      this.listOfMedia});
+  QRScreen({super.key, this.selectedAssetList, required this.isIntentSharing, this.listOfMedia});
 
   @override
   State<QRScreen> createState() => _QRScreenState();
@@ -43,10 +39,7 @@ class _QRScreenState extends State<QRScreen> {
             child: Column(
               children: [
                 const AppBarWidget(),
-                HeroText(
-                    firstLine: "Scan QR Code",
-                    secondLine: "to Continue",
-                    thirdLine: ""),
+                HeroText(firstLine: "Scan QR Code", secondLine: "to Continue", thirdLine: ""),
                 const FigmaDisplayHelper(),
                 const SizedBox(
                   height: 5,

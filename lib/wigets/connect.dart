@@ -20,12 +20,7 @@ class SendButton extends StatefulWidget {
   List<SharedMediaFile>? listOfMedia;
   bool transferCompleted = false;
 
-  SendButton(
-      {super.key,
-      required this.isIntentSharing,
-      this.listOfMedia,
-      required this.socketService,
-      this.selectedAssetList});
+  SendButton({super.key, required this.isIntentSharing, this.listOfMedia, required this.socketService, this.selectedAssetList});
 
   @override
   State<SendButton> createState() => _SendButtonState();
@@ -38,16 +33,11 @@ class _SendButtonState extends State<SendButton> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
         WidgetsBinding.instance.addPostFrameCallback(
-            (_) => ShowCaseWidget.of(context).startShowCase([
-                  GlobalShowcaseKeys.showcaseSix,
-                  GlobalShowcaseKeys.showcaseSeven,
-                  GlobalShowcaseKeys.showcaseEight
-                ]));
+            (_) => ShowCaseWidget.of(context).startShowCase([GlobalShowcaseKeys.showcaseSeven, GlobalShowcaseKeys.showcaseEight]));
       }
     });
 
@@ -82,14 +72,12 @@ class _SendButtonState extends State<SendButton> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    ThemeConstant themeConstant = ThemeConstant();
 
     return widget.transferCompleted == false
         ? widget.isIntentSharing == true
             ? sendFilesToServerButton(screenWidth)
             : Showcase(
-                targetPadding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+                targetPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                 key: GlobalShowcaseKeys.showcaseSix,
                 title: "Send Button",
                 description: 'Send selected images to Figma',
@@ -106,26 +94,21 @@ class _SendButtonState extends State<SendButton> {
                 widget.isIntentSharing == true
                     ? closeButton(screenWidth)
                     : Showcase(
-                        targetPadding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 0),
+                        targetPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                         key: GlobalShowcaseKeys.showcaseSeven,
                         title: "Close Button",
                         description: 'Exits the application',
-                        onBarrierClick: () =>
-                            debugPrint('close button clicked'),
+                        onBarrierClick: () => debugPrint('close button clicked'),
                         child: closeButton(screenWidth)),
                 widget.isIntentSharing == true
                     ? sendMoreButton(screenWidth, widget.isIntentSharing)
                     : Showcase(
-                        targetPadding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 0),
+                        targetPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                         key: GlobalShowcaseKeys.showcaseEight,
                         title: "Send Button",
                         description: 'Send more images',
-                        onBarrierClick: () =>
-                            debugPrint('close button clicked'),
-                        child:
-                            sendMoreButton(screenWidth, widget.isIntentSharing),
+                        onBarrierClick: () => debugPrint('close button clicked'),
+                        child: sendMoreButton(screenWidth, widget.isIntentSharing),
                       ),
                 const Spacer(),
               ],
@@ -160,11 +143,7 @@ class _SendButtonState extends State<SendButton> {
 
         widget.socketService!.fileToBuffer(value.path).then((unitFile) {
           String? userId = widget.socketService!.userId;
-          widget.socketService!.sendImages(
-              name: imageName,
-              type: imageExtension,
-              file: unitFile,
-              userId: userId);
+          widget.socketService!.sendImages(name: imageName, type: imageExtension, file: unitFile, userId: userId);
         });
       });
     }
@@ -175,15 +154,9 @@ class _SendButtonState extends State<SendButton> {
       String imageName = getImageName("${widget.listOfMedia![i].path}}");
       String imageExtension = getImageExtension(widget.listOfMedia![i].path);
 
-      widget.socketService!
-          .fileToBuffer(widget.listOfMedia![i].path)
-          .then((unitFile) {
+      widget.socketService!.fileToBuffer(widget.listOfMedia![i].path).then((unitFile) {
         String? userId = widget.socketService!.userId;
-        widget.socketService!.sendImages(
-            name: imageName,
-            type: imageExtension,
-            file: unitFile,
-            userId: userId);
+        widget.socketService!.sendImages(name: imageName, type: imageExtension, file: unitFile, userId: userId);
       });
     }
   }
@@ -196,45 +169,28 @@ class _SendButtonState extends State<SendButton> {
           onPressed: () async {
             await CheckInternetConnectivity.hasNetwork().then((value) async {
               if (value) {
-                // if (widget.isIntentSharing) {
-                //   await sendFilesToServerIntent();
-                //   await widget.socketService!.transferCompleted().then((value) {
-                //     if (value == true) {
-                //       setState(() {
-                //         widget.transferCompleted = true;
-                //       });
-                //     } else {}
-                //   });
-                // } else {
-                //   await sendFilesToServer();
-
-                //   //Commented for now ()
-                //   // await widget.socketService!.transferCompleted().then((value) {
-                //   //   if (value == true) {
-                //   setState(() {
-                //     widget.transferCompleted = true;
-                //   });
-                //   //   }
-                //   // });
-                // }
+                fileTransfer();
               } else {
                 var snackbarLimit = SnackBar(
                     backgroundColor: const Color(0xff206946),
-                    content: Text(
-                      "Check your Internet Connection and try again!",
-                      style: ThemeConstant.smallTextSizeLight,
+                    content: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        "Check your Internet Connection and try again!",
+                        style: ThemeConstant.smallTextSizeLight,
+                      ),
                     ));
                 ScaffoldMessenger.of(context).showSnackBar(snackbarLimit);
               }
             });
           },
-          style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30))),
-          child: Text(
-            "Click to Send",
-            style: ThemeConstant.smallTextSizeDarkFontWidth,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              "Click to Send",
+              style: ThemeConstant.smallTextSizeDarkFontWidth,
+            ),
           )),
     );
   }
@@ -253,8 +209,7 @@ class _SendButtonState extends State<SendButton> {
               minimumSize: Size(screenWidth / 2.6, 50),
               backgroundColor: Colors.transparent,
               side: const BorderSide(color: Colors.white),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30))),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -266,9 +221,12 @@ class _SendButtonState extends State<SendButton> {
               const SizedBox(
                 width: 5,
               ),
-              Text(
-                "Close",
-                style: ThemeConstant.smallTextSizeWhiteFontWidth,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  "Close",
+                  style: ThemeConstant.smallTextSizeWhiteFontWidth,
+                ),
               ),
             ],
           ),
@@ -300,8 +258,7 @@ class _SendButtonState extends State<SendButton> {
           style: ElevatedButton.styleFrom(
               minimumSize: Size(screenWidth / 2.6, 50),
               backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30))),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -313,9 +270,12 @@ class _SendButtonState extends State<SendButton> {
               const SizedBox(
                 width: 5,
               ),
-              Text(
-                "Send",
-                style: ThemeConstant.smallTextSizeDarkFontWidth,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  "Send",
+                  style: ThemeConstant.smallTextSizeDarkFontWidth,
+                ),
               ),
             ],
           ),

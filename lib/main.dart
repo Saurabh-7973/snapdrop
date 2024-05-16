@@ -1,11 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'screen/home_screen.dart';
-import 'screen/intent_sharing_screen.dart';
 import 'screen/onboard_screen.dart';
 import 'screen/qr_screen.dart';
 
@@ -49,8 +46,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
     if (state == AppLifecycleState.resumed) {
       // log('App Resumed Triggered');
-      receiveSharingIntent.getMediaStream().listen(
-          (List<SharedMediaFile> listOfMedia) async {
+      receiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> listOfMedia) async {
         if (listOfMedia.isNotEmpty) {
           Navigator.pop(context);
           await Navigator.push(
@@ -72,8 +68,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MaterialApp(
       home: FutureBuilder<List<SharedMediaFile>>(
         future: receiveSharingIntent.getInitialMedia(),
-        builder: (BuildContext context,
-            AsyncSnapshot<List<SharedMediaFile>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<SharedMediaFile>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               //return IntentSharingScreen(listOfMedia: snapshot.data);
@@ -90,8 +85,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     );
             }
           } else {
-            return const SizedBox(
-                height: 10, width: 10, child: CircularProgressIndicator());
+            return const SizedBox(height: 10, width: 10, child: CircularProgressIndicator());
           }
         },
       ),
@@ -101,13 +95,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   firstTimeInstallation() async {
     // Obtain shared preferences.
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    firstTimeAppOpen = await prefs.getBool('firstTimeAppOpen');
+    firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
     if (firstTimeAppOpen == null) {
       await prefs.setBool('firstTimeAppOpen', true);
     } else if (firstTimeAppOpen == true) {
       await prefs.setBool('firstTimeAppOpen', false);
     }
-    firstTimeAppOpen = await prefs.getBool('firstTimeAppOpen');
+    firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
     setState(() {});
   }
 }

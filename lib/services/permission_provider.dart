@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:permission_handler/permission_handler.dart';
@@ -10,7 +9,6 @@ class PermissionProviderServices {
 
   Future<bool> requestMediaAccessPermission() async {
     final deviceInfo = await deviceInfoPlugin.deviceInfo;
-    // log(deviceInfo.data.toString());
     final version = deviceInfo.data['version']['release'];
     PermissionStatus status;
 
