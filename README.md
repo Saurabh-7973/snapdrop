@@ -28,10 +28,11 @@
 
 ### 5. Future Scope:
 
-* Send more than 10 images at once or Send files larger than 5 mb.
-* Able to see all the transfer history.
-* Multi-Lingual Support.
-* Changing the App theme Overall (Color Pallet & dark to light theme).
+* Send Up to 10 Images at Once: Effortlessly transfer multiple images in a single go.
+* Support for Larger Files (Over 5MB): Handle high-resolution images without limitations.
+* Transfer History: View and manage your past image transfers for easy reference.
+* Multi-Lingual Support: Use Snapdrop in your preferred language for a global design experience.
+* Theme Customization: Personalize your Snapdrop experience with custom colors and light/dark themes.
 
 ### 6. Screenshots:
 <table>
