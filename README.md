@@ -30,6 +30,8 @@
 
 * Send more than 10 images at once or Send files larger than 5 mb.
 * Able to see all the transfer history.
+* Multi-Lingual Support.
+* Changing the App theme Overall (Color Pallet & dark to light theme).
 
 ### 6. Screenshots:
 <table>
