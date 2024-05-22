@@ -33,76 +33,82 @@ class SendFile extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
 
-    return SafeArea(
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              ThemeConstant.primaryAppColor,
-              ThemeConstant.primaryAppColorGradient2,
-              ThemeConstant.primaryAppColorGradient3
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Padding(
-            padding: const EdgeInsets.all(15),
-            child: Column(
-              children: [
-                const AppBarWidget(),
-                HeroText(
-                    firstLine: 'Transfered $imageCount',
-                    secondLine: 'Images',
-                    thirdLine: ''),
-                RoomDisplayer(roomId: roomId, message: 'CONNECTED TO'),
-                const SizedBox(
-                  height: 10,
-                ),
-                RoomDisplayer(
-                    roomId: socketService!.userId, message: 'YOUR ID'),
-                const SizedBox(
-                  height: 10,
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    height: screenHeight / 2.2,
-                    color: Colors.transparent,
-                    child: isIntentSharing == true
-                        ? IntentFileDisplayer(
-                            isIntentSharing: true,
-                            listOfMedia: listOfMedia,
-                            connectDisplayer: false,
-                          )
-                        : SelectedImagesViewer(
-                            selectedAssetList: selectedAssetList!,
-                          ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                isIntentSharing == true
-                    ? SendButton(
-                        socketService: socketService,
-                        listOfMedia: listOfMedia,
-                        isIntentSharing: isIntentSharing,
-                      )
-                    : ShowCaseWidget(
-                        blurValue: 1,
-                        builder: Builder(
-                          builder: (context) => SendButton(
-                            socketService: socketService,
-                            selectedAssetList: selectedAssetList!,
-                            isIntentSharing: isIntentSharing,
-                          ),
-                        ),
-                        autoPlayDelay: const Duration(seconds: 3),
-                      ),
+    return Container(
+      color: ThemeConstant.primaryAppColor,
+      child: SafeArea(
+        left: false,
+        right: false,
+        bottom: false,
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                ThemeConstant.primaryAppColor,
+                ThemeConstant.primaryAppColorGradient2,
+                ThemeConstant.primaryAppColorGradient3
               ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                children: [
+                  const AppBarWidget(),
+                  HeroText(
+                      firstLine: 'Transfered $imageCount',
+                      secondLine: 'Images',
+                      thirdLine: ''),
+                  RoomDisplayer(roomId: roomId, message: 'CONNECTED TO'),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  RoomDisplayer(
+                      roomId: socketService!.userId, message: 'YOUR ID'),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      height: screenHeight / 2.2,
+                      color: Colors.transparent,
+                      child: isIntentSharing == true
+                          ? IntentFileDisplayer(
+                              isIntentSharing: true,
+                              listOfMedia: listOfMedia,
+                              connectDisplayer: false,
+                            )
+                          : SelectedImagesViewer(
+                              selectedAssetList: selectedAssetList!,
+                            ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  isIntentSharing == true
+                      ? SendButton(
+                          socketService: socketService,
+                          listOfMedia: listOfMedia,
+                          isIntentSharing: isIntentSharing,
+                        )
+                      : ShowCaseWidget(
+                          blurValue: 1,
+                          builder: Builder(
+                            builder: (context) => SendButton(
+                              socketService: socketService,
+                              selectedAssetList: selectedAssetList!,
+                              isIntentSharing: isIntentSharing,
+                            ),
+                          ),
+                          autoPlayDelay: const Duration(seconds: 3),
+                        ),
+                ],
+              ),
             ),
           ),
         ),

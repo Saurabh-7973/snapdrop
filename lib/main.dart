@@ -46,7 +46,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
     if (state == AppLifecycleState.resumed) {
       // log('App Resumed Triggered');
-      receiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> listOfMedia) async {
+      receiveSharingIntent.getMediaStream().listen(
+          (List<SharedMediaFile> listOfMedia) async {
         if (listOfMedia.isNotEmpty) {
           Navigator.pop(context);
           await Navigator.push(
@@ -66,9 +67,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: FutureBuilder<List<SharedMediaFile>>(
         future: receiveSharingIntent.getInitialMedia(),
-        builder: (BuildContext context, AsyncSnapshot<List<SharedMediaFile>> snapshot) {
+        builder: (BuildContext context,
+            AsyncSnapshot<List<SharedMediaFile>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               //return IntentSharingScreen(listOfMedia: snapshot.data);
@@ -85,7 +88,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     );
             }
           } else {
-            return const SizedBox(height: 10, width: 10, child: CircularProgressIndicator());
+            return const SizedBox(
+                height: 10, width: 10, child: CircularProgressIndicator());
           }
         },
       ),

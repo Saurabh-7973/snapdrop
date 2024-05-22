@@ -30,48 +30,54 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              ThemeConstant.primaryAppColor,
-              ThemeConstant.primaryAppColorGradient2,
-              ThemeConstant.primaryAppColorGradient3
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Padding(
-            padding: const EdgeInsets.all(15),
-            child: Column(
-              children: [
-                const AppBarWidget(),
-                Expanded(
-                  flex: 3,
-                  child: HeroText(
-                    firstLine: "Select Images",
-                    secondLine: "to Continue",
-                    thirdLine: "Upto 10 images",
-                  ),
-                ),
-                Expanded(
-                  flex: 9,
-                  child: ShowCaseWidget(
-                    blurValue: 1,
-                    builder: Builder(
-                      builder: (context) => DropDownView(
-                        socketService: widget.socketService,
-                        isIntentSharing: widget.isIntentSharing,
-                      ),
-                    ),
-                    autoPlayDelay: const Duration(seconds: 3),
-                  ),
-                ),
+    return Container(
+      color: ThemeConstant.primaryAppColor,
+      child: SafeArea(
+        left: false,
+        right: false,
+        bottom: false,
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                ThemeConstant.primaryAppColor,
+                ThemeConstant.primaryAppColorGradient2,
+                ThemeConstant.primaryAppColorGradient3
               ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                children: [
+                  const AppBarWidget(),
+                  Expanded(
+                    flex: 3,
+                    child: HeroText(
+                      firstLine: "Select Images",
+                      secondLine: "to Continue",
+                      thirdLine: "Upto 10 images",
+                    ),
+                  ),
+                  Expanded(
+                    flex: 9,
+                    child: ShowCaseWidget(
+                      blurValue: 1,
+                      builder: Builder(
+                        builder: (context) => DropDownView(
+                          socketService: widget.socketService,
+                          isIntentSharing: widget.isIntentSharing,
+                        ),
+                      ),
+                      autoPlayDelay: const Duration(seconds: 3),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

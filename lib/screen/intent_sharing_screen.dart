@@ -27,38 +27,44 @@ class _IntentSharingScreenState extends State<IntentSharingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              ThemeConstant.primaryAppColor,
-              ThemeConstant.primaryAppColorGradient2,
-              ThemeConstant.primaryAppColorGradient3
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Padding(
-            padding: const EdgeInsets.all(15),
-            child: Column(
-              children: [
-                const AppBarWidget(),
-                HeroText(
-                  firstLine: "Shared Images",
-                  secondLine: "from Other Apps",
-                  thirdLine: "",
-                ),
-                Expanded(
-                    child: IntentFileDisplayer(
-                  isIntentSharing: true,
-                  listOfMedia: widget.listOfMedia,
-                  connectDisplayer: true,
-                )),
+    return Container(
+      color: ThemeConstant.primaryAppColor,
+      child: SafeArea(
+        left: false,
+        right: false,
+        bottom: false,
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                ThemeConstant.primaryAppColor,
+                ThemeConstant.primaryAppColorGradient2,
+                ThemeConstant.primaryAppColorGradient3
               ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                children: [
+                  const AppBarWidget(),
+                  HeroText(
+                    firstLine: "Shared Images",
+                    secondLine: "from Other Apps",
+                    thirdLine: "",
+                  ),
+                  Expanded(
+                      child: IntentFileDisplayer(
+                    isIntentSharing: true,
+                    listOfMedia: widget.listOfMedia,
+                    connectDisplayer: true,
+                  )),
+                ],
+              ),
             ),
           ),
         ),
