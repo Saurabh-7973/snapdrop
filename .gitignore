@@ -64,3 +64,4 @@ pubspec.lock
 misc.xml
 snapdrop.iml
 version
+firebase_options.dart
