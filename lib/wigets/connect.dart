@@ -11,6 +11,7 @@ import '../screen/home_screen.dart';
 import '../services/check_internet_connectivity.dart';
 import '../services/first_time_login.dart';
 import '../services/socket_service.dart';
+import '../utils/firebase_initalization_class.dart';
 
 class SendButton extends StatefulWidget {
   SocketService? socketService;
@@ -63,6 +64,11 @@ class _SendButtonState extends State<SendButton> {
           });
         }
       });
+      //Event (File Share)
+      FirebaseInitalizationClass.eventTracker('file_share_completed', {
+        'sharing_method': 'intent_sharing',
+        'image_count': widget.listOfMedia!.length
+      });
     } else {
       await sendFilesToServer();
       //Commented for now ()
@@ -72,6 +78,11 @@ class _SendButtonState extends State<SendButton> {
             widget.transferCompleted = true;
           });
         }
+      });
+      //Event (File Share)
+      FirebaseInitalizationClass.eventTracker('file_share_completed', {
+        'sharing_method': 'non_intent_sharing',
+        'image_count': widget.listOfMedia!.length
       });
     }
   }
@@ -279,6 +290,9 @@ class _SendButtonState extends State<SendButton> {
           onPressed: () {
             // this is for not showing the tutorial again
             FirstTimeLogin.setFirstTimeLoginFalse();
+            //Event (Tutorial Completed)
+            FirebaseInitalizationClass.eventTracker(
+                'tutorial_completed', {'first_time': 'false'});
 
             Navigator.pushAndRemoveUntil(
                 context,

@@ -1,6 +1,7 @@
 import 'package:Snapdrop/constant/theme_contants.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/firebase_initalization_class.dart';
 import '../wigets/app_bar_widget.dart';
 import '../wigets/hero_text.dart';
 import '../wigets/intro_widget.dart';
@@ -81,6 +82,9 @@ class OnboardScreen extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      //Event (Tutorial Begin)
+                      FirebaseInitalizationClass.eventTracker(
+                          'tutorial_begin', {'tutorial_begin': 'true'});
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                             builder: (_) => HomeScreen(

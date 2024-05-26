@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "62956973537",
+    "project_id": "snapdrop-e786e",
+    "storage_bucket": "snapdrop-e786e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62956973537:android:0aad956b137b85632ef6a0",
+        "android_client_info": {
+          "package_name": "com.saurabh7973.snapdrop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuUx4ccbaw3Chp03JKTquk--CNPtCamB4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

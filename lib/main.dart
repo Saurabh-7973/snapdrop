@@ -5,9 +5,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'screen/home_screen.dart';
 import 'screen/onboard_screen.dart';
 import 'screen/qr_screen.dart';
+import 'utils/firebase_initalization_class.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await FirebaseInitalizationClass.initalizeFireBase();
+  FirebaseInitalizationClass.initalizeFireBaseAnalytics();
+  FirebaseInitalizationClass.enableDataCollection();
   runApp(const MyApp());
 }
 
@@ -67,6 +71,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: <NavigatorObserver>[
+        FirebaseInitalizationClass.observer!
+      ],
       debugShowCheckedModeBanner: false,
       home: FutureBuilder<List<SharedMediaFile>>(
         future: receiveSharingIntent.getInitialMedia(),
@@ -102,8 +109,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
     if (firstTimeAppOpen == null) {
       await prefs.setBool('firstTimeAppOpen', true);
+      //Event (App Install)
+      FirebaseInitalizationClass.eventTracker(
+          'app_install', {'first_time': 'true'});
     } else if (firstTimeAppOpen == true) {
       await prefs.setBool('firstTimeAppOpen', false);
+      //Event (App Launch)
+      FirebaseInitalizationClass.eventTracker(
+          'app_launch', {'first_time': 'false'});
     }
     firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
     setState(() {});
