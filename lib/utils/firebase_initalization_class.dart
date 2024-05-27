@@ -1,6 +1,10 @@
+import 'dart:ui';
+
 import 'package:Snapdrop/utils/firebase_options.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/material.dart';
 
 class FirebaseInitalizationClass {
   static FirebaseAnalytics? analytics;
@@ -27,5 +31,16 @@ class FirebaseInitalizationClass {
 
   static void disableDataCollection() {
     analytics!.setAnalyticsCollectionEnabled(false);
+  }
+
+  static void catchFatalErrors() {
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  }
+
+  static void catchAsynchronusErrors() {
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
   }
 }
