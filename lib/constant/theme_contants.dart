@@ -22,6 +22,19 @@ class ThemeConstant {
     fontFamily: 'Inter',
   );
 
+  static const TextStyle mediumTextSizeDark = TextStyle(
+    fontSize: 28.0, // Use double precision for better rendering
+    color: Colors.black,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'Inter',
+  );
+
+  static const TextStyle smallTextSizeGrey = TextStyle(
+    fontSize: 16.0, // Use double precision for better rendering
+    color: Colors.black87,
+    fontFamily: 'Inter',
+  );
+
   static const TextStyle smallTextSize = TextStyle(
     fontSize: 16.0, // Double precision for consistency
     fontFamily: 'Inter',

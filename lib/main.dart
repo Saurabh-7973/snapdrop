@@ -9,6 +9,8 @@ import 'screen/onboard_screen.dart';
 import 'screen/qr_screen.dart';
 import 'utils/firebase_initalization_class.dart';
 
+import 'package:upgrader/upgrader.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FirebaseInitalizationClass.initalizeFireBase();
@@ -16,6 +18,11 @@ void main() async {
   FirebaseInitalizationClass.enableDataCollection();
   FirebaseInitalizationClass.catchFatalErrors();
   FirebaseInitalizationClass.catchAsynchronusErrors();
+  FirebaseInitalizationClass.remoteConfigInitialization();
+  FirebaseInitalizationClass.remoteConfigGetDefaultValues();
+  FirebaseInitalizationClass.remoteConfigUpdateValuesRealtime();
+  FirebaseInitalizationClass.remoteConfigFetchAppVersion();
+  await Upgrader.clearSavedSettings(); // REMOVE this for release builds
   runApp(const MyApp());
 }
 
@@ -38,8 +45,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     // Listen to intent data streams
-    _intentDataStreamSubscription =
-        receiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> listOfMedia) async {
+    _intentDataStreamSubscription = receiveSharingIntent
+        .getMediaStream()
+        .listen((List<SharedMediaFile> listOfMedia) async {
       if (listOfMedia.isNotEmpty && mounted) {
         Navigator.pop(context);
         await Navigator.push(
@@ -68,8 +76,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed && mounted) {
       // Check if the widget is still mounted before navigating
-      _intentDataStreamSubscription =
-          receiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> listOfMedia) async {
+      _intentDataStreamSubscription = receiveSharingIntent
+          .getMediaStream()
+          .listen((List<SharedMediaFile> listOfMedia) async {
         if (listOfMedia.isNotEmpty && mounted) {
           Navigator.pop(context);
           await Navigator.push(
@@ -91,11 +100,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorObservers: <NavigatorObserver>[FirebaseInitalizationClass.observer!],
+      navigatorObservers: <NavigatorObserver>[
+        FirebaseInitalizationClass.observer!
+      ],
       debugShowCheckedModeBanner: false,
       home: FutureBuilder<List<SharedMediaFile>>(
         future: receiveSharingIntent.getInitialMedia(),
-        builder: (BuildContext context, AsyncSnapshot<List<SharedMediaFile>> snapshot) {
+        builder: (BuildContext context,
+            AsyncSnapshot<List<SharedMediaFile>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               return QRScreen(
@@ -111,7 +123,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     );
             }
           } else {
-            return const SizedBox(height: 10, width: 10, child: CircularProgressIndicator());
+            return const SizedBox(
+                height: 10, width: 10, child: CircularProgressIndicator());
           }
         },
       ),
@@ -123,10 +136,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
     if (firstTimeAppOpen == null || firstTimeAppOpen == false) {
       await prefs.setBool('firstTimeAppOpen', true);
-      FirebaseInitalizationClass.eventTracker('app_install', {'first_time': 'true'});
+      FirebaseInitalizationClass.eventTracker(
+          'app_install', {'first_time': 'true'});
     } else if (firstTimeAppOpen == true) {
       await prefs.setBool('firstTimeAppOpen', false);
-      FirebaseInitalizationClass.eventTracker('app_launch', {'first_time': 'false'});
+      FirebaseInitalizationClass.eventTracker(
+          'app_launch', {'first_time': 'false'});
     }
     firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
     if (mounted) {
