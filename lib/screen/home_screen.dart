@@ -8,6 +8,9 @@ import '../wigets/app_bar_widget.dart';
 import '../wigets/dropdown_view.dart';
 import '../wigets/hero_text.dart';
 
+//flutter localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class HomeScreen extends StatefulWidget {
   SocketService? socketService;
   bool isIntentSharing = false;
@@ -58,20 +61,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                     flex: 3,
                     child: HeroText(
-                      firstLine: "Select Images",
-                      secondLine: "to Continue",
-                      thirdLine: "Upto 10 images",
+                      firstLine:
+                          AppLocalizations.of(context)!.home_screen_herotext_1,
+                      secondLine:
+                          AppLocalizations.of(context)!.home_screen_herotext_2,
+                      thirdLine:
+                          AppLocalizations.of(context)!.home_screen_herotext_3,
                     ),
                   ),
                   Expanded(
                     flex: 9,
                     child: ShowCaseWidget(
                       blurValue: 1,
-                      builder: Builder(
-                        builder: (context) => DropDownView(
-                          socketService: widget.socketService,
-                          isIntentSharing: widget.isIntentSharing,
-                        ),
+                      builder: (context) => DropDownView(
+                        socketService: widget.socketService,
+                        isIntentSharing: widget.isIntentSharing,
                       ),
                       autoPlayDelay: const Duration(seconds: 3),
                     ),

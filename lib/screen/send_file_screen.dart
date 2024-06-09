@@ -12,6 +12,9 @@ import '../wigets/intent_file_displayer.dart';
 import '../wigets/room_displayer.dart';
 import '../wigets/selected_images.dart';
 
+//flutter localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class SendFile extends StatelessWidget {
   String roomId;
   List<AssetEntity>? selectedAssetList;
@@ -59,15 +62,22 @@ class SendFile extends StatelessWidget {
                 children: [
                   const AppBarWidget(),
                   HeroText(
-                      firstLine: 'Transfered $imageCount',
-                      secondLine: 'Images',
+                      firstLine:
+                          '${AppLocalizations.of(context)!.send_screen_hero_text_1} $imageCount',
+                      secondLine:
+                          AppLocalizations.of(context)!.send_screen_hero_text_2,
                       thirdLine: ''),
-                  RoomDisplayer(roomId: roomId, message: 'CONNECTED TO'),
+                  RoomDisplayer(
+                      roomId: roomId,
+                      message: AppLocalizations.of(context)!
+                          .send_screen_connected_to),
                   const SizedBox(
                     height: 10,
                   ),
                   RoomDisplayer(
-                      roomId: socketService!.userId, message: 'YOUR ID'),
+                      roomId: socketService!.userId,
+                      message:
+                          AppLocalizations.of(context)!.send_screen_your_id),
                   const SizedBox(
                     height: 10,
                   ),
@@ -98,12 +108,10 @@ class SendFile extends StatelessWidget {
                         )
                       : ShowCaseWidget(
                           blurValue: 1,
-                          builder: Builder(
-                            builder: (context) => SendButton(
-                              socketService: socketService,
-                              selectedAssetList: selectedAssetList!,
-                              isIntentSharing: isIntentSharing,
-                            ),
+                          builder: (context) => SendButton(
+                            socketService: socketService,
+                            selectedAssetList: selectedAssetList!,
+                            isIntentSharing: isIntentSharing,
                           ),
                           autoPlayDelay: const Duration(seconds: 3),
                         ),

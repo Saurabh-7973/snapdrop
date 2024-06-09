@@ -13,6 +13,9 @@ import '../services/check_internet_connectivity.dart';
 import '../services/first_time_login.dart';
 import '../services/socket_service.dart';
 
+//flutter localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class QRScanner extends StatefulWidget {
   // const QRScanner({super.key});
 
@@ -76,8 +79,9 @@ class _QRScannerState extends State<QRScanner> {
                 targetBorderRadius: const BorderRadius.all(Radius.circular(15)),
                 tooltipBackgroundColor: const Color(0xff161616),
                 textColor: ThemeConstant.whiteColor,
-                title: "QR Scanner",
-                description: 'Click to Scan QR Code',
+                title: AppLocalizations.of(context)!.showcase_four_title,
+                description:
+                    AppLocalizations.of(context)!.showcase_four_subtitle,
                 disposeOnTap: true,
                 onBarrierClick: () => activateQrScanner(),
                 onTargetClick: () => activateQrScanner(),
@@ -104,24 +108,25 @@ class _QRScannerState extends State<QRScanner> {
           visible: connectionStatus,
           child: Column(
             children: [
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                     height: 10,
                     child: CircleAvatar(
                       backgroundColor: Colors.green,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      'Connected Successfully',
-                      style: TextStyle(color: Colors.white70),
+                      AppLocalizations.of(context)!
+                          .qr_screen_button_scanning_completed,
+                      style: const TextStyle(color: Colors.white70),
                     ),
                   ),
                 ],
@@ -250,7 +255,8 @@ class _QRScannerState extends State<QRScanner> {
                   content: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      "Check your Internet Connection and try again!",
+                      AppLocalizations.of(context)!
+                          .app_conditions_internet_connection,
                       style: ThemeConstant.smallTextSizeDarkFontWidth,
                     ),
                   ),
@@ -266,7 +272,10 @@ class _QRScannerState extends State<QRScanner> {
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              result != null ? "Connected SuccessFully" : "Scanning...",
+              result != null
+                  ? AppLocalizations.of(context)!
+                      .qr_screen_button_scanning_completed
+                  : AppLocalizations.of(context)!.qr_screen_button_scanning,
               style: result != null
                   ? ThemeConstant.smallTextSizeWhiteFontWidth
                   : ThemeConstant.smallTextSizeDarkFontWidth,

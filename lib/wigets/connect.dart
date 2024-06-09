@@ -13,6 +13,9 @@ import '../services/first_time_login.dart';
 import '../services/socket_service.dart';
 import '../utils/firebase_initalization_class.dart';
 
+//flutter localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class SendButton extends StatefulWidget {
   SocketService? socketService;
   List<AssetEntity>? selectedAssetList;
@@ -67,7 +70,7 @@ class _SendButtonState extends State<SendButton> {
       //Event (File Share)
       FirebaseInitalizationClass.eventTracker('file_share_completed', {
         'sharing_method': 'intent_sharing',
-        'image_count': widget.listOfMedia!.length
+        //'image_count': widget.listOfMedia!.length
       });
     } else {
       await sendFilesToServer();
@@ -82,7 +85,7 @@ class _SendButtonState extends State<SendButton> {
       //Event (File Share)
       FirebaseInitalizationClass.eventTracker('file_share_completed', {
         'sharing_method': 'non_intent_sharing',
-        'image_count': widget.listOfMedia!.length
+        //'image_count': widget.listOfMedia!.length
       });
     }
   }
@@ -95,17 +98,7 @@ class _SendButtonState extends State<SendButton> {
     return widget.transferCompleted == false
         ? widget.isIntentSharing == true
             ? sendFilesToServerButton(screenWidth)
-            : Showcase(
-                targetPadding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-                key: GlobalShowcaseKeys.showcaseSix,
-                tooltipBackgroundColor: const Color(0xff161616),
-                textColor: ThemeConstant.whiteColor,
-                title: "Send Button",
-                description: 'Send selected images to Figma',
-                onBarrierClick: () => debugPrint('send figma button clicked'),
-                child: sendFilesToServerButton(screenWidth),
-              )
+            : sendFilesToServerButton(screenWidth)
         : SizedBox(
             width: screenWidth,
             height: screenHeight / 12,
@@ -121,8 +114,10 @@ class _SendButtonState extends State<SendButton> {
                         key: GlobalShowcaseKeys.showcaseSeven,
                         tooltipBackgroundColor: const Color(0xff161616),
                         textColor: ThemeConstant.whiteColor,
-                        title: "Close Button",
-                        description: 'Exits the application',
+                        title:
+                            AppLocalizations.of(context)!.showcase_five_title,
+                        description: AppLocalizations.of(context)!
+                            .showcase_five_subtitle,
                         onBarrierClick: () =>
                             debugPrint('close button clicked'),
                         child: closeButton(screenWidth)),
@@ -134,10 +129,11 @@ class _SendButtonState extends State<SendButton> {
                         key: GlobalShowcaseKeys.showcaseEight,
                         tooltipBackgroundColor: const Color(0xff161616),
                         textColor: ThemeConstant.whiteColor,
-                        title: "Send Button",
-                        description: 'Send more images',
+                        title: AppLocalizations.of(context)!.showcase_six_title,
+                        description:
+                            AppLocalizations.of(context)!.showcase_six_subtitle,
                         onBarrierClick: () =>
-                            debugPrint('close button clicked'),
+                            debugPrint('send more button clicked'),
                         child:
                             sendMoreButton(screenWidth, widget.isIntentSharing),
                       ),
@@ -217,7 +213,8 @@ class _SendButtonState extends State<SendButton> {
                     content: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        "Check your Internet Connection and try again!",
+                        AppLocalizations.of(context)!
+                            .app_conditions_internet_connection,
                         style: ThemeConstant.smallTextSizeLight,
                       ),
                     ));
@@ -232,7 +229,7 @@ class _SendButtonState extends State<SendButton> {
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              "Click to Send",
+              AppLocalizations.of(context)!.send_screen_connect_button,
               style: ThemeConstant.smallTextSizeDarkFontWidth,
             ),
           )),
@@ -269,7 +266,7 @@ class _SendButtonState extends State<SendButton> {
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  "Close",
+                  AppLocalizations.of(context)!.send_screen_close_button,
                   style: ThemeConstant.smallTextSizeWhiteFontWidth,
                 ),
               ),
@@ -322,7 +319,7 @@ class _SendButtonState extends State<SendButton> {
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  "Send",
+                  AppLocalizations.of(context)!.send_screen_send_more_button,
                   style: ThemeConstant.smallTextSizeDarkFontWidth,
                 ),
               ),

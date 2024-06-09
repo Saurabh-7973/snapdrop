@@ -21,7 +21,8 @@ class SocketService {
   }
 
   void _socketConnection() {
-    socket = io.io('https://getsnapdrop.in/', OptionBuilder().setTransports(['websocket']).setTimeout(10000).build());
+    socket = io.io('https://getsnapdrop.in/',
+        OptionBuilder().setTransports(['websocket']).setTimeout(10000).build());
 
     socket!.connect();
   }
@@ -53,7 +54,8 @@ class SocketService {
     });
   }
 
-  void sendImages({String? name, String? type, Uint8List? file, String? userId}) {
+  void sendImages(
+      {String? name, String? type, Uint8List? file, String? userId}) {
     String? imageName = name;
     String? imageType = type;
 
@@ -80,9 +82,9 @@ class SocketService {
     return controller.stream;
   }
 
-  String? get userId => _userId;
+  String? get userId => _userId ?? "";
 
-  String? get roomId => _roomId;
+  String? get roomId => _roomId ?? "";
 
   Future<String?> fetchUserId() async {
     await Future.delayed(const Duration(microseconds: 1));

@@ -20,6 +20,9 @@ import '../services/media_provider.dart';
 import '../services/permission_provider.dart';
 import '../services/socket_service.dart';
 
+//flutter localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class DropDownView extends StatefulWidget {
   // bool isTransferCompleted;
   SocketService? socketService;
@@ -96,13 +99,13 @@ class _DropDownViewState extends State<DropDownView> {
                     children: [
                       Showcase(
                         targetPadding: const EdgeInsets.symmetric(
-                            horizontal: 2, vertical: -5),
+                            horizontal: 2, vertical: 0),
                         key: GlobalShowcaseKeys.showcaseOne,
                         tooltipBackgroundColor: const Color(0xff161616),
                         textColor: ThemeConstant.whiteColor,
-                        title: "Dropdown Button",
+                        title: AppLocalizations.of(context)!.showcase_one_title,
                         description:
-                            'Select albums you wan to choose photos from',
+                            AppLocalizations.of(context)!.showcase_one_subtitle,
                         onBarrierClick: () => debugPrint('menu clicked'),
                         child: SizedBox(
                           width: screenWidth / 1.1,
@@ -231,9 +234,10 @@ class _DropDownViewState extends State<DropDownView> {
                                       tooltipBackgroundColor:
                                           const Color(0xff161616),
                                       textColor: ThemeConstant.whiteColor,
-                                      title: "Select Images",
-                                      description:
-                                          'Select Images you want to share',
+                                      title: AppLocalizations.of(context)!
+                                          .showcase_two_title,
+                                      description: AppLocalizations.of(context)!
+                                          .showcase_two_subtitle,
                                       onBarrierClick: () =>
                                           debugPrint('image clicked'),
                                       child: Stack(children: [
@@ -498,13 +502,15 @@ class _DropDownViewState extends State<DropDownView> {
                               children: [
                                 Showcase(
                                   targetPadding: const EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: -5),
+                                      horizontal: 5, vertical: 0),
                                   key: GlobalShowcaseKeys.showcaseThree,
                                   tooltipBackgroundColor:
                                       const Color(0xff161616),
                                   textColor: ThemeConstant.whiteColor,
-                                  title: "Connect Button",
-                                  description: 'Proceed to next step',
+                                  title: AppLocalizations.of(context)!
+                                      .showcase_three_title,
+                                  description: AppLocalizations.of(context)!
+                                      .showcase_three_subtitle,
                                   onBarrierClick: () =>
                                       debugPrint('connect clicked'),
                                   child: Container(
@@ -533,7 +539,9 @@ class _DropDownViewState extends State<DropDownView> {
                                                   content: FittedBox(
                                                     fit: BoxFit.scaleDown,
                                                     child: Text(
-                                                      "Can Only select upto 10 Images !",
+                                                      AppLocalizations.of(
+                                                              context)!
+                                                          .app_conditions_image_selection_limit,
                                                       style: ThemeConstant
                                                           .smallTextSizeLight,
                                                       textAlign:
@@ -592,7 +600,7 @@ class _DropDownViewState extends State<DropDownView> {
                                                       content: FittedBox(
                                                         fit: BoxFit.scaleDown,
                                                         child: Text(
-                                                          "File Size Limit Exceded (${value.toStringAsFixed(2)}) > 5 MB",
+                                                          "${AppLocalizations.of(context)!.app_conditions_size_limit} (${value.toStringAsFixed(2)}) > 5 MB",
                                                           style: ThemeConstant
                                                               .smallTextSizeLight,
                                                         ),
@@ -610,7 +618,9 @@ class _DropDownViewState extends State<DropDownView> {
                                                 content: FittedBox(
                                                   fit: BoxFit.scaleDown,
                                                   child: Text(
-                                                    "Check your Internet Connection and try again!",
+                                                    AppLocalizations.of(
+                                                            context)!
+                                                        .app_conditions_internet_connection,
                                                     style: ThemeConstant
                                                         .smallTextSizeLight,
                                                   ),
@@ -637,7 +647,8 @@ class _DropDownViewState extends State<DropDownView> {
                                           FittedBox(
                                             fit: BoxFit.scaleDown,
                                             child: Text(
-                                              "Connect",
+                                              AppLocalizations.of(context)!
+                                                  .home_screen_button,
                                               style: ThemeConstant
                                                   .smallTextSizeDarkFontWidth,
                                             ),

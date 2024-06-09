@@ -7,6 +7,9 @@ import '../wigets/hero_text.dart';
 import '../wigets/intro_widget.dart';
 import 'home_screen.dart';
 
+//flutter localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class OnboardScreen extends StatelessWidget {
   const OnboardScreen({super.key});
 
@@ -42,8 +45,10 @@ class OnboardScreen extends StatelessWidget {
                   Expanded(
                     flex: 9,
                     child: HeroText(
-                      firstLine: "Share images",
-                      secondLine: "directly to Figma",
+                      firstLine:
+                          AppLocalizations.of(context)!.onboard_hero_text_1,
+                      secondLine:
+                          AppLocalizations.of(context)!.onboard_hero_text_2,
                       thirdLine: "",
                     ),
                   ),
@@ -59,21 +64,24 @@ class OnboardScreen extends StatelessWidget {
                           children: [
                             IntroWidget(
                               icon: Icons.image_outlined,
-                              text: 'Select Image',
+                              text:
+                                  AppLocalizations.of(context)!.onboard_step_1,
                             ),
                             const SizedBox(
                               height: 50,
                             ),
                             IntroWidget(
                               icon: Icons.qr_code_scanner_outlined,
-                              text: 'Scan QR in Figma Plugin',
+                              text:
+                                  AppLocalizations.of(context)!.onboard_step_2,
                             ),
                             const SizedBox(
                               height: 50,
                             ),
                             IntroWidget(
                               icon: Icons.send_rounded,
-                              text: 'Share',
+                              text:
+                                  AppLocalizations.of(context)!.onboard_step_3,
                             )
                           ],
                         ),
@@ -105,7 +113,7 @@ class OnboardScreen extends StatelessWidget {
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            "Get Started",
+                            AppLocalizations.of(context)!.onboard_button_text,
                             style: ThemeConstant.smallTextSizeDarkFontWidth,
                           ),
                         ),

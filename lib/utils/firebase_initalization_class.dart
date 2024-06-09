@@ -25,7 +25,7 @@ class FirebaseInitalizationClass {
     observer = FirebaseAnalyticsObserver(analytics: analytics!);
   }
 
-  static void eventTracker(String name, Map<String, Object?>? parameters) {
+  static void eventTracker(String name, Map<String, Object>? parameters) {
     analytics!.logEvent(name: name, parameters: parameters);
   }
 
