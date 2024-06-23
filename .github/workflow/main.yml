@@ -1,9 +1,10 @@
-on: 
+on:
+  pull_request:
+    branches:
+      - saurabh_dev
   push:
     branches:
-      # - main
       - saurabh_dev
-name: "Build & Release"
 jobs:
   build:
     name: Build & Release
