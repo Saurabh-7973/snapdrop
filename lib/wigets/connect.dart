@@ -95,52 +95,52 @@ class _SendButtonState extends State<SendButton> {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
-    return widget.transferCompleted == false
-        ? widget.isIntentSharing == true
-            ? sendFilesToServerButton(screenWidth)
-            : sendFilesToServerButton(screenWidth)
-        : SizedBox(
-            width: screenWidth,
-            height: screenHeight / 12,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Spacer(),
-                widget.isIntentSharing == true
-                    ? closeButton(screenWidth)
-                    : Showcase(
-                        targetPadding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 0),
-                        key: GlobalShowcaseKeys.showcaseSeven,
-                        tooltipBackgroundColor: const Color(0xff161616),
-                        textColor: ThemeConstant.whiteColor,
-                        title:
-                            AppLocalizations.of(context)!.showcase_five_title,
-                        description: AppLocalizations.of(context)!
-                            .showcase_five_subtitle,
-                        onBarrierClick: () =>
-                            debugPrint('close button clicked'),
-                        child: closeButton(screenWidth)),
-                widget.isIntentSharing == true
-                    ? sendMoreButton(screenWidth, widget.isIntentSharing)
-                    : Showcase(
-                        targetPadding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 0),
-                        key: GlobalShowcaseKeys.showcaseEight,
-                        tooltipBackgroundColor: const Color(0xff161616),
-                        textColor: ThemeConstant.whiteColor,
-                        title: AppLocalizations.of(context)!.showcase_six_title,
-                        description:
-                            AppLocalizations.of(context)!.showcase_six_subtitle,
-                        onBarrierClick: () =>
-                            debugPrint('send more button clicked'),
-                        child:
-                            sendMoreButton(screenWidth, widget.isIntentSharing),
-                      ),
-                const Spacer(),
-              ],
-            ),
-          );
+    return
+        //widget.transferCompleted == false
+        // ? widget.isIntentSharing == true
+        //     ? sendFilesToServerButton(screenWidth)
+        //     : sendFilesToServerButton(screenWidth)
+        // :
+        // ? sendFilesToServerButton(screenWidth)
+        // :
+        SizedBox(
+      width: screenWidth,
+      height: screenHeight / 12,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const Spacer(),
+          widget.isIntentSharing == true
+              ? closeButton(screenWidth)
+              : Showcase(
+                  targetPadding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+                  key: GlobalShowcaseKeys.showcaseSeven,
+                  tooltipBackgroundColor: const Color(0xff161616),
+                  textColor: ThemeConstant.whiteColor,
+                  title: AppLocalizations.of(context)!.showcase_five_title,
+                  description:
+                      AppLocalizations.of(context)!.showcase_five_subtitle,
+                  //onBarrierClick: () => debugPrint('close button clicked'),
+                  child: closeButton(screenWidth)),
+          widget.isIntentSharing == true
+              ? sendMoreButton(screenWidth, widget.isIntentSharing)
+              : Showcase(
+                  targetPadding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+                  key: GlobalShowcaseKeys.showcaseEight,
+                  tooltipBackgroundColor: const Color(0xff161616),
+                  textColor: ThemeConstant.whiteColor,
+                  title: AppLocalizations.of(context)!.showcase_six_title,
+                  description:
+                      AppLocalizations.of(context)!.showcase_six_subtitle,
+                  //onBarrierClick: () => debugPrint('send more button clicked'),
+                  child: sendMoreButton(screenWidth, widget.isIntentSharing),
+                ),
+          const Spacer(),
+        ],
+      ),
+    );
   }
 
   String getImageName(String filePath) {

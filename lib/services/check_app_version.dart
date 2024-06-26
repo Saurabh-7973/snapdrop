@@ -10,8 +10,8 @@ class CheckAppVersion {
 
     if (_compareVersions(minimumAppVersion!, appVersion) > 0) {
       // Display a message suggesting update
-      print(
-          'Your app version is outdated. Please update to version $minimumAppVersion or higher.');
+      // print(
+      //     'Your app version is outdated. Please update to version $minimumAppVersion or higher.');
       isUpdateRequired = true;
     }
   }

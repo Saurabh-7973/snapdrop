@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         );
       }
     }, onError: (err) {
-      debugPrint("Error : $err");
+      //debugPrint("Error : $err");
     });
   }
 
@@ -96,7 +96,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           );
         }
       }, onError: (err) {
-        debugPrint("Error : $err");
+        //debugPrint("Error : $err");
       });
     }
   }

@@ -1,8 +1,5 @@
 import 'dart:io';
-
-import 'package:Snapdrop/services/check_app_version.dart';
 import 'package:Snapdrop/services/check_internet_connectivity.dart';
-import 'package:Snapdrop/wigets/app_update_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -106,7 +103,7 @@ class _DropDownViewState extends State<DropDownView> {
                         title: AppLocalizations.of(context)!.showcase_one_title,
                         description:
                             AppLocalizations.of(context)!.showcase_one_subtitle,
-                        onBarrierClick: () => debugPrint('menu clicked'),
+                        //onBarrierClick: () => debugPrint('menu clicked'),
                         child: SizedBox(
                           width: screenWidth / 1.1,
                           child: DropdownButtonHideUnderline(
@@ -238,8 +235,8 @@ class _DropDownViewState extends State<DropDownView> {
                                           .showcase_two_title,
                                       description: AppLocalizations.of(context)!
                                           .showcase_two_subtitle,
-                                      onBarrierClick: () =>
-                                          debugPrint('image clicked'),
+                                      // onBarrierClick: () =>
+                                      //     debugPrint('image clicked'),
                                       child: Stack(children: [
                                         Positioned.fill(
                                           child: ClipRRect(
@@ -511,8 +508,8 @@ class _DropDownViewState extends State<DropDownView> {
                                       .showcase_three_title,
                                   description: AppLocalizations.of(context)!
                                       .showcase_three_subtitle,
-                                  onBarrierClick: () =>
-                                      debugPrint('connect clicked'),
+                                  // onBarrierClick: () =>
+                                  //     debugPrint('connect clicked'),
                                   child: Container(
                                     width: screenWidth / 2.6,
                                     height: 50,
@@ -523,13 +520,6 @@ class _DropDownViewState extends State<DropDownView> {
                                         await CheckInternetConnectivity
                                                 .hasNetwork()
                                             .then((value) {
-                                          // if (CheckAppVersion
-                                          //     .isUpdateRequired) {
-                                          //   showModalBottomSheet(
-                                          //       context: context,
-                                          //       builder: (context) {
-                                          // return const AppUpdateWidget();
-                                          // }).whenComplete(() {
                                           if (value) {
                                             if (selectedAssetList.length >=
                                                 10) {
@@ -628,8 +618,6 @@ class _DropDownViewState extends State<DropDownView> {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(snackbarLimit);
                                           }
-                                          // });
-                                          //}
                                         });
                                       },
                                       style: ElevatedButton.styleFrom(
