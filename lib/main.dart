@@ -6,6 +6,7 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'screen/home_screen.dart';
+import 'screen/language_selection.dart';
 import 'screen/onboard_screen.dart';
 import 'screen/qr_screen.dart';
 import 'utils/firebase_initalization_class.dart';
@@ -128,7 +129,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               );
             } else {
               return firstTimeAppOpen == true
-                  ? const OnboardScreen()
+                  //? const OnboardScreen()
+                  ? LanguageSelectionScreen()
                   : HomeScreen(
                       socketService: null,
                       isIntentSharing: false,
