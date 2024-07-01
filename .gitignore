@@ -64,5 +64,5 @@ pubspec.lock
 misc.xml
 snapdrop.iml
 version
-firebase_options.dart
+# firebase_options.dart
 google-services.json
