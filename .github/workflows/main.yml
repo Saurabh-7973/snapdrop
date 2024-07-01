@@ -36,6 +36,9 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
 
+      - name: Configure FlutterFire
+        run: flutterfire configure
+
       - name: Extract version from pubspec.yaml
         id: extract_version
         shell: pwsh
