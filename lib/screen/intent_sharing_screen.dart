@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import '../constant/theme_contants.dart';
-import '../wigets/app_bar_widget.dart';
-import '../wigets/hero_text.dart';
-import '../wigets/intent_file_displayer.dart';
+import '../widgets/app_bar_widget.dart';
+import '../widgets/hero_text.dart';
+import '../widgets/intent_file_displayer.dart';
 
 class IntentSharingScreen extends StatefulWidget {
   List<SharedMediaFile>? listOfMedia;

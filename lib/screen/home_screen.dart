@@ -4,9 +4,9 @@ import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
 import '../services/socket_service.dart';
-import '../wigets/app_bar_widget.dart';
-import '../wigets/dropdown_view.dart';
-import '../wigets/hero_text.dart';
+import '../widgets/app_bar_widget.dart';
+import '../widgets/dropdown_view.dart';
+import '../widgets/hero_text.dart';
 
 //flutter localization
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

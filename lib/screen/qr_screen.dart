@@ -4,10 +4,10 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
-import '../wigets/app_bar_widget.dart';
-import '../wigets/figma_display_helper.dart';
-import '../wigets/hero_text.dart';
-import '../wigets/qr_scanner.dart';
+import '../widgets/app_bar_widget.dart';
+import '../widgets/figma_display_helper.dart';
+import '../widgets/hero_text.dart';
+import '../widgets/qr_scanner.dart';
 
 //flutter localization
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

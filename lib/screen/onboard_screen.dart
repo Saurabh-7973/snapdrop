@@ -2,9 +2,9 @@ import 'package:Snapdrop/constant/theme_contants.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/firebase_initalization_class.dart';
-import '../wigets/app_bar_widget.dart';
-import '../wigets/hero_text.dart';
-import '../wigets/intro_widget.dart';
+import '../widgets/app_bar_widget.dart';
+import '../widgets/hero_text.dart';
+import '../widgets/intro_widget.dart';
 import 'home_screen.dart';
 
 //flutter localization

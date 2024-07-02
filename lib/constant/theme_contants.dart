@@ -54,4 +54,6 @@ class ThemeConstant {
       smallTextSizeFontWidth.copyWith(color: Colors.black);
   static TextStyle get smallTextSizeWhiteFontWidth =>
       smallTextSizeFontWidth.copyWith(color: Colors.white);
+  static TextStyle get mediumTextSizeWhiteFontWidth =>
+      mediumTextSizeDark.copyWith(color: Colors.white);
 }

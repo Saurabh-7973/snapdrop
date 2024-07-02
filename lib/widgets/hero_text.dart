@@ -8,7 +8,12 @@ class HeroText extends StatelessWidget {
   String thirdLine;
   int? size;
 
-  HeroText({super.key, required this.firstLine, required this.secondLine, required this.thirdLine, this.size});
+  HeroText(
+      {super.key,
+      required this.firstLine,
+      required this.secondLine,
+      required this.thirdLine,
+      this.size});
 
   @override
   Widget build(BuildContext context) {

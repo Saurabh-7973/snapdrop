@@ -5,12 +5,12 @@ import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
 import '../services/socket_service.dart';
-import '../wigets/app_bar_widget.dart';
-import '../wigets/connect.dart';
-import '../wigets/hero_text.dart';
-import '../wigets/intent_file_displayer.dart';
-import '../wigets/room_displayer.dart';
-import '../wigets/selected_images.dart';
+import '../widgets/app_bar_widget.dart';
+import '../widgets/connect.dart';
+import '../widgets/hero_text.dart';
+import '../widgets/intent_file_displayer.dart';
+import '../widgets/room_displayer.dart';
+import '../widgets/selected_images.dart';
 
 //flutter localization
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
