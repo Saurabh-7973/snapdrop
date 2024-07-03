@@ -6,7 +6,7 @@ import '../services/selected_language.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/hero_text.dart';
 import 'onboard_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import generated AppLocalizations
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   @override
@@ -24,11 +24,21 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
     {'title': 'Português', 'code': 'pt', 'locale': const Locale('pt')},
   ];
 
-  // String selectedLanguageCode = 'en';
-
   @override
   void initState() {
     super.initState();
+    _loadSelectedLanguage();
+  }
+
+  Future<void> _loadSelectedLanguage() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? selectedIndex = prefs.getInt('selectedLanguageIndex');
+    if (selectedIndex != null) {
+      SelectedLanguage.selectedLanguageIndex = selectedIndex;
+    }
+    if (mounted) {
+      setState(() {}); // Rebuild to reflect any saved language selection
+    }
   }
 
   @override
@@ -42,17 +52,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
         right: false,
         bottom: false,
         child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                ThemeConstant.primaryAppColor,
-                ThemeConstant.primaryAppColorGradient2,
-                ThemeConstant.primaryAppColorGradient3
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
+          decoration: ThemeConstant.appBackgroundGradient,
           child: Scaffold(
             backgroundColor: Colors.transparent,
             body: Padding(
@@ -63,8 +63,10 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   Expanded(
                     flex: 2,
                     child: HeroText(
-                      firstLine: 'Select your',
-                      secondLine: 'preferred language',
+                      firstLine: AppLocalizations.of(context)!
+                          .language_selection_herotext_1,
+                      secondLine: AppLocalizations.of(context)!
+                          .language_selection_herotext_2,
                       thirdLine: '',
                     ),
                   ),
@@ -72,6 +74,67 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                     flex: 2,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                      // child: GridView.builder(
+                      //   gridDelegate:
+                      //       const SliverGridDelegateWithFixedCrossAxisCount(
+                      //     crossAxisCount: 2,
+                      //     mainAxisSpacing: 20,
+                      //     crossAxisSpacing: 20,
+                      //     childAspectRatio: 3,
+                      //   ),
+                      //   itemCount: languages.length,
+                      //   itemBuilder: (context, index) {
+                      //     bool isSelected =
+                      //         index == SelectedLanguage.selectedLanguageIndex;
+                      //     return GestureDetector(
+                      //       onTap: () async {
+                      //         SelectedLanguage.selectedLanguageIndex = index;
+                      //         Locale newLocale = languages[index]['locale'];
+                      //         MyApp.setLocale(
+                      //             context, newLocale); // Update the locale
+                      //         final SharedPreferences prefs =
+                      //             await SharedPreferences.getInstance();
+                      //         await prefs.setInt(
+                      //             'selectedLanguageIndex', index);
+                      //         if (mounted) {
+                      //           setState(
+                      //               () {}); // Rebuild the widget tree to reflect language change
+                      //         }
+                      //       },
+                      //       child: AnimatedContainer(
+                      //         duration: const Duration(milliseconds: 300),
+                      //         decoration: BoxDecoration(
+                      //           color: isSelected
+                      //               ? Colors.white
+                      //               : Colors.transparent,
+                      //           borderRadius: BorderRadius.circular(30),
+                      //           boxShadow: [
+                      //             if (isSelected)
+                      //               const BoxShadow(
+                      //                 color: Colors.black26,
+                      //                 blurRadius: 10,
+                      //                 offset: Offset(0, 4),
+                      //               ),
+                      //           ],
+                      //           border: Border.all(
+                      //             color: isSelected
+                      //                 ? ThemeConstant.primaryAppColor
+                      //                 : Colors.white,
+                      //           ),
+                      //         ),
+                      //         child: Center(
+                      //           child: Text(
+                      //             languages[index]['title']!,
+                      //             style: isSelected
+                      //                 ? ThemeConstant.smallTextSizeDarkFontWidth
+                      //                 : ThemeConstant
+                      //                     .smallTextSizeWhiteFontWidth,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
                       child: GridView.builder(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
@@ -84,14 +147,22 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                         itemBuilder: (context, index) {
                           bool isSelected =
                               index == SelectedLanguage.selectedLanguageIndex;
+                          Locale locale = languages[index]['locale'];
+
                           return GestureDetector(
-                            onTap: () {
+                            onTap: () async {
                               SelectedLanguage.selectedLanguageIndex = index;
                               Locale newLocale = languages[index]['locale'];
-                              // MyApp.setLocale(
-                              //     context, newLocale); // Update the locale
-                              setState(
-                                  () {}); // Rebuild the widget tree to reflect language change// Rebuild the widget tree to reflect language change
+                              MyApp.setLocale(
+                                  context, newLocale); // Update the locale
+                              final SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              await prefs.setInt(
+                                  'selectedLanguageIndex', index);
+                              if (mounted) {
+                                setState(
+                                    () {}); // Rebuild the widget tree to reflect language change
+                              }
                             },
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 300),

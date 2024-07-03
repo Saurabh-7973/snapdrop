@@ -43,17 +43,7 @@ class SendFile extends StatelessWidget {
         right: false,
         bottom: false,
         child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                ThemeConstant.primaryAppColor,
-                ThemeConstant.primaryAppColorGradient2,
-                ThemeConstant.primaryAppColorGradient3
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
+          decoration: ThemeConstant.appBackgroundGradient,
           child: Scaffold(
             backgroundColor: Colors.transparent,
             body: Padding(

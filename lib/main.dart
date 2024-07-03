@@ -5,14 +5,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'screen/home_screen.dart';
 import 'screen/language_selection.dart';
 import 'screen/qr_screen.dart';
 import 'utils/firebase_initalization_class.dart';
 import 'package:upgrader/upgrader.dart';
-
-// int languageIndex = 0;
 
 final List<Locale> appLocales = [
   const Locale('en'),
@@ -44,6 +41,11 @@ class MyApp extends StatefulWidget {
     Key? key,
   }) : super(key: key);
 
+  static void setLocale(BuildContext context, Locale newLocale) {
+    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
+    state?.setLocale(newLocale);
+  }
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -52,14 +54,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   ReceiveSharingIntent receiveSharingIntent = ReceiveSharingIntent.instance;
   bool? firstTimeAppOpen;
   StreamSubscription<List<SharedMediaFile>>? _intentDataStreamSubscription;
-
-  _MyAppState();
+  Locale? _locale;
 
   @override
   void initState() {
     super.initState();
     firstTimeInstallation();
     WidgetsBinding.instance!.addObserver(this);
+
+    _loadLocale();
 
     // Listen to intent data streams
     _intentDataStreamSubscription = receiveSharingIntent
@@ -117,7 +120,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: appLocales[SelectedLanguage.selectedLanguageIndex],
+      locale: _locale ?? appLocales[SelectedLanguage.selectedLanguageIndex],
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -141,7 +144,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               );
             } else {
               return firstTimeAppOpen == true
-                  //? const OnboardScreen()
                   ? LanguageSelectionScreen()
                   : HomeScreen(
                       socketService: null,
@@ -157,21 +159,36 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   void firstTimeInstallation() async {
-    firstTimeAppOpen = true;
-    // final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
-    // if (firstTimeAppOpen == null || firstTimeAppOpen == false) {
-    //   await prefs.setBool('firstTimeAppOpen', true);
-    //   FirebaseInitalizationClass.eventTracker(
-    //       'app_install', {'first_time': 'true'});
-    // } else if (firstTimeAppOpen == true) {
-    //   await prefs.setBool('firstTimeAppOpen', false);
-    //   FirebaseInitalizationClass.eventTracker(
-    //       'app_launch', {'first_time': 'false'});
-    // }
-    // firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
-    // if (mounted) {
-    //   setState(() {});
-    // }
+    //firstTimeAppOpen = true; // for debug
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
+    if (firstTimeAppOpen == null || firstTimeAppOpen == false) {
+      await prefs.setBool('firstTimeAppOpen', true);
+      FirebaseInitalizationClass.eventTracker(
+          'app_install', {'first_time': 'true'});
+    } else if (firstTimeAppOpen == true) {
+      await prefs.setBool('firstTimeAppOpen', false);
+      FirebaseInitalizationClass.eventTracker(
+          'app_launch', {'first_time': 'false'});
+    }
+    firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
+
+  void _loadLocale() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? selectedIndex = prefs.getInt('selectedLanguageIndex');
+    if (selectedIndex != null) {
+      SelectedLanguage.selectedLanguageIndex = selectedIndex;
+      setLocale(appLocales[selectedIndex]);
+    }
   }
 }

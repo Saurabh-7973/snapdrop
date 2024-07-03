@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ThemeConstant {
   //App Primary Colors
   static const Color primaryAppColor = Color(0xff206946);
+  //static const Color primaryAppColor = Color(0xFF005540);
   static const Color primaryAppColorGradient2 = Color(0xff071414);
   static const Color primaryAppColorGradient3 = Color(0xff040807);
 
@@ -44,6 +45,18 @@ class ThemeConstant {
       fontSize: 18.0, // Double precision for consistency
       fontFamily: 'Inter',
       fontWeight: FontWeight.w600);
+
+  static const BoxDecoration appBackgroundGradient = BoxDecoration(
+    gradient: LinearGradient(
+      colors: [
+        ThemeConstant.primaryAppColor,
+        ThemeConstant.primaryAppColorGradient2,
+        ThemeConstant.primaryAppColorGradient3
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    ),
+  );
 
   // Helper methods for light and dark variations
   static TextStyle get smallTextSizeLight =>
