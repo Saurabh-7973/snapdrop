@@ -2,7 +2,7 @@ name: Flutter CI/CD
 
 on:
   push:
-    branches: [master]
+    branches: [saurabh_dev]
 
 jobs:
   build:
