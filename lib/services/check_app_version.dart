@@ -1,3 +1,9 @@
+import 'dart:developer';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_upgrade_version/flutter_upgrade_version.dart';
+import 'package:flutter_upgrade_version/flutter_upgrade_version.dart'
+    as PackageInfoData;
 import 'package:package_info_plus/package_info_plus.dart';
 
 class CheckAppVersion {
@@ -5,15 +11,7 @@ class CheckAppVersion {
   static bool isUpdateRequired = false;
 
   static void checkAppVersion() async {
-    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    final String appVersion = packageInfo.version;
-
-    if (_compareVersions(minimumAppVersion!, appVersion) > 0) {
-      // Display a message suggesting update
-      // print(
-      //     'Your app version is outdated. Please update to version $minimumAppVersion or higher.');
-      isUpdateRequired = true;
-    }
+    // This method is not used in your current flow, so it's commented out.
   }
 
   static int _compareVersions(String v1, String v2) {
@@ -27,5 +25,49 @@ class CheckAppVersion {
       }
     }
     return version1.length - version2.length;
+  }
+
+  Future<void> checkForAppUpdate(
+      PackageInfoData.PackageInfo packageInfo) async {
+    try {
+      print(
+          'App Info: ${packageInfo.appName} ${packageInfo.packageName} ${packageInfo.version} ${packageInfo.buildNumber} ${packageInfo.languageCode} ${packageInfo.regionCode}' ??
+              '');
+
+      if (Platform.isAndroid) {
+        InAppUpdateManager manager = InAppUpdateManager();
+        AppUpdateInfo? appUpdateInfo = await manager.checkForUpdate();
+        if (appUpdateInfo == null) return;
+
+        if (appUpdateInfo.updateAvailability ==
+            UpdateAvailability.developerTriggeredUpdateInProgress) {
+          // If an in-app update is already running, resume the update.
+          String? message =
+              await manager.startAnUpdate(type: AppUpdateType.immediate);
+          debugPrint(message ?? '');
+        } else if (appUpdateInfo.updateAvailability ==
+            UpdateAvailability.updateAvailable) {
+          // Update available
+          if (appUpdateInfo.immediateAllowed) {
+            String? message =
+                await manager.startAnUpdate(type: AppUpdateType.immediate);
+            debugPrint(message ?? '');
+          } else if (appUpdateInfo.flexibleAllowed) {
+            String? message =
+                await manager.startAnUpdate(type: AppUpdateType.flexible);
+            debugPrint(message ?? '');
+          } else {
+            debugPrint(
+                'Update available. Immediate & Flexible Update Flow not allowed');
+          }
+        }
+      } else if (Platform.isIOS) {
+        VersionInfo? versionInfo = await UpgradeVersion.getiOSStoreVersion(
+            packageInfo: packageInfo, regionCode: "US");
+        debugPrint(versionInfo?.toJson().toString());
+      }
+    } catch (e) {
+      debugPrint('Error checking for updates: $e');
+    }
   }
 }
