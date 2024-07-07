@@ -1,10 +1,8 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_upgrade_version/flutter_upgrade_version.dart';
 import 'package:flutter_upgrade_version/flutter_upgrade_version.dart'
     as PackageInfoData;
-import 'package:package_info_plus/package_info_plus.dart';
 
 class CheckAppVersion {
   static String? minimumAppVersion;
@@ -37,29 +35,42 @@ class CheckAppVersion {
       if (Platform.isAndroid) {
         InAppUpdateManager manager = InAppUpdateManager();
         AppUpdateInfo? appUpdateInfo = await manager.checkForUpdate();
-        if (appUpdateInfo == null) return;
+
+        // Log the app update info
+        print('AppUpdateInfo: $appUpdateInfo');
+
+        if (appUpdateInfo == null) {
+          print('No update info received');
+          return;
+        }
 
         if (appUpdateInfo.updateAvailability ==
             UpdateAvailability.developerTriggeredUpdateInProgress) {
           // If an in-app update is already running, resume the update.
+          print('Developer triggered update in progress');
           String? message =
               await manager.startAnUpdate(type: AppUpdateType.immediate);
-          debugPrint(message ?? '');
+          debugPrint('Update Message: $message');
         } else if (appUpdateInfo.updateAvailability ==
             UpdateAvailability.updateAvailable) {
           // Update available
+          print('Update available');
           if (appUpdateInfo.immediateAllowed) {
+            print('Immediate update allowed');
             String? message =
                 await manager.startAnUpdate(type: AppUpdateType.immediate);
-            debugPrint(message ?? '');
+            debugPrint('Update Message: $message');
           } else if (appUpdateInfo.flexibleAllowed) {
+            print('Flexible update allowed');
             String? message =
                 await manager.startAnUpdate(type: AppUpdateType.flexible);
-            debugPrint(message ?? '');
+            debugPrint('Update Message: $message');
           } else {
             debugPrint(
                 'Update available. Immediate & Flexible Update Flow not allowed');
           }
+        } else {
+          print('No update available');
         }
       } else if (Platform.isIOS) {
         VersionInfo? versionInfo = await UpgradeVersion.getiOSStoreVersion(

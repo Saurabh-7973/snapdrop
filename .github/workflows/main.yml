@@ -1,23 +1,23 @@
-name: Flutter CI/CD
+# name: Flutter CI/CD
 
-on:
-  push:
-    branches: [saurabh_dev]
+# on:
+#   push:
+#     branches: [saurabh_dev]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v2
       
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v1
+#     - name: Setup Flutter
+#       uses: subosito/flutter-action@v1
       
-    - name: Get dependencies
-      run: flutter pub get
+#     - name: Get dependencies
+#       run: flutter pub get
       
-    - name: Build and test
-      run: |
-        flutter build apk
+#     - name: Build and test
+#       run: |
+#         flutter build apk

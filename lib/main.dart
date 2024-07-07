@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Snapdrop/services/check_app_version.dart';
 import 'package:Snapdrop/services/selected_language.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -9,7 +10,7 @@ import 'screen/home_screen.dart';
 import 'screen/language_selection.dart';
 import 'screen/qr_screen.dart';
 import 'utils/firebase_initalization_class.dart';
-import 'package:upgrader/upgrader.dart';
+import 'package:flutter_upgrade_version/flutter_upgrade_version.dart';
 
 final List<Locale> appLocales = [
   const Locale('en'),
@@ -31,7 +32,6 @@ void main() async {
   FirebaseInitalizationClass.remoteConfigGetDefaultValues();
   FirebaseInitalizationClass.remoteConfigUpdateValuesRealtime();
   FirebaseInitalizationClass.remoteConfigFetchAppVersion();
-  await Upgrader.clearSavedSettings(); // REMOVE this for release builds
 
   runApp(MyApp());
 }
@@ -55,6 +55,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   bool? firstTimeAppOpen;
   StreamSubscription<List<SharedMediaFile>>? _intentDataStreamSubscription;
   Locale? _locale;
+  PackageInfo _packageInfo = PackageInfo();
 
   @override
   void initState() {
@@ -83,6 +84,21 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }, onError: (err) {
       // Handle error
     });
+
+    getPackageData();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> getPackageData() async {
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    // We also handle the message potentially returning null.
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+    _packageInfo = await PackageManager.getPackageInfo();
+    await CheckAppVersion().checkForAppUpdate(_packageInfo);
+    setState(() {});
   }
 
   @override
