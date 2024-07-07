@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:Snapdrop/constant/global_showcase_key.dart';
+import 'package:Snapdrop/services/in_app_review_service.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
@@ -15,6 +17,8 @@ import '../utils/firebase_initalization_class.dart';
 
 //flutter localization
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'share_app_dialog.dart';
 
 class SendButton extends StatefulWidget {
   SocketService? socketService;
@@ -58,14 +62,47 @@ class _SendButtonState extends State<SendButton> {
   }
 
   fileTransfer() async {
+    int? reviewCounter;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     if (widget.isIntentSharing) {
       await sendFilesToServerIntent();
-      widget.socketService!.imageReceivedStream().listen((value) {
+      widget.socketService!.imageReceivedStream().listen((value) async {
+        //Asking for review
+        reviewCounter = prefs.getInt('reviewCounter');
         if (value == true) {
-          setState(() {
-            widget.transferCompleted = true;
-          });
+          if (mounted) {
+            setState(() {
+              widget.transferCompleted = true;
+            });
+          }
+
+          if (reviewCounter == 0) {
+            InAppReviewService().checkForInAppReview();
+
+            // //Event (App Review)
+            // FirebaseInitalizationClass.eventTracker('app_review_called', {
+            //   'sharing_method': 'intent_sharing',
+            //   //'image_count': widget.listOfMedia!.length
+            // });
+          }
+
+          if (reviewCounter == 3) {
+            //App Share Widget
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => ShareAppDialog(),
+            );
+
+            // //Event (App share)
+            // FirebaseInitalizationClass.eventTracker('app_share_called', {
+            //   'sharing_method': 'intent_sharing',
+            //   //'image_count': widget.listOfMedia!.length
+            // });
+          }
         }
+
+        reviewCounter = reviewCounter! + 1;
+        await prefs.setInt('reviewCounter', reviewCounter!);
       });
       //Event (File Share)
       FirebaseInitalizationClass.eventTracker('file_share_completed', {
@@ -75,12 +112,44 @@ class _SendButtonState extends State<SendButton> {
     } else {
       await sendFilesToServer();
       //Commented for now ()
-      widget.socketService!.imageReceivedStream().listen((value) {
+      widget.socketService!.imageReceivedStream().listen((value) async {
         if (value == true) {
-          setState(() {
-            widget.transferCompleted = true;
-          });
+          if (mounted) {
+            setState(() {
+              widget.transferCompleted = true;
+            });
+          }
+
+          //Asking for review
+          reviewCounter = prefs.getInt('reviewCounter');
+
+          if (reviewCounter == 0) {
+            InAppReviewService().checkForInAppReview();
+
+            // //Event (App Review)
+            // FirebaseInitalizationClass.eventTracker('app_review_called', {
+            //   'sharing_method': 'non_intent_sharing',
+            //   //'image_count': widget.listOfMedia!.length
+            // });
+          }
+
+          if (reviewCounter == 3) {
+            //App Share Widget
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => ShareAppDialog(),
+            );
+
+            // //Event (App share)
+            // FirebaseInitalizationClass.eventTracker('app_share_called', {
+            //   'sharing_method': 'non_intent_sharing',
+            //   //'image_count': widget.listOfMedia!.length
+            // });
+          }
         }
+
+        reviewCounter = reviewCounter! + 1;
+        await prefs.setInt('reviewCounter', reviewCounter!);
       });
       //Event (File Share)
       FirebaseInitalizationClass.eventTracker('file_share_completed', {

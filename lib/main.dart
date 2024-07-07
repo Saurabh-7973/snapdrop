@@ -56,6 +56,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   StreamSubscription<List<SharedMediaFile>>? _intentDataStreamSubscription;
   Locale? _locale;
   PackageInfo _packageInfo = PackageInfo();
+  int? reviewCounter;
 
   @override
   void initState() {
@@ -98,7 +99,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (!mounted) return;
     _packageInfo = await PackageManager.getPackageInfo();
     await CheckAppVersion().checkForAppUpdate(_packageInfo);
-    setState(() {});
+
+    if (mounted) setState(() {});
   }
 
   @override
@@ -178,6 +180,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     //firstTimeAppOpen = true; // for debug
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
+    reviewCounter = prefs.getInt('reviewCounter');
+    if (reviewCounter == null) {
+      await prefs.setInt('reviewCounter', 0);
+    }
     if (firstTimeAppOpen == null || firstTimeAppOpen == false) {
       await prefs.setBool('firstTimeAppOpen', true);
       FirebaseInitalizationClass.eventTracker(
@@ -194,9 +200,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   void setLocale(Locale locale) {
-    setState(() {
-      _locale = locale;
-    });
+    if (mounted) {
+      setState(() {
+        _locale = locale;
+      });
+    }
   }
 
   void _loadLocale() async {

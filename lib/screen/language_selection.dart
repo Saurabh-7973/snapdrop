@@ -1,3 +1,4 @@
+import 'package:Snapdrop/services/in_app_review_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constant/theme_contants.dart';
@@ -5,6 +6,7 @@ import '../main.dart';
 import '../services/selected_language.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/hero_text.dart';
+import '../widgets/share_app_dialog.dart';
 import 'onboard_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -208,6 +210,15 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                           builder: (_) => const OnboardScreen(),
                         ),
                       );
+
+                      //Review for testing
+                      //InAppReviewService().checkForInAppReview();
+
+                      //App Share Widget
+                      // showDialog(
+                      //   context: context,
+                      //   builder: (BuildContext context) => ShareAppDialog(),
+                      // );
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(screenWidth / 3, screenHeight / 16),

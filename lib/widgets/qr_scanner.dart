@@ -60,9 +60,11 @@ class _QRScannerState extends State<QRScanner> {
   }
 
   activateQrScanner() {
-    setState(() {
-      scannerVisible = scannerVisible == true ? false : true;
-    });
+    if (mounted) {
+      setState(() {
+        scannerVisible = scannerVisible == true ? false : true;
+      });
+    }
   }
 
   @override
@@ -158,9 +160,11 @@ class _QRScannerState extends State<QRScanner> {
   void _onQRViewController(QRViewController qrViewController) {
     _qrViewController = qrViewController;
     qrViewController.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
+      if (mounted) {
+        setState(() {
+          result = scanData;
+        });
+      }
       qrViewController.pauseCamera();
       connectSocket();
     });
@@ -172,11 +176,13 @@ class _QRScannerState extends State<QRScanner> {
     socketService = SocketService(url: '${result!.code}');
     socketService!.connectToSocketServer();
 
-    setState(() {
-      socketService != null
-          ? connectionStatus = true
-          : connectionStatus = false;
-    });
+    if (mounted) {
+      setState(() {
+        socketService != null
+            ? connectionStatus = true
+            : connectionStatus = false;
+      });
+    }
 
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
