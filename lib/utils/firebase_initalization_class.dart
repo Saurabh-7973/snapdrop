@@ -27,7 +27,9 @@ class FirebaseInitalizationClass {
   }
 
   static void eventTracker(String name, Map<String, Object>? parameters) {
-    analytics!.logEvent(name: name, parameters: parameters);
+    if (!kDebugMode) {
+      analytics!.logEvent(name: name, parameters: parameters);
+    }
   }
 
   static void enableDataCollection() {

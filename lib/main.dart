@@ -28,10 +28,10 @@ void main() async {
   FirebaseInitalizationClass.enableDataCollection();
   FirebaseInitalizationClass.catchFatalErrors();
   FirebaseInitalizationClass.catchAsynchronusErrors();
-  FirebaseInitalizationClass.remoteConfigInitialization();
-  FirebaseInitalizationClass.remoteConfigGetDefaultValues();
-  FirebaseInitalizationClass.remoteConfigUpdateValuesRealtime();
-  FirebaseInitalizationClass.remoteConfigFetchAppVersion();
+  //FirebaseInitalizationClass.remoteConfigInitialization();
+  //FirebaseInitalizationClass.remoteConfigGetDefaultValues();
+  //FirebaseInitalizationClass.remoteConfigUpdateValuesRealtime();
+  //FirebaseInitalizationClass.remoteConfigFetchAppVersion();
 
   runApp(MyApp());
 }
@@ -86,7 +86,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       // Handle error
     });
 
-    getPackageData();
+    // In App Update
+    //getPackageData();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

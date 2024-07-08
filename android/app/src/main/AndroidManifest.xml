@@ -10,9 +10,9 @@
         android:enableOnBackInvokedCallback="true">
 
         <!-- Meta Data for InAppUpdate -->
-            <meta-data
+            <!-- <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version" /> -->
             <!-- Meta Data for InAppUpdate -->
         
         <activity

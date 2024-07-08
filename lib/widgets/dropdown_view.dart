@@ -47,19 +47,21 @@ class _DropDownViewState extends State<DropDownView> {
 
   @override
   void initState() {
-    initialMethod(hasAll);
-    super.initState();
-    FirstTimeLogin.checkFirstTimeLogin().then((value) {
-      if (value == true) {
-        WidgetsBinding.instance.addPostFrameCallback(
-            (_) => ShowCaseWidget.of(context).startShowCase([
-                  GlobalShowcaseKeys.showcaseOne,
-                  GlobalShowcaseKeys.showcaseTwo,
-                  GlobalShowcaseKeys.showcaseThree
-                ]));
-      }
-    });
-    widget.isIntentSharing = false;
+    if (mounted) {
+      initialMethod(hasAll);
+      super.initState();
+      FirstTimeLogin.checkFirstTimeLogin().then((value) {
+        if (value == true) {
+          WidgetsBinding.instance.addPostFrameCallback(
+              (_) => ShowCaseWidget.of(context).startShowCase([
+                    GlobalShowcaseKeys.showcaseOne,
+                    GlobalShowcaseKeys.showcaseTwo,
+                    GlobalShowcaseKeys.showcaseThree
+                  ]));
+        }
+      });
+      widget.isIntentSharing = false;
+    }
   }
 
   @override

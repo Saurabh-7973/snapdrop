@@ -49,10 +49,12 @@ class _QRScannerState extends State<QRScanner> {
     super.initState();
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          ShowCaseWidget.of(context)
-              .startShowCase([GlobalShowcaseKeys.showcaseFour]);
-        });
+        if (mounted) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            ShowCaseWidget.of(context)
+                .startShowCase([GlobalShowcaseKeys.showcaseFour]);
+          });
+        }
       } else {
         activateQrScanner();
       }
