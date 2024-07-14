@@ -1,4 +1,10 @@
 {
+    "app_share_dialog_text_1": "Compartilhe o Snapdrop com seus colegas",
+    "app_share_dialog_text_2": "Você compartilhou imagens com sucesso 3 vezes. Divulgue o Snapdrop para que seus colegas também possam se beneficiar!",
+    "app_share_dialog_share_now_button": "Compartilhar agora",
+    "app_share_dialog_maybe_later_button": "Talvez depois",
+    "app_share_text_1": "🚀 Descubra o Snapdrop - a maneira mais fácil de transferir imagens diretamente para seus designs no Figma! 🎨\n\n",
+    "app_share_text_2": "📲 Baixe agora e otimize seu fluxo de trabalho de design:\n\n",
     "language_selection_herotext_1": "Selecione o seu",
     "language_selection_herotext_2": "idioma preferido",
     "language_selection_continue": "Continuar",

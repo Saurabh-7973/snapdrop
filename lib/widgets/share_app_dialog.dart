@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:Snapdrop/services/app_share_service.dart';
-import '../constant/theme_contants.dart'; // Replace with your actual import path
+import '../constant/theme_contants.dart';
+
+//flutter localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ShareAppDialog extends StatelessWidget {
   const ShareAppDialog({Key? key});
@@ -31,14 +34,14 @@ class ShareAppDialog extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                'Share Snapdrop with Your Colleagues',
+                AppLocalizations.of(context)!.app_share_dialog_text_1,
                 style: ThemeConstant.largeTextSize
                     .copyWith(color: ThemeConstant.whiteColor),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               Text(
-                'You\'ve successfully shared images 3 times. Spread the word about Snapdrop so your colleagues can benefit too!',
+                AppLocalizations.of(context)!.app_share_dialog_text_2,
                 style: ThemeConstant.smallTextSize
                     .copyWith(color: ThemeConstant.whiteColor),
                 textAlign: TextAlign.center,
@@ -58,11 +61,12 @@ class ShareAppDialog extends StatelessWidget {
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
-                      AppShareService().shareApp();
+                      AppShareService().shareApp(context);
                     },
-                    child: const Text(
-                      'Share Now',
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(context)!
+                          .app_share_dialog_share_now_button,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -86,7 +90,8 @@ class ShareAppDialog extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'Maybe Later',
+                      AppLocalizations.of(context)!
+                          .app_share_dialog_maybe_later_button,
                       style: ThemeConstant.smallTextSizeWhiteFontWidth
                           .copyWith(color: Colors.white),
                     ),

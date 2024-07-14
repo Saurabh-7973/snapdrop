@@ -1,4 +1,10 @@
 {
+    "app_share_dialog_text_1": "与您的同事分享 Snapdrop",
+    "app_share_dialog_text_2": "您已成功分享了 3 次图片。让您的同事也了解 Snapdrop，让他们也受益吧！",
+    "app_share_dialog_share_now_button": "立即分享",
+    "app_share_dialog_maybe_later_button": "以后再说",
+    "app_share_text_1": "🚀 发现Snapdrop - 将图片直接传输到你的Figma设计中最简便的方式！🎨\n\n",
+    "app_share_text_2": "📲 立即下载，优化你的设计工作流程：\n\n",    
     "language_selection_herotext_1": "选择您的",
     "language_selection_herotext_2": "首选语言",
     "language_selection_continue": "继续",
