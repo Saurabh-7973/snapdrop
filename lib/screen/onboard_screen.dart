@@ -45,7 +45,7 @@ class OnboardScreen extends StatelessWidget {
                   Expanded(
                     flex: 9,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 64.0),
+                      padding: const EdgeInsets.only(left: 64.0),
                       child: SizedBox(
                         width: screenWidth,
                         child: Column(

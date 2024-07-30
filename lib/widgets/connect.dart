@@ -75,6 +75,7 @@ class _SendButtonState extends State<SendButton> {
           if (mounted) {
             setState(() {
               widget.transferCompleted = true;
+              FirstTimeLogin.setFirstTimeLoginFalse();
             });
           }
 
@@ -119,6 +120,7 @@ class _SendButtonState extends State<SendButton> {
           if (mounted) {
             setState(() {
               widget.transferCompleted = true;
+              FirstTimeLogin.setFirstTimeLoginFalse();
             });
           }
 

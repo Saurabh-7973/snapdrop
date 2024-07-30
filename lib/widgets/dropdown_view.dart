@@ -483,180 +483,202 @@ class _DropDownViewState extends State<DropDownView> {
                             );
                           }),
                       if (selectedAssetList.isNotEmpty)
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            height: 120,
-                            width: screenWidth,
-                            decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Colors.transparent, Colors.black],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
+                        Positioned(
+                          bottom: -5,
+                          left: -5,
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              height: 200,
+                              width: screenWidth,
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.transparent, Colors.black],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
                               ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Showcase(
-                                  targetPadding: const EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: 0),
-                                  key: GlobalShowcaseKeys.showcaseThree,
-                                  tooltipBackgroundColor:
-                                      const Color(0xff161616),
-                                  textColor: ThemeConstant.whiteColor,
-                                  title: AppLocalizations.of(context)!
-                                      .showcase_three_title,
-                                  description: AppLocalizations.of(context)!
-                                      .showcase_three_subtitle,
-                                  // onBarrierClick: () =>
-                                  //     debugPrint('connect clicked'),
-                                  child: Container(
-                                    width: screenWidth / 2.6,
-                                    height: 50,
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 8),
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        await CheckInternetConnectivity
-                                                .hasNetwork()
-                                            .then((value) {
-                                          if (value) {
-                                            if (selectedAssetList.length >=
-                                                10) {
-                                              var snackbarLimit = SnackBar(
-                                                  backgroundColor: ThemeConstant
-                                                      .primaryAppColor,
-                                                  content: FittedBox(
-                                                    fit: BoxFit.scaleDown,
-                                                    child: Text(
-                                                      AppLocalizations.of(
-                                                              context)!
-                                                          .app_conditions_image_selection_limit,
-                                                      style: ThemeConstant
-                                                          .smallTextSizeLight,
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
-                                                  ));
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(snackbarLimit);
-                                            } else {
-                                              FileImageServices()
-                                                  .getTotalImageSize(
-                                                      selectedAssetList)
-                                                  .then((value) {
-                                                if (value < 5.0) {
-                                                  if (widget.socketService !=
-                                                      null) {
-                                                    String? roomId = widget
-                                                        .socketService!.roomId;
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            SendFile(
-                                                          socketService: widget
-                                                              .socketService,
-                                                          selectedAssetList:
-                                                              selectedAssetList,
-                                                          imageCount:
-                                                              selectedAssetList
-                                                                  .length,
-                                                          isIntentSharing: widget
-                                                              .isIntentSharing,
-                                                          roomId: roomId!,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  } else {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            QRScreen(
-                                                          selectedAssetList:
-                                                              selectedAssetList,
-                                                          isIntentSharing: widget
-                                                              .isIntentSharing,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }
-                                                } else {
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Showcase(
+                                      key: GlobalShowcaseKeys.showcaseThree,
+                                      targetBorderRadius:
+                                          BorderRadius.circular(20),
+                                      tooltipBackgroundColor:
+                                          const Color(0xff161616),
+                                      textColor: ThemeConstant.whiteColor,
+                                      title: AppLocalizations.of(context)!
+                                          .showcase_three_title,
+                                      description: AppLocalizations.of(context)!
+                                          .showcase_three_subtitle,
+                                      // onBarrierClick: () =>
+                                      //     debugPrint('connect clicked'),
+                                      child: Container(
+                                        width: screenWidth / 2.6,
+                                        height: 50,
+                                        // margin: const EdgeInsets.symmetric(
+                                        //     vertical: 8, horizontal: 8),
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            await CheckInternetConnectivity
+                                                    .hasNetwork()
+                                                .then((value) {
+                                              if (value) {
+                                                if (selectedAssetList.length >=
+                                                    10) {
                                                   var snackbarLimit = SnackBar(
                                                       backgroundColor:
-                                                          const Color(
-                                                              0xff206946),
+                                                          ThemeConstant
+                                                              .primaryAppColor,
                                                       content: FittedBox(
                                                         fit: BoxFit.scaleDown,
                                                         child: Text(
-                                                          "${AppLocalizations.of(context)!.app_conditions_size_limit} (${value.toStringAsFixed(2)}) > 5 MB",
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .app_conditions_image_selection_limit,
                                                           style: ThemeConstant
                                                               .smallTextSizeLight,
+                                                          textAlign:
+                                                              TextAlign.center,
                                                         ),
                                                       ));
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(
                                                           snackbarLimit);
+                                                } else {
+                                                  FileImageServices()
+                                                      .getTotalImageSize(
+                                                          selectedAssetList)
+                                                      .then((value) {
+                                                    if (value < 5.0) {
+                                                      if (widget
+                                                              .socketService !=
+                                                          null) {
+                                                        String? roomId = widget
+                                                            .socketService!
+                                                            .roomId;
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    SendFile(
+                                                              socketService: widget
+                                                                  .socketService,
+                                                              selectedAssetList:
+                                                                  selectedAssetList,
+                                                              imageCount:
+                                                                  selectedAssetList
+                                                                      .length,
+                                                              isIntentSharing:
+                                                                  widget
+                                                                      .isIntentSharing,
+                                                              roomId: roomId!,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      } else {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    QRScreen(
+                                                              selectedAssetList:
+                                                                  selectedAssetList,
+                                                              isIntentSharing:
+                                                                  widget
+                                                                      .isIntentSharing,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                    } else {
+                                                      var snackbarLimit =
+                                                          SnackBar(
+                                                              backgroundColor:
+                                                                  const Color(
+                                                                      0xff206946),
+                                                              content:
+                                                                  FittedBox(
+                                                                fit: BoxFit
+                                                                    .scaleDown,
+                                                                child: Text(
+                                                                  "${AppLocalizations.of(context)!.app_conditions_size_limit} (${value.toStringAsFixed(2)}) > 5 MB",
+                                                                  style: ThemeConstant
+                                                                      .smallTextSizeLight,
+                                                                ),
+                                                              ));
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                              snackbarLimit);
+                                                    }
+                                                  });
                                                 }
-                                              });
-                                            }
-                                          } else {
-                                            var snackbarLimit = SnackBar(
-                                                backgroundColor: ThemeConstant
-                                                    .primaryAppColor,
-                                                content: FittedBox(
-                                                  fit: BoxFit.scaleDown,
-                                                  child: Text(
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .app_conditions_internet_connection,
-                                                    style: ThemeConstant
-                                                        .smallTextSizeLight,
-                                                  ),
-                                                ));
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(snackbarLimit);
-                                          }
-                                        });
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          minimumSize: Size(
-                                              screenWidth, screenHeight / 6),
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30))),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          FittedBox(
-                                            fit: BoxFit.scaleDown,
-                                            child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .home_screen_button,
-                                              style: ThemeConstant
-                                                  .smallTextSizeDarkFontWidth,
-                                            ),
+                                              } else {
+                                                var snackbarLimit = SnackBar(
+                                                    backgroundColor:
+                                                        ThemeConstant
+                                                            .primaryAppColor,
+                                                    content: FittedBox(
+                                                      fit: BoxFit.scaleDown,
+                                                      child: Text(
+                                                        AppLocalizations.of(
+                                                                context)!
+                                                            .app_conditions_internet_connection,
+                                                        style: ThemeConstant
+                                                            .smallTextSizeLight,
+                                                      ),
+                                                    ));
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                        snackbarLimit);
+                                              }
+                                            });
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                              minimumSize: Size(screenWidth,
+                                                  screenHeight / 6),
+                                              backgroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          30))),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              FittedBox(
+                                                fit: BoxFit.scaleDown,
+                                                child: Text(
+                                                  AppLocalizations.of(context)!
+                                                      .home_screen_button,
+                                                  style: ThemeConstant
+                                                      .smallTextSizeDarkFontWidth,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              const Icon(
+                                                Icons.arrow_forward_rounded,
+                                                color: Colors.black,
+                                                size: 22,
+                                              )
+                                            ],
                                           ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          const Icon(
-                                            Icons.arrow_forward_rounded,
-                                            color: Colors.black,
-                                            size: 22,
-                                          )
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
