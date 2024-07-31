@@ -185,6 +185,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (reviewCounter == null) {
       await prefs.setInt('reviewCounter', 0);
     }
+    // just to check
+    // firstTimeAppOpen = null;
     if (firstTimeAppOpen == null) {
       await prefs.setBool('firstTimeAppOpen', true);
       FirebaseInitalizationClass.eventTracker(
