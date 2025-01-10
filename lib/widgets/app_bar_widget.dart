@@ -18,7 +18,7 @@ class AppBarWidget extends StatelessWidget {
         child: Row(
           children: [
             const Spacer(),
-            Image.asset("assets/logo/snapdrop_header.png"),
+            Image.asset("assets/logo/snapdrop_header-min.png"),
             const Spacer(),
           ],
         ),

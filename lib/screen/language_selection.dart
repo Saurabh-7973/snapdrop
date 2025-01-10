@@ -59,9 +59,11 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
   }
 
   void _onContinue() {
-    setState(() {
-      _isExpanded = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isExpanded = true;
+      });
+    }
     _controller.forward();
 
     Future.delayed(const Duration(milliseconds: 500), () {

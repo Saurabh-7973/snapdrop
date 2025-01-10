@@ -82,11 +82,11 @@ class _SendButtonState extends State<SendButton> {
           if (reviewCounter == 0) {
             InAppReviewService().checkForInAppReview();
 
-            // //Event (App Review)
-            // FirebaseInitalizationClass.eventTracker('app_review_called', {
-            //   'sharing_method': 'intent_sharing',
-            //   //'image_count': widget.listOfMedia!.length
-            // });
+            //Event (App Review)
+            FirebaseInitalizationClass.eventTracker('app_review_called', {
+              'sharing_method': 'intent_sharing',
+              //'image_count': widget.listOfMedia!.length
+            });
           }
 
           if (reviewCounter == 3) {
@@ -96,11 +96,11 @@ class _SendButtonState extends State<SendButton> {
               builder: (BuildContext context) => ShareAppDialog(),
             );
 
-            // //Event (App share)
-            // FirebaseInitalizationClass.eventTracker('app_share_called', {
-            //   'sharing_method': 'intent_sharing',
-            //   //'image_count': widget.listOfMedia!.length
-            // });
+            //Event (App share)
+            FirebaseInitalizationClass.eventTracker('app_share_called', {
+              'sharing_method': 'intent_sharing',
+              //'image_count': widget.listOfMedia!.length
+            });
           }
         }
 
@@ -130,11 +130,11 @@ class _SendButtonState extends State<SendButton> {
           if (reviewCounter == 0) {
             InAppReviewService().checkForInAppReview();
 
-            // //Event (App Review)
-            // FirebaseInitalizationClass.eventTracker('app_review_called', {
-            //   'sharing_method': 'non_intent_sharing',
-            //   //'image_count': widget.listOfMedia!.length
-            // });
+            //Event (App Review)
+            FirebaseInitalizationClass.eventTracker('app_review_called', {
+              'sharing_method': 'non_intent_sharing',
+              //'image_count': widget.listOfMedia!.length
+            });
           }
 
           if (reviewCounter == 3) {
@@ -144,11 +144,11 @@ class _SendButtonState extends State<SendButton> {
               builder: (BuildContext context) => ShareAppDialog(),
             );
 
-            // //Event (App share)
-            // FirebaseInitalizationClass.eventTracker('app_share_called', {
-            //   'sharing_method': 'non_intent_sharing',
-            //   //'image_count': widget.listOfMedia!.length
-            // });
+            //Event (App share)
+            FirebaseInitalizationClass.eventTracker('app_share_called', {
+              'sharing_method': 'non_intent_sharing',
+              //'image_count': widget.listOfMedia!.length
+            });
           }
         }
 

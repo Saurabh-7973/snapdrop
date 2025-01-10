@@ -72,6 +72,11 @@ android {
 
     buildTypes {
         release {
+            
+            // Enable shrinking, obfuscation, and optimization
+            minifyEnabled true
+            shrinkResources true
+
             signingConfig signingConfigs.release
         }
     }

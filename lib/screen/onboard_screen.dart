@@ -27,29 +27,31 @@ class _OnboardScreenState extends State<OnboardScreen>
       duration: const Duration(milliseconds: 500),
       vsync: this,
     )..addListener(() {
-        setState(() {});
+        if (mounted) setState(() {});
       });
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
   }
 
   void _toggleButton() {
-    setState(() {
-      _isExpanded = !_isExpanded;
-      if (_isExpanded) {
-        _controller.forward().whenComplete(() {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) => HomeScreen(
-                socketService: null,
-                isIntentSharing: false,
+    if (mounted) {
+      setState(() {
+        _isExpanded = !_isExpanded;
+        if (_isExpanded) {
+          _controller.forward().whenComplete(() {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (_) => HomeScreen(
+                  socketService: null,
+                  isIntentSharing: false,
+                ),
               ),
-            ),
-          );
-        });
-      } else {
-        _controller.reverse();
-      }
-    });
+            );
+          });
+        } else {
+          _controller.reverse();
+        }
+      });
+    }
   }
 
   @override
