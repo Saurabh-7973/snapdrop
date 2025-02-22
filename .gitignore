@@ -63,6 +63,11 @@ pubspec.lock
 *.iml
 misc.xml
 snapdrop.iml
+*.dart_tool
+.lock
+.flutter-plugins-dependencies
+.flutter-plugins
+package_config.json
 version
 firebase_options.dart
 google-services.json
