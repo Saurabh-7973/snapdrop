@@ -13,19 +13,34 @@ class IntroWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Icon(
-          icon,
-          color: ThemeConstant.whiteColor,
-          size: 30,
+        Container(
+          decoration: BoxDecoration(
+            color: ThemeConstant.primaryAppColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 6,
+              )
+            ],
+          ),
+          padding: const EdgeInsets.all(12),
+          child: Icon(
+            icon,
+            color: ThemeConstant.whiteColor,
+            size: 28,
+          ),
         ),
-        const SizedBox(
-          width: 10,
-        ),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            text,
-            style: ThemeConstant.smallTextSizeWhiteFontWidth,
+        const SizedBox(width: 12),
+        Expanded(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              text,
+              style: ThemeConstant.smallTextSizeWhiteFontWidth,
+            ),
           ),
         )
       ],

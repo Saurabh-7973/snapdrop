@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:Snapdrop/constant/global_showcase_key.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:showcaseview/showcaseview.dart';
 
