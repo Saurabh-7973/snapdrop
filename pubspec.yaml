@@ -42,6 +42,7 @@ dependencies:
   flutter_blurhash: ^0.8.2
   glassmorphism_ui: ^0.3.0
   sensors_plus: ^6.1.1
+  confetti: ^0.8.0
 
 dev_dependencies:
   flutter_test:

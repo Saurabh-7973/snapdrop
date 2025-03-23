@@ -36,5 +36,7 @@
     "send_screen_send_more_button": "Send",
     "app_conditions_internet_connection":"Check your Internet Connection and try again!",
     "app_conditions_image_selection_limit": "Can Only select upto 10 Images!",
-    "app_conditions_size_limit": "File Size Limit Exceded"
+    "app_conditions_size_limit": "File Size Limit Exceeded", 
+    "uploading_text": "Uploading..."
+
 }

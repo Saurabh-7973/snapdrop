@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -7,6 +8,7 @@ import '../constant/theme_contants.dart';
 import '../services/socket_service.dart';
 import '../wigets/app_bar_widget.dart';
 import '../wigets/connect.dart';
+import '../wigets/floating_triangles.dart';
 import '../wigets/hero_text.dart';
 import '../wigets/intent_file_displayer.dart';
 import '../wigets/room_displayer.dart';
@@ -23,69 +25,79 @@ class SendFile extends StatelessWidget {
   List<SharedMediaFile>? listOfMedia;
   int imageCount;
 
-  SendFile(
-      {super.key,
-      this.selectedAssetList,
-      this.listOfMedia,
-      required this.imageCount,
-      required this.isIntentSharing,
-      required this.roomId,
-      required this.socketService});
+  SendFile({
+    super.key,
+    this.selectedAssetList,
+    this.listOfMedia,
+    required this.imageCount,
+    required this.isIntentSharing,
+    required this.roomId,
+    required this.socketService,
+  });
 
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
 
-    return Container(
-      color: ThemeConstant.primaryAppColor,
-      child: SafeArea(
-        left: false,
-        right: false,
-        bottom: false,
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                ThemeConstant.primaryAppColor,
-                ThemeConstant.primaryAppColorGradient2,
-                ThemeConstant.primaryAppColorGradient3
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+    return Scaffold(
+      backgroundColor: ThemeConstant.primaryAppColor,
+      body: Stack(
+        children: [
+          /// ✅ **Background Gradient**
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  ThemeConstant.primaryAppColor,
+                  ThemeConstant.primaryAppColorGradient2,
+                  ThemeConstant.primaryAppColorGradient3,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
           ),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Padding(
+
+          /// ✅ **Floating Triangles Animation**
+          Positioned.fill(
+            child: FloatingSquares(),
+          ),
+
+          /// ✅ **Main Content**
+          SafeArea(
+            child: Padding(
               padding: const EdgeInsets.all(15),
               child: Column(
                 children: [
                   const AppBarWidget(),
                   HeroText(
-                      firstLine:
-                          '${AppLocalizations.of(context)!.send_screen_hero_text_1} $imageCount',
-                      secondLine:
-                          AppLocalizations.of(context)!.send_screen_hero_text_2,
-                      thirdLine: ''),
-                  RoomDisplayer(
-                      roomId: roomId,
-                      message: AppLocalizations.of(context)!
-                          .send_screen_connected_to),
-                  const SizedBox(
-                    height: 10,
+                    firstLine:
+                        '${AppLocalizations.of(context)!.send_screen_hero_text_1} $imageCount',
+                    secondLine:
+                        AppLocalizations.of(context)!.send_screen_hero_text_2,
+                    thirdLine: '',
                   ),
+                  const SizedBox(height: 15),
+
+                  /// ✅ **Connected Room Info**
                   RoomDisplayer(
-                      roomId: socketService!.userId,
-                      message:
-                          AppLocalizations.of(context)!.send_screen_your_id),
-                  const SizedBox(
-                    height: 10,
+                    senderId: socketService!.userId!,
+                    receiverId: roomId,
+                    senderMessage:
+                        AppLocalizations.of(context)!.send_screen_your_id,
+                    receiverMessage:
+                        AppLocalizations.of(context)!.send_screen_connected_to,
                   ),
+                  const SizedBox(height: 10),
+
+                  /// ✅ **Image Preview Section**
                   Expanded(
-                    flex: 1,
                     child: Container(
                       height: screenHeight / 2.2,
-                      color: Colors.transparent,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       child: isIntentSharing == true
                           ? IntentFileDisplayer(
                               isIntentSharing: true,
@@ -97,9 +109,9 @@ class SendFile extends StatelessWidget {
                             ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
+
+                  /// ✅ **Send Button / Showcase**
                   isIntentSharing == true
                       ? SendButton(
                           socketService: socketService,
@@ -119,7 +131,7 @@ class SendFile extends StatelessWidget {
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

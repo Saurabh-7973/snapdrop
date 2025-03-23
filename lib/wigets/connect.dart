@@ -35,26 +35,42 @@ class SendButton extends StatefulWidget {
   State<SendButton> createState() => _SendButtonState();
 }
 
-class _SendButtonState extends State<SendButton> {
+class _SendButtonState extends State<SendButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _glowAnimation;
+
   List<SharedMediaFile>? listOfImageModal = [];
 
   List<Map<String, dynamic>>? listOfMaps;
 
   @override
   void initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1), // Smooth glow effect
+    )..repeat(reverse: true); // Creates a pulsing effect
+
+    _glowAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(_controller);
     super.initState();
-    FirstTimeLogin.checkFirstTimeLogin().then((value) {
-      if (value == true) {
-        WidgetsBinding.instance.addPostFrameCallback((_) =>
-            ShowCaseWidget.of(context).startShowCase([
-              GlobalShowcaseKeys.showcaseSeven,
-              GlobalShowcaseKeys.showcaseEight
-            ]));
-      }
-    });
+    // FirstTimeLogin.checkFirstTimeLogin().then((value) {
+    //   if (value == true) {
+    //     WidgetsBinding.instance.addPostFrameCallback((_) =>
+    //         ShowCaseWidget.of(context).startShowCase([
+    //           GlobalShowcaseKeys.showcaseSeven,
+    //           GlobalShowcaseKeys.showcaseEight
+    //         ]));
+    //   }
+    // });
 
     //Immediate File Transfer
     fileTransfer();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   fileTransfer() async {
@@ -98,7 +114,51 @@ class _SendButtonState extends State<SendButton> {
     return widget.transferCompleted == false
         ? widget.isIntentSharing == true
             ? sendFilesToServerButton(screenWidth)
-            : sendFilesToServerButton(screenWidth)
+            // : sendFilesToServerButton(screenWidth)
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FadeTransition(
+                    opacity: _glowAnimation,
+                    child: Text(
+                      AppLocalizations.of(context)!.uploading_text,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white.withOpacity(0.9),
+                        shadows: [
+                          Shadow(
+                            blurRadius: 10, // Softer glow
+                            color: Colors.white.withOpacity(0.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Container(
+                      height: 5, // Sleek progress bar
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.white.withOpacity(0.7),
+                            Colors.white.withOpacity(0.3),
+                          ],
+                        ),
+                      ),
+                      child: LinearProgressIndicator(
+                        value: null,
+                        backgroundColor: Colors.transparent,
+                        valueColor: AlwaysStoppedAnimation(Colors.white),
+                        minHeight: 5,
+                      ),
+                    ),
+                  ),
+                ],
+              )
         : SizedBox(
             width: screenWidth,
             height: screenHeight / 12,

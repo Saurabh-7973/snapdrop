@@ -179,104 +179,106 @@ class _QRScreenState extends State<QRScreen>
                           // Info Panel (Popup)
                           if (showInfoPanel)
                             Positioned(
-                              top: screenHeight *
-                                  0.001, // Adjust this value to move it up or down
-                              left: screenWidth *
-                                  0.08, // Optional: adjust horizontal position
+                              top: screenHeight * 0.001,
+                              left: screenWidth * 0.08,
                               child: GestureDetector(
-                                  onTap:
-                                      _toggleInfoPanel, // Dismiss when tapped outside
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: Center(
-                                      child: Container(
-                                        height: screenHeight / 2.8,
-                                        width: screenWidth / 1.3,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            // Close button (cross) positioned at the top right corner
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 20, right: 5),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    'Steps',
-                                                    style: ThemeConstant
-                                                        .smallTextSize
-                                                        .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize:
-                                                          18, // Increase size to make it stand out
-                                                    ),
+                                onTap: _toggleInfoPanel,
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: Center(
+                                    child: Container(
+                                      height: screenHeight / 2.8,
+                                      width: screenWidth / 1.3,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(15),
+                                        boxShadow: [
+                                          // ✅ Very Subtle Outer Highlight Glow
+                                          BoxShadow(
+                                            color: Colors.white.withOpacity(
+                                                0.3), // Light subtle glow
+                                            blurRadius: 25, // Soft spread
+                                            spreadRadius: 1, // Minimal spread
+                                            offset: Offset(
+                                                0, 2), // Slight lift effect
+                                          ),
+                                          // ✅ Maintain Depth Shadow (but very light)
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.04),
+                                            blurRadius: 12,
+                                            spreadRadius: 1,
+                                            offset: Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 20, right: 5, top: 5),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'Steps',
+                                                  style: ThemeConstant
+                                                      .smallTextSize
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18,
                                                   ),
-                                                  Align(
-                                                    alignment:
-                                                        Alignment.topRight,
-                                                    child: IconButton(
-                                                      icon: Icon(
-                                                        Icons.close,
-                                                        color: ThemeConstant
-                                                            .primaryAppColor,
-                                                      ),
-                                                      onPressed:
-                                                          _toggleInfoPanel,
-                                                    ),
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.close,
+                                                    color: ThemeConstant
+                                                        .primaryAppColor,
+                                                  ),
+                                                  onPressed: _toggleInfoPanel,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: SingleChildScrollView(
+                                              physics: BouncingScrollPhysics(),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  _buildStep(
+                                                    number: '1',
+                                                    title: 'Open Figma Plugin',
+                                                    description:
+                                                        'Open the Snapdrop Figma Plugin from the Figma community.',
+                                                  ),
+                                                  const SizedBox(height: 12),
+                                                  _buildStep(
+                                                    number: '2',
+                                                    title: 'Scan QR Code',
+                                                    description:
+                                                        'Point your camera at the QR code displayed in the app.',
+                                                  ),
+                                                  const SizedBox(height: 12),
+                                                  _buildStep(
+                                                    number: '3',
+                                                    title: 'Image Sync',
+                                                    description:
+                                                        'Your images will be transferred instantly to Figma.',
                                                   ),
                                                 ],
                                               ),
                                             ),
-
-                                            Expanded(
-                                              child: SingleChildScrollView(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    // Step 1
-                                                    _buildStep(
-                                                      number: '1',
-                                                      title:
-                                                          'Open Figma Plugin',
-                                                      description:
-                                                          'Open the Snapdrop Figma Plugin from the Figma community.',
-                                                    ),
-                                                    const SizedBox(height: 12),
-
-                                                    // Step 2
-                                                    _buildStep(
-                                                      number: '2',
-                                                      title: 'Scan QR Code',
-                                                      description:
-                                                          'Point your camera at the QR code displayed in the app.',
-                                                    ),
-                                                    const SizedBox(height: 12),
-
-                                                    // Step 3
-                                                    _buildStep(
-                                                      number: '3',
-                                                      title: 'Image Sync',
-                                                      description:
-                                                          'Your images will be transferred instantly to Figma.',
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  )),
+                                  ),
+                                ),
+                              ),
                             ),
                         ],
                       ),

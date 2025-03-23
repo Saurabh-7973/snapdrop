@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -9,11 +8,12 @@ import 'screen/home_screen.dart';
 import 'screen/onboard_screen.dart';
 import 'screen/qr_screen.dart';
 import 'utils/firebase_initalization_class.dart';
-
 import 'package:upgrader/upgrader.dart';
 
-//flutter localization
+// Flutter localization
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'utils/restart.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,11 +27,22 @@ void main() async {
   FirebaseInitalizationClass.remoteConfigUpdateValuesRealtime();
   FirebaseInitalizationClass.remoteConfigFetchAppVersion();
   await Upgrader.clearSavedSettings(); // REMOVE this for release builds
-  runApp(const MyApp());
+
+  // Load stored language before app starts
+  Locale locale = await getStoredLocale();
+  runApp(MyApp(initialLocale: locale));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final Locale initialLocale;
+
+  const MyApp({super.key, required this.initialLocale});
+
+  static void setLocale(BuildContext context, Locale locale) {
+    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
+    state?.changeLocale(locale);
+    RestartWidget.restartApp(context);
+  }
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -41,10 +52,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   ReceiveSharingIntent receiveSharingIntent = ReceiveSharingIntent.instance;
   bool? firstTimeAppOpen;
   StreamSubscription<List<SharedMediaFile>>? _intentDataStreamSubscription;
+  Locale _selectedLocale = const Locale('en'); // Default to English
 
   @override
   void initState() {
     super.initState();
+    _selectedLocale = widget.initialLocale;
     firstTimeInstallation();
     WidgetsBinding.instance.addObserver(this);
 
@@ -79,7 +92,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed && mounted) {
-      // Check if the widget is still mounted before navigating
       _intentDataStreamSubscription = receiveSharingIntent
           .getMediaStream()
           .listen((List<SharedMediaFile> listOfMedia) async {
@@ -101,17 +113,32 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
+  /// ✅ **Updates the language instantly**
+  void changeLocale(Locale locale) async {
+    await setStoredLocale(locale); // Save language preference
+    setState(() {
+      _selectedLocale = locale;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: const Locale('en'),
+      locale: _selectedLocale, // Dynamically change language
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
-      supportedLocales: const [Locale('en'), Locale('es')],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('es'),
+        Locale('zh'),
+        Locale('hi'),
+        Locale('fr'),
+        Locale('ar')
+      ],
       navigatorObservers: <NavigatorObserver>[
         FirebaseInitalizationClass.observer!
       ],
@@ -128,7 +155,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               );
             } else {
               return firstTimeAppOpen == true
-                  ? const OnboardScreen()
+                  ? const OnboardScreen() // Navigate to onboarding
                   : HomeScreen(
                       socketService: null,
                       isIntentSharing: false,
@@ -145,6 +172,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   firstTimeInstallation() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
     if (firstTimeAppOpen == null || firstTimeAppOpen == false) {
       await prefs.setBool('firstTimeAppOpen', true);
@@ -155,9 +183,23 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       FirebaseInitalizationClass.eventTracker(
           'app_launch', {'first_time': 'false'});
     }
+
     firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
     if (mounted) {
       setState(() {});
     }
   }
+}
+
+/// ✅ Get stored language from SharedPreferences
+Future<Locale> getStoredLocale() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? languageCode = prefs.getString('selectedLanguage');
+  return Locale(languageCode ?? 'en'); // Default to English
+}
+
+/// ✅ Save selected language
+Future<void> setStoredLocale(Locale locale) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('selectedLanguage', locale.languageCode);
 }

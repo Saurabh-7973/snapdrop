@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:Snapdrop/constant/global_showcase_key.dart';
@@ -43,6 +44,8 @@ class _QRScannerState extends State<QRScanner> {
   String? userId;
   bool connectionStatus = false;
   SocketService? socketService;
+  Timer? _timeoutTimer;
+  bool isTimeout = false;
 
   @override
   void initState() {
@@ -59,9 +62,29 @@ class _QRScannerState extends State<QRScanner> {
     });
   }
 
+  @override
+  void dispose() {
+    _timeoutTimer?.cancel();
+    _qrViewController?.dispose();
+    super.dispose();
+  }
+
   activateQrScanner() {
     setState(() {
-      scannerVisible = scannerVisible == true ? false : true;
+      scannerVisible = true;
+      isTimeout = false;
+    });
+
+    // Reset Timer
+    _timeoutTimer?.cancel();
+    _timeoutTimer = Timer(const Duration(seconds: 20), () {
+      if (result == null) {
+        _qrViewController?.pauseCamera();
+        setState(() {
+          isTimeout = true;
+          scannerVisible = false;
+        });
+      }
     });
   }
 
@@ -134,7 +157,8 @@ class _QRScannerState extends State<QRScanner> {
               const SizedBox(
                 height: 10,
               ),
-              if (result != null)
+              if (result != null &&
+                  result!.code.toString().split('=').length == 2)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -160,7 +184,10 @@ class _QRScannerState extends State<QRScanner> {
     qrViewController.scannedDataStream.listen((scanData) {
       setState(() {
         result = scanData;
+        isTimeout = false;
       });
+
+      _timeoutTimer?.cancel(); // Cancel the timeout when QR is scanned
       qrViewController.pauseCamera();
       connectSocket();
     });
@@ -216,25 +243,92 @@ class _QRScannerState extends State<QRScanner> {
       decoration: BoxDecoration(
           border: Border.all(color: Colors.grey, width: 2),
           borderRadius: BorderRadius.circular(15)),
-      child: scannerVisible == false
-          ? const Center(
-              child: CircleAvatar(
-                foregroundColor: Colors.transparent,
-                backgroundColor: Colors.transparent,
-                child: Icon(
-                  Icons.camera_alt_rounded,
-                  color: Colors.grey,
-                  size: 18,
+      child: isTimeout
+          ? AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.2),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 30,
+                    spreadRadius: 0,
+                    offset: const Offset(0, 20),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.timer_off_rounded,
+                      color: Colors.white.withOpacity(0.8),
+                      size: 38,
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      "Session Expired",
+                      style: ThemeConstant.smallTextSizeLight.copyWith(
+                        color: Colors.white.withOpacity(0.9),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      "No QR Code was scanned.\nTap below to restart.",
+                      textAlign: TextAlign.center,
+                      style: ThemeConstant.smallTextSizeLight.copyWith(
+                        color: Colors.white.withOpacity(0.6),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        activateQrScanner();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ThemeConstant.primaryAppColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        minimumSize: const Size(double.infinity, 45),
+                      ),
+                      child: Text(
+                        "Restart Scan",
+                        style: ThemeConstant.smallTextSizeWhiteFontWidth,
+                      ),
+                    )
+                  ],
                 ),
               ),
             )
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: QRView(
-                key: qrKey,
-                onQRViewCreated: _onQRViewController,
-              ),
-            ),
+          : scannerVisible == false
+              ? const Center(
+                  child: CircleAvatar(
+                    foregroundColor: Colors.transparent,
+                    backgroundColor: Colors.transparent,
+                    child: Icon(
+                      Icons.camera_alt_rounded,
+                      color: Colors.grey,
+                      size: 18,
+                    ),
+                  ),
+                )
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: QRView(
+                    key: qrKey,
+                    onQRViewCreated: _onQRViewController,
+                  ),
+                ),
     );
   }
 

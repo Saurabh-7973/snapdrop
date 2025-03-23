@@ -126,7 +126,7 @@ class _DropDownViewState extends State<DropDownView> {
                     children: [
                       Showcase(
                         targetPadding: const EdgeInsets.symmetric(
-                            horizontal: 2, vertical: 0),
+                            horizontal: 0, vertical: 0),
                         key: GlobalShowcaseKeys.showcaseOne,
                         tooltipBackgroundColor: const Color(0xff161616),
                         textColor: ThemeConstant.whiteColor,
@@ -136,6 +136,7 @@ class _DropDownViewState extends State<DropDownView> {
                         onBarrierClick: () => debugPrint('menu clicked'),
                         child: SizedBox(
                           width: screenWidth / 1.08,
+                          height: 50,
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton2<AssetPathEntity>(
                               key: ValueKey(filteredAlbumList.length),
@@ -330,6 +331,9 @@ class _DropDownViewState extends State<DropDownView> {
                       const Spacer(),
                     ],
                   ),
+        SizedBox(
+          height: 10,
+        ),
         hasNoData == true
             ? Expanded(
                 child: Column(
