@@ -17,7 +17,7 @@ class ThemeConstant {
 
   // Text styles
   static const TextStyle largeTextSize = TextStyle(
-    fontSize: 40.0, // Use double precision for better rendering
+    fontSize: 42.0, // Use double precision for better rendering
     color: whiteColor,
     fontWeight: FontWeight.w600,
     fontFamily: 'Inter',

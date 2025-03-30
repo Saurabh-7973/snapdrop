@@ -1,121 +1,339 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:flutter/services.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
-import '../widgets/app_bar_widget.dart';
-import '../widgets/figma_display_helper.dart';
-import '../widgets/hero_text.dart';
-import '../widgets/qr_scanner.dart';
 
 //flutter localization
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../floating_squares.dart';
+import '../widgets/app_bar_widget.dart';
+import '../widgets/hero_text.dart';
+import '../widgets/qr_scanner.dart';
 
 class QRScreen extends StatefulWidget {
   List<AssetEntity>? selectedAssetList;
   bool isIntentSharing = false;
   List<SharedMediaFile>? listOfMedia;
 
-  QRScreen(
-      {super.key,
-      this.selectedAssetList,
-      required this.isIntentSharing,
-      this.listOfMedia});
+  QRScreen({
+    super.key,
+    this.selectedAssetList,
+    required this.isIntentSharing,
+    this.listOfMedia,
+  });
 
   @override
   State<QRScreen> createState() => _QRScreenState();
 }
 
-class _QRScreenState extends State<QRScreen> {
+class _QRScreenState extends State<QRScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  bool showInfoPanel = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    _scaleAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutBack,
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _toggleInfoPanel() {
+    HapticFeedback.lightImpact();
+    setState(() {
+      showInfoPanel = !showInfoPanel;
+    });
+  }
+
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: ThemeConstant.primaryAppColor,
+            title: const Text('Exit Confirmation'),
+            content: const Text('Do you really want to leave the QR screen?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Exit'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: ThemeConstant.primaryAppColor,
-      child: SafeArea(
-        left: false,
-        right: false,
-        bottom: false,
-        child: Container(
-          decoration: ThemeConstant.appBackgroundGradient,
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                children: [
-                  Stack(
-                    children: [
-                      const AppBarWidget(),
-                      Column(
-                        children: [
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Align(
-                            alignment: Alignment.bottomRight,
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              ThemeConstant.primaryAppColor,
+              ThemeConstant.primaryAppColorGradient2,
+              ThemeConstant.primaryAppColorGradient3
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Stack(
+            children: [
+              // Floating Triangles
+              Positioned.fill(
+                child: const FloatingSquares(),
+              ),
+
+              // Header
+              Padding(
+                padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Stack(
+                      children: [
+                        AppBarWidget(
+                          showBackButton: true,
+                          onBack: () => Navigator.pop(context),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 10),
                             child: InkWell(
-                              onTap: () {
-                                var snackbarLimit = SnackBar(
-                                  backgroundColor:
-                                      ThemeConstant.primaryAppColor,
-                                  content: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      AppLocalizations.of(context)!
-                                          .qr_screen_info_button,
-                                      style: ThemeConstant.smallTextSizeLight,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                );
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackbarLimit);
-                              },
-                              child: const Icon(
-                                Icons.info_outline_rounded,
+                              onTap: _toggleInfoPanel,
+                              child: Icon(
+                                showInfoPanel
+                                    ? Icons.qr_code_scanner_rounded
+                                    : Icons.info_outline_rounded,
                                 color: Colors.white,
                                 size: 28,
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  HeroText(
+                        ),
+                      ],
+                    ),
+
+                    // Hero Text
+                    HeroText(
                       firstLine:
                           AppLocalizations.of(context)!.qr_screen_herotext_1,
                       secondLine:
                           AppLocalizations.of(context)!.qr_screen_herotext_2,
-                      thirdLine: ""),
-                  const FigmaDisplayHelper(),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  widget.isIntentSharing == true
-                      ? Expanded(
-                          flex: 6,
-                          child: QRScanner(
-                            isIntentSharing: widget.isIntentSharing,
-                            listOfMedia: widget.listOfMedia,
+                      thirdLine: '',
+                    ),
+
+                    // QR Scanner and Info Panel (overlapping)
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          // QR Scanner
+                          Positioned.fill(
+                            child: widget.isIntentSharing
+                                ? QRScanner(
+                                    isIntentSharing: widget.isIntentSharing,
+                                    listOfMedia: widget.listOfMedia,
+                                  )
+                                : ShowCaseWidget(
+                                    blurValue: 1,
+                                    builder: (context) => QRScanner(
+                                      isIntentSharing: widget.isIntentSharing,
+                                      selectedAssetList:
+                                          widget.selectedAssetList!,
+                                    ),
+                                  ),
                           ),
-                        )
-                      : Expanded(
-                          flex: 6,
-                          child: ShowCaseWidget(
-                            blurValue: 1,
-                            builder: (context) => QRScanner(
-                              isIntentSharing: widget.isIntentSharing,
-                              selectedAssetList: widget.selectedAssetList!,
+                          // Info Panel (Popup)
+                          if (showInfoPanel)
+                            Positioned(
+                              top: screenHeight * 0.001,
+                              left: screenWidth * 0.08,
+                              child: GestureDetector(
+                                onTap: _toggleInfoPanel,
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: Center(
+                                    child: Container(
+                                      height: screenHeight / 2.8,
+                                      width: screenWidth / 1.3,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(15),
+                                        boxShadow: [
+                                          // ✅ Very Subtle Outer Highlight Glow
+                                          BoxShadow(
+                                            color: Colors.white.withOpacity(
+                                                0.3), // Light subtle glow
+                                            blurRadius: 25, // Soft spread
+                                            spreadRadius: 1, // Minimal spread
+                                            offset: Offset(
+                                                0, 2), // Slight lift effect
+                                          ),
+                                          // ✅ Maintain Depth Shadow (but very light)
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.04),
+                                            blurRadius: 12,
+                                            spreadRadius: 1,
+                                            offset: Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 20, right: 5, top: 5),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'Steps',
+                                                  style: ThemeConstant
+                                                      .smallTextSize
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.close,
+                                                    color: ThemeConstant
+                                                        .primaryAppColor,
+                                                  ),
+                                                  onPressed: _toggleInfoPanel,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: SingleChildScrollView(
+                                              physics: BouncingScrollPhysics(),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  _buildStep(
+                                                    number: '1',
+                                                    title: 'Open Figma Plugin',
+                                                    description:
+                                                        'Open the Snapdrop Figma Plugin from the Figma community.',
+                                                  ),
+                                                  const SizedBox(height: 12),
+                                                  _buildStep(
+                                                    number: '2',
+                                                    title: 'Scan QR Code',
+                                                    description:
+                                                        'Point your camera at the QR code displayed in the app.',
+                                                  ),
+                                                  const SizedBox(height: 12),
+                                                  _buildStep(
+                                                    number: '3',
+                                                    title: 'Image Sync',
+                                                    description:
+                                                        'Your images will be transferred instantly to Figma.',
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStep({
+    required String number,
+    required String title,
+    required String description,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Step Number
+          CircleAvatar(
+            backgroundColor: ThemeConstant.primaryAppColor,
+            radius: 14,
+            child: Text(
+              number,
+              style: ThemeConstant.smallTextSize.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-        ),
+          const SizedBox(width: 12),
+
+          // Step Description
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: ThemeConstant.smallTextSize.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4),
+                Text(description,
+                    style: ThemeConstant.smallTextSizeLight.copyWith(
+                      color: Colors.black.withOpacity(0.9),
+                    )),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

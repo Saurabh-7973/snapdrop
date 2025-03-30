@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
+import '../floating_squares.dart';
 import '../services/socket_service.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/dropdown_view.dart';
@@ -41,38 +42,43 @@ class _HomeScreenState extends State<HomeScreen> {
         bottom: false,
         child: Container(
           decoration: ThemeConstant.appBackgroundGradient,
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                children: [
-                  const AppBarWidget(),
-                  Expanded(
-                    flex: 3,
-                    child: HeroText(
-                      firstLine:
-                          AppLocalizations.of(context)!.home_screen_herotext_1,
-                      secondLine:
-                          AppLocalizations.of(context)!.home_screen_herotext_2,
-                      thirdLine:
-                          AppLocalizations.of(context)!.home_screen_herotext_3,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 9,
-                    child: ShowCaseWidget(
-                      blurValue: 1,
-                      builder: (context) => DropDownView(
-                        socketService: widget.socketService,
-                        isIntentSharing: widget.isIntentSharing,
+          child: Stack(
+            children: [
+              const FloatingSquares(),
+              Scaffold(
+                backgroundColor: Colors.transparent,
+                body: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                      const AppBarWidget(),
+                      Expanded(
+                        flex: 4,
+                        child: HeroText(
+                          firstLine: AppLocalizations.of(context)!
+                              .home_screen_herotext_1,
+                          secondLine: AppLocalizations.of(context)!
+                              .home_screen_herotext_2,
+                          thirdLine: AppLocalizations.of(context)!
+                              .home_screen_herotext_3,
+                        ),
                       ),
-                      autoPlayDelay: const Duration(seconds: 3),
-                    ),
+                      Expanded(
+                        flex: 9,
+                        child: ShowCaseWidget(
+                          blurValue: 1,
+                          builder: (context) => DropDownView(
+                            socketService: widget.socketService,
+                            isIntentSharing: widget.isIntentSharing,
+                          ),
+                          autoPlayDelay: const Duration(seconds: 3),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),

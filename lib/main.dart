@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:Snapdrop/services/check_app_version.dart';
 import 'package:Snapdrop/services/selected_language.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +8,11 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'screen/home_screen.dart';
-import 'screen/language_selection.dart';
+import 'screen/onboard_screen.dart';
 import 'screen/qr_screen.dart';
 import 'utils/firebase_initalization_class.dart';
 import 'package:flutter_upgrade_version/flutter_upgrade_version.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final List<Locale> appLocales = [
   const Locale('en'),
@@ -23,15 +25,16 @@ final List<Locale> appLocales = [
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await FirebaseInitalizationClass.initalizeFireBase();
   FirebaseInitalizationClass.initalizeFireBaseAnalytics();
   FirebaseInitalizationClass.enableDataCollection();
   FirebaseInitalizationClass.catchFatalErrors();
   FirebaseInitalizationClass.catchAsynchronusErrors();
-  //FirebaseInitalizationClass.remoteConfigInitialization();
-  //FirebaseInitalizationClass.remoteConfigGetDefaultValues();
-  //FirebaseInitalizationClass.remoteConfigUpdateValuesRealtime();
-  //FirebaseInitalizationClass.remoteConfigFetchAppVersion();
+  FirebaseInitalizationClass.remoteConfigInitialization();
+  FirebaseInitalizationClass.remoteConfigGetDefaultValues();
+  FirebaseInitalizationClass.remoteConfigUpdateValuesRealtime();
+  FirebaseInitalizationClass.remoteConfigFetchAppVersion();
 
   runApp(MyApp());
 }
@@ -155,7 +158,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               );
             } else {
               return firstTimeAppOpen == true
-                  ? LanguageSelectionScreen()
+                  ? const OnboardScreen()
                   : HomeScreen(
                       socketService: null,
                       isIntentSharing: false,

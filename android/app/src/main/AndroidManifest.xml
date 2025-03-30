@@ -2,6 +2,7 @@
     package="com.saurabh7973.snapdrop">
 
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="Snapdrop"

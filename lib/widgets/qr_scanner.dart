@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:Snapdrop/constant/global_showcase_key.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+// import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -43,30 +45,48 @@ class _QRScannerState extends State<QRScanner> {
   String? userId;
   bool connectionStatus = false;
   SocketService? socketService;
+  Timer? _timeoutTimer;
+  bool isTimeout = false;
 
   @override
   void initState() {
     super.initState();
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
-        if (mounted) {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            ShowCaseWidget.of(context)
-                .startShowCase([GlobalShowcaseKeys.showcaseFour]);
-          });
-        }
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          ShowCaseWidget.of(context)
+              .startShowCase([GlobalShowcaseKeys.showcaseFour]);
+        });
       } else {
         activateQrScanner();
       }
     });
   }
 
+  @override
+  void dispose() {
+    _timeoutTimer?.cancel();
+    _qrViewController?.dispose();
+    super.dispose();
+  }
+
   activateQrScanner() {
-    if (mounted) {
-      setState(() {
-        scannerVisible = scannerVisible == true ? false : true;
-      });
-    }
+    setState(() {
+      scannerVisible = true;
+      isTimeout = false;
+    });
+
+    // Reset Timer
+    _timeoutTimer?.cancel();
+    _timeoutTimer = Timer(const Duration(seconds: 20), () {
+      if (result == null) {
+        _qrViewController?.pauseCamera();
+        setState(() {
+          isTimeout = true;
+          scannerVisible = false;
+        });
+      }
+    });
   }
 
   @override
@@ -103,7 +123,7 @@ class _QRScannerState extends State<QRScanner> {
                 textColor: ThemeConstant.whiteColor,
                 title: "Connect Button",
                 description: 'Indicates successful QR code scan',
-                //onBarrierClick: () => debugPrint('qr connect clicked'),
+                onBarrierClick: () => debugPrint('qr connect clicked'),
                 child: qrConnectButton(screenWidth)),
         const SizedBox(
           height: 45,
@@ -138,7 +158,8 @@ class _QRScannerState extends State<QRScanner> {
               const SizedBox(
                 height: 10,
               ),
-              if (result != null)
+              if (result != null &&
+                  result!.code.toString().split('=').length == 2)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -162,11 +183,12 @@ class _QRScannerState extends State<QRScanner> {
   void _onQRViewController(QRViewController qrViewController) {
     _qrViewController = qrViewController;
     qrViewController.scannedDataStream.listen((scanData) {
-      if (mounted) {
-        setState(() {
-          result = scanData;
-        });
-      }
+      setState(() {
+        result = scanData;
+        isTimeout = false;
+      });
+
+      _timeoutTimer?.cancel(); // Cancel the timeout when QR is scanned
       qrViewController.pauseCamera();
       connectSocket();
     });
@@ -178,13 +200,11 @@ class _QRScannerState extends State<QRScanner> {
     socketService = SocketService(url: '${result!.code}');
     socketService!.connectToSocketServer();
 
-    if (mounted) {
-      setState(() {
-        socketService != null
-            ? connectionStatus = true
-            : connectionStatus = false;
-      });
-    }
+    setState(() {
+      socketService != null
+          ? connectionStatus = true
+          : connectionStatus = false;
+    });
 
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -224,25 +244,92 @@ class _QRScannerState extends State<QRScanner> {
       decoration: BoxDecoration(
           border: Border.all(color: Colors.grey, width: 2),
           borderRadius: BorderRadius.circular(15)),
-      child: scannerVisible == false
-          ? const Center(
-              child: CircleAvatar(
-                foregroundColor: Colors.transparent,
-                backgroundColor: Colors.transparent,
-                child: Icon(
-                  Icons.camera_alt_rounded,
-                  color: Colors.grey,
-                  size: 18,
+      child: isTimeout
+          ? AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.2),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 30,
+                    spreadRadius: 0,
+                    offset: const Offset(0, 20),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.timer_off_rounded,
+                      color: Colors.white.withOpacity(0.8),
+                      size: 38,
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      "Session Expired",
+                      style: ThemeConstant.smallTextSizeLight.copyWith(
+                        color: Colors.white.withOpacity(0.9),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      "No QR Code was scanned.\nTap below to restart.",
+                      textAlign: TextAlign.center,
+                      style: ThemeConstant.smallTextSizeLight.copyWith(
+                        color: Colors.white.withOpacity(0.6),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        activateQrScanner();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ThemeConstant.primaryAppColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        minimumSize: const Size(double.infinity, 45),
+                      ),
+                      child: Text(
+                        "Restart Scan",
+                        style: ThemeConstant.smallTextSizeWhiteFontWidth,
+                      ),
+                    )
+                  ],
                 ),
               ),
             )
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: QRView(
-                key: qrKey,
-                onQRViewCreated: _onQRViewController,
-              ),
-            ),
+          : scannerVisible == false
+              ? const Center(
+                  child: CircleAvatar(
+                    foregroundColor: Colors.transparent,
+                    backgroundColor: Colors.transparent,
+                    child: Icon(
+                      Icons.camera_alt_rounded,
+                      color: Colors.grey,
+                      size: 18,
+                    ),
+                  ),
+                )
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: QRView(
+                    key: qrKey,
+                    onQRViewCreated: _onQRViewController,
+                  ),
+                ),
     );
   }
 

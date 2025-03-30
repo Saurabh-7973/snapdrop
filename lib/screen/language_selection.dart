@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constant/theme_contants.dart';
+import '../floating_squares.dart'; // Importing FloatingSquares
 import '../main.dart';
 import '../services/selected_language.dart';
 import '../widgets/app_bar_widget.dart';
@@ -26,81 +27,60 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
   ];
 
   int? _selectedLanguageIndex;
-  bool _isExpanded = false;
-  late AnimationController _controller;
-  late Animation<double> _animation;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _loadSelectedLanguage();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   Future<void> _loadSelectedLanguage() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    _selectedLanguageIndex = prefs.getInt('selectedLanguageIndex');
-    if (mounted) {
-      setState(() {}); // Rebuild to reflect any saved language selection
-    }
+    setState(() {
+      _selectedLanguageIndex = prefs.getInt('selectedLanguageIndex');
+    });
+  }
+
+  Future<void> _changeLanguage(int index) async {
+    setState(() => _isLoading = true);
+    Locale newLocale = languages[index]['locale'];
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('selectedLanguageIndex', index);
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    MyApp.setLocale(context, newLocale);
+    setState(() => _isLoading = false);
   }
 
   void _onContinue() {
-    if (mounted) {
-      setState(() {
-        _isExpanded = true;
-      });
-    }
-    _controller.forward();
-
-    Future.delayed(const Duration(milliseconds: 500), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => const OnboardScreen(),
-        ),
-      );
-    });
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const OnboardScreen()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Container(
-        color: ThemeConstant.primaryAppColor,
-        child: SafeArea(
-          left: false,
-          right: false,
-          bottom: false,
-          child: Container(
-            decoration: ThemeConstant.appBackgroundGradient,
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    const AppBarWidget(),
-                    Expanded(
-                      flex: 2,
-                      child: AnimatedScale(
-                        duration: const Duration(milliseconds: 300),
-                        scale: _selectedLanguageIndex == null ? 1 : 1.1,
+
+    return Stack(
+      children: [
+        Positioned.fill(child: FloatingSquares()), // Ensuring full background
+        Container(
+          color: ThemeConstant.primaryAppColor,
+          child: SafeArea(
+            child: Container(
+              decoration: ThemeConstant.appBackgroundGradient,
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      const AppBarWidget(),
+                      Expanded(
+                        flex: 2,
                         child: HeroText(
                           firstLine: AppLocalizations.of(context)!
                               .language_selection_herotext_1,
@@ -109,15 +89,11 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                           thirdLine: '',
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
+                      Expanded(
+                        flex: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 50.0),
                           child: GridView.builder(
-                            key: ValueKey<int?>(_selectedLanguageIndex),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
@@ -130,19 +106,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                               bool isSelected = index == _selectedLanguageIndex;
 
                               return GestureDetector(
-                                onTap: () async {
-                                  _selectedLanguageIndex = index;
-                                  Locale newLocale = languages[index]['locale'];
-                                  MyApp.setLocale(context, newLocale);
-                                  final SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
-                                  await prefs.setInt(
-                                      'selectedLanguageIndex', index);
-                                  if (mounted) {
-                                    setState(
-                                        () {}); // Rebuild the widget tree to reflect language change
-                                  }
-                                },
+                                onTap: () => _changeLanguage(index),
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 300),
                                   curve: Curves.easeInOut,
@@ -152,31 +116,21 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                                       : Matrix4.identity(),
                                   decoration: BoxDecoration(
                                     color: isSelected
-                                        ? Colors.white
+                                        ? ThemeConstant.primaryAppColor
                                         : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(30),
-                                    boxShadow: [
-                                      if (isSelected)
-                                        const BoxShadow(
-                                          color: Colors.black26,
-                                          blurRadius: 10,
-                                          offset: Offset(0, 4),
-                                        ),
-                                    ],
+                                    borderRadius: BorderRadius.circular(15),
                                     border: Border.all(
                                       color: isSelected
                                           ? ThemeConstant.primaryAppColor
-                                          : Colors.white,
+                                          : Colors.white.withOpacity(0.5),
+                                      width: isSelected ? 2.5 : 1,
                                     ),
                                   ),
                                   child: Center(
                                     child: Text(
                                       languages[index]['title']!,
-                                      style: isSelected
-                                          ? ThemeConstant
-                                              .smallTextSizeDarkFontWidth
-                                          : ThemeConstant
-                                              .smallTextSizeWhiteFontWidth,
+                                      style: ThemeConstant
+                                          .smallTextSizeWhiteFontWidth,
                                     ),
                                   ),
                                 ),
@@ -185,34 +139,30 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Center(
-                      // Ensure the button is centered on the screen
-                      child: Container(
-                        width: screenWidth / 3, // Set to the desired width
-                        height: screenHeight / 16, // Set to the desired height
+                      const SizedBox(height: 20),
+                      Center(
                         child: GestureDetector(
-                          onTap: _onContinue, // Your onTap action
-                          child: Container(
+                          onTap: _onContinue,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            width: screenWidth / 3,
+                            height: screenHeight / 16,
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.white,
-                                  Colors.white
-                                ], // Static color
+                                  Colors.white.withOpacity(0.9),
+                                  Colors.white.withOpacity(0.95),
+                                ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
-                              border: Border.all(color: Colors.white),
-                              borderRadius: BorderRadius.circular(
-                                  30), // Static border radius
+                              borderRadius: BorderRadius.circular(30),
                             ),
                             child: Center(
                               child: Text(
                                 AppLocalizations.of(context)!
                                     .language_selection_continue,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
@@ -221,15 +171,20 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                             ),
                           ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
+        if (_isLoading)
+          Container(
+            color: Colors.black.withOpacity(0.5),
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+      ],
     );
   }
 }
