@@ -10,6 +10,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'screen/home_screen.dart';
 import 'screen/onboard_screen.dart';
 import 'screen/qr_screen.dart';
+import 'services/jailbreak_detector.dart';
+import 'services/telsec_raspfree_checker.dart';
 import 'utils/firebase_initalization_class.dart';
 import 'package:flutter_upgrade_version/flutter_upgrade_version.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -25,6 +27,8 @@ final List<Locale> appLocales = [
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //TelsecRaspfreeChecker().automatedSecurityCheck();
+  await JailbreakDetector.checkJailbreakStatus();
   await dotenv.load(fileName: ".env");
   await FirebaseInitalizationClass.initalizeFireBase();
   FirebaseInitalizationClass.initalizeFireBaseAnalytics();
