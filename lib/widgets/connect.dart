@@ -93,7 +93,7 @@ class _SendButtonState extends State<SendButton> {
             //App Share Widget
             showDialog(
               context: context,
-              builder: (BuildContext context) => ShareAppDialog(),
+              builder: (BuildContext context) => ShareAppScreen(),
             );
 
             //Event (App share)
@@ -141,7 +141,7 @@ class _SendButtonState extends State<SendButton> {
             //App Share Widget
             showDialog(
               context: context,
-              builder: (BuildContext context) => ShareAppDialog(),
+              builder: (BuildContext context) => ShareAppScreen(),
             );
 
             //Event (App share)

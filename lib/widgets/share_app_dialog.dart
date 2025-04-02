@@ -1,106 +1,142 @@
 import 'package:flutter/material.dart';
 import 'package:Snapdrop/services/app_share_service.dart';
-import '../constant/theme_contants.dart';
 
-//flutter localization
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-class ShareAppDialog extends StatelessWidget {
-  const ShareAppDialog({Key? key});
+class ShareAppScreen extends StatelessWidget {
+  const ShareAppScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      surfaceTintColor: ThemeConstant.greenAccentColor,
-      shadowColor: ThemeConstant.primaryAppColor,
-      backgroundColor: Colors.black12,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      //backgroundColor: ThemeConstant.primaryAppColor,
-      elevation: 0,
-      child: Container(
-        decoration: ThemeConstant.appBackgroundGradient
-            .copyWith(borderRadius: BorderRadius.circular(15)),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+    return Scaffold(
+      backgroundColor: Colors.black.withOpacity(0.9), // Dark overlay
+      body: Stack(
+        children: [
+          // Main Content
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.share,
-                size: 64,
-                color: ThemeConstant.greenAccentColor,
+              // App Logo / Icon
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withOpacity(0.1),
+                  ),
+                  child: Icon(
+                    Icons.share_rounded,
+                    size: 60,
+                    color: Colors.white,
+                  ),
+                ),
               ),
-              const SizedBox(height: 24),
-              Text(
-                AppLocalizations.of(context)!.app_share_dialog_text_1,
-                style: ThemeConstant.largeTextSize
-                    .copyWith(color: ThemeConstant.whiteColor),
-                textAlign: TextAlign.center,
+              const SizedBox(height: 20),
+
+              // Headline
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Text(
+                  "🚀 Love Snapdrop? Spread the Word!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
-              const SizedBox(height: 16),
-              Text(
-                AppLocalizations.of(context)!.app_share_dialog_text_2,
-                style: ThemeConstant.smallTextSize
-                    .copyWith(color: ThemeConstant.whiteColor),
-                textAlign: TextAlign.center,
+              const SizedBox(height: 12),
+
+              // Subtext
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Text(
+                  "Help your designer friends make their workflow seamless! Sharing takes just a tap. 😃",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white70,
+                  ),
+                ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 30),
+
+              // Share Buttons
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: ThemeConstant.primaryAppColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 26, vertical: 16),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      AppShareService().shareApp(context);
-                    },
-                    child: Text(
-                      AppLocalizations.of(context)!
-                          .app_share_dialog_share_now_button,
-                      style: const TextStyle(
+                  // _buildShareButton(Icons.whatsapp, "WhatsApp"),
+                  // const SizedBox(width: 15),
+                  // _buildShareButton(Icons.telegram, "Telegram"),
+                  // const SizedBox(width: 15),
+                  // _buildShareButton(Icons.copy, "Copy Link"),
+                ],
+              ),
+              const SizedBox(height: 40),
+
+              // Share Now Button
+              ElevatedButton(
+                onPressed: () {
+                  AppShareService().shareApp(context);
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.greenAccent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                  child: Text(
+                    "Share Now 🚀",
+                    style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
+                        color: Colors.black),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          side: const BorderSide(color: Colors.white, width: 2),
-                        ),
-                      ),
-                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                        const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 15),
-                      ),
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!
-                          .app_share_dialog_maybe_later_button,
-                      style: ThemeConstant.smallTextSizeWhiteFontWidth
-                          .copyWith(color: Colors.white),
-                    ),
-                  ),
-                ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Maybe Later Option
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  "Maybe Later",
+                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                ),
               ),
             ],
           ),
+
+          // Close Button (Top Right)
+          Positioned(
+            top: 40,
+            right: 20,
+            child: IconButton(
+              icon: Icon(Icons.close, color: Colors.white, size: 30),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Share Icon Button
+  Widget _buildShareButton(IconData icon, String platform) {
+    return GestureDetector(
+      onTap: () {
+        // Implement sharing logic for each platform
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white.withOpacity(0.2),
         ),
+        child: Icon(icon, color: Colors.white, size: 30),
       ),
     );
   }

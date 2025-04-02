@@ -27,7 +27,7 @@ final List<Locale> appLocales = [
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //TelsecRaspfreeChecker().automatedSecurityCheck();
+  // TelsecRaspfreeChecker().automatedSecurityCheck();
   await JailbreakDetector.checkJailbreakStatus();
   await dotenv.load(fileName: ".env");
   await FirebaseInitalizationClass.initalizeFireBase();

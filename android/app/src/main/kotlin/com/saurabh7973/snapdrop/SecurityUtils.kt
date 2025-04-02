@@ -7,7 +7,8 @@ import java.security.MessageDigest
 
 class SecurityUtils {
     companion object {
-        private const val EXPECTED_SIGNATURE = "3A:72:93:F2:13:B4:42:B3:4D:03:D8:39:05:54:14:14:AA:80:6B:5E:7F:55:84:E7:94:D1:0B:90:C1:A7:21:CA" // Replace with your actual signature
+        private const val EXPECTED_SIGNATURE = "B8:06:6B:92:65:E9:E1:64:B8:A8:29:E1:A9:E6:FC:CB:4A:A4:23:BF:D1:30:56:53:CC:99:19:0E:08:C0:FD:9A"
+
 
         fun isAppSignatureValid(packageManager: PackageManager, packageName: String): Boolean {
             return try {
