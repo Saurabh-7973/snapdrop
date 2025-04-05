@@ -1,23 +1,37 @@
-# name: Flutter CI/CD
+name: Flutter CI/CD
 
-# on:
-#   push:
-#     branches: [saurabh_dev]
+on:
+  push:
+    branches: [ saurabh_dev ]
+  pull_request:
+    branches: [ saurabh_dev ]
 
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
+jobs:
+  build:
 
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v2
-      
-#     - name: Setup Flutter
-#       uses: subosito/flutter-action@v1
-      
-#     - name: Get dependencies
-#       run: flutter pub get
-      
-#     - name: Build and test
-#       run: |
-#         flutter build apk
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v3
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.5' # or 3.29.x when fully stable in GitHub Actions
+
+    - name: Install Dependencies
+      run: flutter pub get
+
+    - name: Analyze Code
+      run: flutter analyze
+
+    - name: Build APK
+      run: flutter build apk --release
+
+    # Optional: Upload artifact
+    - name: Upload Build
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
