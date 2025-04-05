@@ -31,14 +31,14 @@ class MainActivity : FlutterActivity() {
         var securityMessage: String? = null
 
         // Developer Mode Detection  
-        if (DeveloperModeChecker.isDeveloperModeEnabled(this)) {
-            securityMessage = "Developer Mode is enabled. This app cannot run on devices with Developer Mode enabled."
-        }
+        //if (DeveloperModeChecker.isDeveloperModeEnabled(this)) {
+        //    securityMessage = "Developer Mode is enabled. This app cannot run on devices with Developer Mode enabled."
+        //}
 
         // Tamper Detection
-        if (!SecurityUtils.isAppSignatureValid(packageManager, packageName)) {
-            securityMessage = "This app's integrity has been compromised. Please install a legitimate version from the Play Store."
-        }
+        //if (!SecurityUtils.isAppSignatureValid(packageManager, packageName)) {
+        //    securityMessage = "This app's integrity has been compromised. Please install a legitimate version from the Play Store."
+        //}
 
         // Emulator Detection
         if (EmulatorChecker.isEmulator()) {

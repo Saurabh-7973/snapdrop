@@ -14,9 +14,7 @@ import '../services/check_internet_connectivity.dart';
 import '../services/first_time_login.dart';
 import '../services/socket_service.dart';
 import '../utils/firebase_initalization_class.dart';
-
-//flutter localization
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 import 'share_app_dialog.dart';
 

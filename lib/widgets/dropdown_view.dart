@@ -18,9 +18,7 @@ import '../services/first_time_login.dart';
 import '../services/media_provider.dart';
 import '../services/permission_provider.dart';
 import '../services/socket_service.dart';
-
-//flutter localization
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 class DropDownView extends StatefulWidget {
   // bool isTransferCompleted;

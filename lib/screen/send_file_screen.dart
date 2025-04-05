@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -7,9 +6,7 @@ import 'package:showcaseview/showcaseview.dart';
 import '../constant/theme_contants.dart';
 import '../floating_squares.dart';
 import '../services/socket_service.dart';
-
-//flutter localization
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 import '../widgets/app_bar_widget.dart';
 import '../widgets/connect.dart';

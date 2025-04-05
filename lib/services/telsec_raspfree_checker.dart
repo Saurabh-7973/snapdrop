@@ -1,7 +1,15 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:freerasp/freerasp.dart';
 
+import '../main.dart';
+import '../widgets/security_screen.dart';
+
 class TelsecRaspfreeChecker {
+  final BuildContext context;
+
+  TelsecRaspfreeChecker(this.context);
+
   Future<void> automatedSecurityCheck() async {
     // Convert SHA-256 hash to Base64 (Ensure the format is correct)
     String base64Hash = hashConverter.fromSha256toBase64(
@@ -18,42 +26,24 @@ class TelsecRaspfreeChecker {
         teamId: 'YOUR APP STORE TEAM ID HERE',
       ),
       isProd: true,
-      watcherMail:
-          'saurabhupadhyay7973developers@gmail.com', // Change to your email if needed
+      watcherMail: 'saurabhupadhyay7973developers@gmail.com',
     );
 
     // Define security threat responses
     final callback = ThreatCallback(
-      onAppIntegrity: () {
-        logSecurityIssue("App integrity compromised! Exiting...");
-      },
-      onObfuscationIssues: () {
-        logSecurityIssue("Code obfuscation issues detected!");
-      },
-      onDebug: () {
-        logSecurityIssue("Debugger detected!");
-      },
-      onDeviceBinding: () {
-        logSecurityIssue("Device binding issue detected!");
-      },
-      onDeviceID: () {
-        logSecurityIssue("Device ID manipulation detected!");
-      },
-      onHooks: () {
-        logSecurityIssue("Hooking detected!");
-      },
-      onPrivilegedAccess: () {
-        logSecurityIssue("Root/jailbreak detected!");
-      },
-      onSecureHardwareNotAvailable: () {
-        logSecurityIssue("Secure hardware is missing!");
-      },
-      onSimulator: () {
-        logSecurityIssue("Running on an emulator!");
-      },
-      onUnofficialStore: () {
-        logSecurityIssue("App installed from an unofficial store!");
-      },
+      onAppIntegrity: () => logSecurityIssue("App integrity compromised!"),
+      onObfuscationIssues: () =>
+          logSecurityIssue("Code obfuscation issues detected!"),
+      onDebug: () => logSecurityIssue("Debugger detected!"),
+      onDeviceBinding: () => logSecurityIssue("Device binding issue detected!"),
+      onDeviceID: () => logSecurityIssue("Device ID manipulation detected!"),
+      onHooks: () => logSecurityIssue("Hooking detected!"),
+      onPrivilegedAccess: () => logSecurityIssue("Root/jailbreak detected!"),
+      onSecureHardwareNotAvailable: () =>
+          logSecurityIssue("Secure hardware is missing!"),
+      onSimulator: () => logSecurityIssue("Running on an emulator!"),
+      onUnofficialStore: () =>
+          logSecurityIssue("App installed from an unofficial store!"),
     );
 
     // Attach the listener first
@@ -63,10 +53,12 @@ class TelsecRaspfreeChecker {
     await Talsec.instance.start(config);
   }
 
-// Helper function to handle security threats
+  // Show Security Warning Screen Instead of Exiting Immediately
   void logSecurityIssue(String message) {
-    Future.delayed(Duration(seconds: 2), () {
-      exit(0); // Terminate the app safely
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      navigatorKey.currentState?.push(MaterialPageRoute(
+        builder: (context) => SecurityScreen(message: message),
+      ));
     });
   }
 }

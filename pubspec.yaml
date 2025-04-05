@@ -3,7 +3,7 @@ description: A new Flutter project.
 publish_to: 'none' 
 
 
-version: 1.0.10+11
+version: 1.0.11+12
 
 environment:
   sdk: '>=2.19.2 <3.0.0'
@@ -12,7 +12,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.2
   photo_manager: ^3.6.4
   flutter_svg: ^2.0.5
   socket_io_client: ^3.0.2
@@ -24,31 +23,23 @@ dependencies:
   device_info_plus: ^11.3.0
   showcaseview: ^4.0.1
   shared_preferences: ^2.2.3
-  introduction_screen: ^3.1.14
   shimmer: ^3.0.0
   firebase_core: ^3.0.0
   firebase_analytics: ^11.0.0
   firebase_crashlytics: ^4.0.0
-  firebase_performance: ^0.10.0
-  upgrader: ^11.3.1
+
   firebase_remote_config: ^5.0.0
-  package_info_plus: ^8.0.0
   intl: ^0.19.0
   flutter_localizations:
     sdk: flutter
   qr_code_scanner_plus: ^2.0.10+1
   dropdown_button2: ^2.3.9
-  animate_do: ^4.2.0
-  flutter_blurhash: ^0.8.2
-  glassmorphism_ui: ^0.3.0
-  sensors_plus: ^6.1.1
-  confetti: ^0.8.0
   flutter_upgrade_version: ^1.1.8
   in_app_review: ^2.0.10
   share_plus: ^10.1.4
   flutter_dotenv: ^5.2.1
-  freerasp: ^6.5.0
-
+  freerasp: ^7.0.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

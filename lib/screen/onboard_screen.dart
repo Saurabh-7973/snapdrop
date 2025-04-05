@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:Snapdrop/constant/theme_contants.dart';
@@ -11,9 +10,7 @@ import '../utils/firebase_initalization_class.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/hero_text.dart';
 import '../widgets/intro_widget.dart';
-
-// Flutter localization
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 import 'home_screen.dart';
 

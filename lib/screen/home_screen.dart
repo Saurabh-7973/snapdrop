@@ -8,9 +8,7 @@ import '../services/socket_service.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/dropdown_view.dart';
 import '../widgets/hero_text.dart';
-
-//flutter localization
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   SocketService? socketService;

@@ -5,9 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
-
-//flutter localization
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 import '../floating_squares.dart';
 import '../widgets/app_bar_widget.dart';

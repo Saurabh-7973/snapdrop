@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import 'screen/home_screen.dart';
 import 'screen/onboard_screen.dart';
 import 'screen/qr_screen.dart';
@@ -25,9 +25,10 @@ final List<Locale> appLocales = [
   const Locale('pt'),
 ];
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // TelsecRaspfreeChecker().automatedSecurityCheck();
   await JailbreakDetector.checkJailbreakStatus();
   await dotenv.load(fileName: ".env");
   await FirebaseInitalizationClass.initalizeFireBase();
@@ -64,11 +65,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Locale? _locale;
   PackageInfo _packageInfo = PackageInfo();
   int? reviewCounter;
+  late TelsecRaspfreeChecker securityChecker;
 
   @override
   void initState() {
     super.initState();
+
     firstTimeInstallation();
+    securityChecker = TelsecRaspfreeChecker(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      securityChecker.automatedSecurityCheck();
+    });
     WidgetsBinding.instance.addObserver(this);
 
     _loadLocale();
@@ -138,6 +145,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       locale: _locale ?? appLocales[SelectedLanguage.selectedLanguageIndex],
       localizationsDelegates: const [
         AppLocalizations.delegate,
