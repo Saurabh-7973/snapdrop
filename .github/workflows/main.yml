@@ -18,7 +18,7 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.19.5' # or 3.29.x when fully stable in GitHub Actions
+        flutter-version: '3.29.0'  # or 3.29.x when fully stable in GitHub Actions
 
     - name: Install Dependencies
       run: flutter pub get
