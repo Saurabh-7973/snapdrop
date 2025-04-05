@@ -20,6 +20,15 @@ jobs:
       with:
         flutter-version: '3.29.0'  # or 3.29.x when fully stable in GitHub Actions
 
+        # ✅ Create .env from GitHub secrets
+    - name: Create .env file from secrets
+      run: |
+        echo "FIREBASE_API_KEY_ANDROID=${{ secrets.FIREBASE_API_KEY_ANDROID }}" >> .env
+        echo "FIREBASE_API_KEY_IOS=${{ secrets.FIREBASE_API_KEY_IOS }}" >> .env
+        echo "FIREBASE_API_KEY_WEB=${{ secrets.FIREBASE_API_KEY_WEB }}" >> .env
+        echo "FIREBASE_API_KEY_MACOS=${{ secrets.FIREBASE_API_KEY_MACOS }}" >> .env
+        echo "FIREBASE_API_KEY_WINDOWS=${{ secrets.FIREBASE_API_KEY_WINDOWS }}" >> .env
+    
     - name: Install Dependencies
       run: flutter pub get
 
