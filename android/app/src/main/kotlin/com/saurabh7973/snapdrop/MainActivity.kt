@@ -31,14 +31,14 @@ class MainActivity : FlutterActivity() {
         var securityMessage: String? = null
 
         // Developer Mode Detection  
-        //if (DeveloperModeChecker.isDeveloperModeEnabled(this)) {
-        //    securityMessage = "Developer Mode is enabled. This app cannot run on devices with Developer Mode enabled."
-        //}
+        if (DeveloperModeChecker.isDeveloperModeEnabled(this)) {
+            securityMessage = "Developer Mode is enabled. This app cannot run on devices with Developer Mode enabled."
+        }
 
         // Tamper Detection
-        //if (!SecurityUtils.isAppSignatureValid(packageManager, packageName)) {
-        //    securityMessage = "This app's integrity has been compromised. Please install a legitimate version from the Play Store."
-        //}
+        if (!SecurityUtils.isAppSignatureValid(packageManager, packageName)) {
+            securityMessage = "This app's integrity has been compromised. Please install a legitimate version from the Play Store."
+        }
 
         // Emulator Detection
         if (EmulatorChecker.isEmulator()) {
@@ -70,16 +70,19 @@ class MainActivity : FlutterActivity() {
         )
     }
 
-    // Function to show a security alert dialog
     private fun showSecurityDialog(message: String) {
-        val alertDialog = AlertDialog.Builder(this)
-            .setTitle("Security Alert")
-            .setMessage(message)
-            .setCancelable(false) // Prevents dismissal by tapping outside
-            .setPositiveButton("Close App") { _: DialogInterface, _: Int ->
-                finishAffinity() // Closes all app activities completely
-            }
-            .create()
+    val alertDialog = AlertDialog.Builder(this)
+        .setTitle("Security Alert")
+        .setMessage(message)
+        .setCancelable(false) // Prevents dismissal by tapping outside
+        .setPositiveButton("Close App") { _: DialogInterface, _: Int ->
+            // Clear all app data
+            val activityManager = getSystemService(ACTIVITY_SERVICE) as android.app.ActivityManager
+            activityManager.clearApplicationUserData()  // This wipes all app data
+            // Close app
+            finishAffinity()
+        }
+        .create()
 
         alertDialog.show()
     }

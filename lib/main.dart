@@ -70,10 +70,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
-    firstTimeInstallation();
     securityChecker = TelsecRaspfreeChecker(context);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      firstTimeInstallation();
       securityChecker.automatedSecurityCheck();
     });
     WidgetsBinding.instance.addObserver(this);
