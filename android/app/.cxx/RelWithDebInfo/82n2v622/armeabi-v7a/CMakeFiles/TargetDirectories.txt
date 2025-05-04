@@ -1,0 +1,2 @@
+F:/snapdrop/android/app/.cxx/RelWithDebInfo/82n2v622/armeabi-v7a/CMakeFiles/edit_cache.dir
+F:/snapdrop/android/app/.cxx/RelWithDebInfo/82n2v622/armeabi-v7a/CMakeFiles/rebuild_cache.dir

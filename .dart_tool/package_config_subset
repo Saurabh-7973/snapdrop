@@ -470,10 +470,6 @@ yaml
 3.4
 file:///C:/Users/saura/AppData/Local/Pub/Cache/hosted/pub.dev/yaml-3.1.3/
 file:///C:/Users/saura/AppData/Local/Pub/Cache/hosted/pub.dev/yaml-3.1.3/lib/
-Snapdrop
-2.19
-file:///C:/Users/saura/Downloads/snapdrop/
-file:///C:/Users/saura/Downloads/snapdrop/lib/
 sky_engine
 3.7
 file:///C:/src/flutter/bin/cache/pkg/sky_engine/
@@ -494,4 +490,8 @@ flutter_web_plugins
 3.7
 file:///C:/src/flutter/packages/flutter_web_plugins/
 file:///C:/src/flutter/packages/flutter_web_plugins/lib/
+Snapdrop
+2.19
+file:///F:/snapdrop/
+file:///F:/snapdrop/lib/
 2
