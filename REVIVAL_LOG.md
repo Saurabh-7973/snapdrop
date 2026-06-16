@@ -103,6 +103,9 @@ already correct, untouched.
   `<3.0.0` was stale/contradictory with the in-use Dart 3.9. No code behavior change.
 - All major dep migrations (qr/share_plus/receive_sharing_intent/firebase/permission/photo) were
   **already complete** (see Major Finding). No version churn introduced.
+- **`freerasp ^7.0.0` → `^7.5.1`** — required for the 16 KB page-size Play requirement (see Phase 3
+  / 16KB section). Stays within major 7 (no API break; `TalsecConfig`/`ThreatCallback`/`Talsec`
+  API unchanged, analyze clean). Also fixes iOS jailbreak false-positives. 8.0.0 (major) avoided.
 
 ### FLAGGED — `flutter_upgrade_version ^1.1.8`
 Brief flagged this as niche/possibly unmaintained and named `in_app_update` as the standard
@@ -127,6 +130,18 @@ Defensive hardening added (approved: minimal try/catch, behavior-preserving on v
 
 QR scan uses the maintained `qr_code_scanner_plus` fork (works on AGP 8 / new Android), so the
 brief's crash root-cause (`qr_code_scanner` discontinued) was already neutralized.
+
+### 16 KB page-size support (Play requirement for new apps since Nov 1 2025)
+Found via emulator run (API 37): system "Android App Compatibility" dialog — native libs not
+16 KB-aligned, app forced into page-size-compat mode. Inspected actual ELF LOAD-segment alignment
+in the debug APK (`llvm-readelf -l`, arm64-v8a):
+- `libflutter.so` 0x10000, `libdatastore_shared_counter.so` 0x4000, `libVkLayer...` 0x10000 → all
+  already ≥16 KB. **Only the failing libs (`libtmlib/libsecurity/libclib/libpolarssl/
+  libpbkdf2_native`, all 0x1000 = 4 KB) belonged to freerasp 7.0.0.**
+- Fix: bumped `freerasp 7.0.0 → 7.5.1` (16 KB support landed in freerasp 7.2.0, 2025-07-16).
+- **Re-verified after rebuild:** freerasp now ships a single consolidated `libts.so` at 0x4000
+  (16 KB). Every arm64 `.so` in the APK is ≥16 KB-aligned. **RESOLVED.** (16 KB applies to 64-bit
+  only; 32-bit unaffected.)
 
 ### Target API
 `targetSdk 35` set (Phase 1). Confirm the **release** build targets it before submission.
@@ -204,6 +219,26 @@ human/console prerequisites, in order:
 2. freerasp `signingCertHashes` regenerated from that new key (item 1 above).
 3. New Firebase Android app + regenerated `firebase_options.dart` (Firebase correction above).
 Once those land, `flutter build appbundle --release` should produce the AAB.
+
+---
+
+## Phase 6 — Runtime verification (emulator)
+
+Ran `flutter run -d emulator-5554` on an Android 17 (API 37) emulator:
+- ✅ Builds, installs, launches. Process `in.getsnapdrop.app` / `...MainActivity` reaches RESUMED
+  in foreground, **no crash, no Firebase/RASP integrity block** → new applicationId works at
+  runtime and freerasp package-id match is correct.
+- 🛑 App then shows its **own** "Security Alert — This app cannot run on an emulator → Close App"
+  (anti-tamper: `JailbreakDetector` / native `EmulatorChecker.kt` / freerasp `onSimulator`).
+  **Working as designed.** Consequence: the full flow (image select → QR pair → transfer) **cannot
+  be tested on an emulator** — requires a **physical Android device** (also needed for the real
+  Figma-plugin QR). Per decision: test on physical device; security gates left untouched.
+- The emulator run is what surfaced the 16 KB issue (now resolved, Phase 3).
+
+**Still to run on a physical device (Phase 6 checklist from brief):** core transfer flow, intent
+share, first-run once-only, camera+photos perms on Android 13/14/15, all 6 languages, version-check
+prompt, in-app review trigger, no-connectivity handling, fresh-install cold start, analytics event
+parity, signed release AAB install.
 
 ---
 

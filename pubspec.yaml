@@ -38,7 +38,7 @@ dependencies:
   in_app_review: ^2.0.10
   share_plus: ^10.1.4
   flutter_dotenv: ^5.2.1
-  freerasp: ^7.0.0
+  freerasp: ^7.5.1
   
 dev_dependencies:
   flutter_test:
