@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:freerasp/freerasp.dart';
 
@@ -18,11 +17,14 @@ class TelsecRaspfreeChecker {
     // Configure Talsec RASP for security checks
     final config = TalsecConfig(
       androidConfig: AndroidConfig(
-        packageName: 'com.saurabh7973.snapdrop',
+        packageName: 'in.getsnapdrop.app',
+        // FLAG (§4): this hash is the OLD upload key (dead account). A new app gets a
+        // NEW signing key -> regenerate the SHA-256 cert hash from the new key and
+        // replace base64Hash above, or RASP onAppIntegrity will block the release.
         signingCertHashes: [base64Hash],
       ),
       iosConfig: IOSConfig(
-        bundleIds: ['com.saurabh7973.snapdrop'],
+        bundleIds: ['in.getsnapdrop.app'],
         teamId: 'YOUR APP STORE TEAM ID HERE',
       ),
       isProd: true,

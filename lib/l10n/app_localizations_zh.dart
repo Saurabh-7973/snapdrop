@@ -12,7 +12,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app_share_dialog_text_1 => '与您的同事分享 Snapdrop';
 
   @override
-  String get app_share_dialog_text_2 => '您已成功分享了 3 次图片。让您的同事也了解 Snapdrop，让他们也受益吧！';
+  String get app_share_dialog_text_2 =>
+      '您已成功分享了 3 次图片。让您的同事也了解 Snapdrop，让他们也受益吧！';
 
   @override
   String get app_share_dialog_share_now_button => '立即分享';
@@ -21,7 +22,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app_share_dialog_maybe_later_button => '以后再说';
 
   @override
-  String get app_share_text_1 => '🚀 发现Snapdrop - 将图片直接传输到你的Figma设计中最简便的方式！🎨\n\n';
+  String get app_share_text_1 =>
+      '🚀 发现Snapdrop - 将图片直接传输到你的Figma设计中最简便的方式！🎨\n\n';
 
   @override
   String get app_share_text_2 => '📲 立即下载，优化你的设计工作流程：\n\n';

@@ -9,10 +9,12 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get app_share_dialog_text_1 => 'अपने सहयोगियों के साथ Snapdrop साझा करें';
+  String get app_share_dialog_text_1 =>
+      'अपने सहयोगियों के साथ Snapdrop साझा करें';
 
   @override
-  String get app_share_dialog_text_2 => 'आपने सफलतापूर्वक 3 बार छवियाँ साझा की हैं। Snapdrop के बारे में अपने सहयोगियों को बताएं ताकि वे भी लाभान्वित हो सकें!';
+  String get app_share_dialog_text_2 =>
+      'आपने सफलतापूर्वक 3 बार छवियाँ साझा की हैं। Snapdrop के बारे में अपने सहयोगियों को बताएं ताकि वे भी लाभान्वित हो सकें!';
 
   @override
   String get app_share_dialog_share_now_button => 'अभी साझा करें';
@@ -21,10 +23,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get app_share_dialog_maybe_later_button => 'शायद बाद में';
 
   @override
-  String get app_share_text_1 => '🚀 स्नैपड्रॉप की खोज करें - अपने फिगमा डिजाइन्स में तस्वीरें सीधे ट्रांसफर करने का सबसे आसान तरीका! 🎨\n\n';
+  String get app_share_text_1 =>
+      '🚀 स्नैपड्रॉप की खोज करें - अपने फिगमा डिजाइन्स में तस्वीरें सीधे ट्रांसफर करने का सबसे आसान तरीका! 🎨\n\n';
 
   @override
-  String get app_share_text_2 => '📲 अब डाउनलोड करें और अपनी डिजाइन वर्कफ़्लो को सरल बनाएं:\n\n';
+  String get app_share_text_2 =>
+      '📲 अब डाउनलोड करें और अपनी डिजाइन वर्कफ़्लो को सरल बनाएं:\n\n';
 
   @override
   String get language_selection_herotext_1 => 'अपनी';
@@ -57,13 +61,15 @@ class AppLocalizationsHi extends AppLocalizations {
   String get showcase_one_title => 'ड्रॉपडाउन बटन';
 
   @override
-  String get showcase_one_subtitle => 'उन एल्बमों का चयन करें जिनसे आप तस्वीरें चुनना चाहते हैं';
+  String get showcase_one_subtitle =>
+      'उन एल्बमों का चयन करें जिनसे आप तस्वीरें चुनना चाहते हैं';
 
   @override
   String get showcase_two_title => 'छवियाँ चुनें';
 
   @override
-  String get showcase_two_subtitle => 'उन छवियों का चयन करें जिन्हें आप साझा करना चाहते हैं';
+  String get showcase_two_subtitle =>
+      'उन छवियों का चयन करें जिन्हें आप साझा करना चाहते हैं';
 
   @override
   String get showcase_three_title => 'कनेक्ट बटन';
@@ -99,7 +105,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get qr_screen_herotext_3 => 'कनेक्ट करने के लिए QR कोड स्कैन करें';
 
   @override
-  String get qr_screen_info_button => 'Figma खोलें -> डिज़ाइन फ़ाइल -> प्लगइन -> Snapdrop';
+  String get qr_screen_info_button =>
+      'Figma खोलें -> डिज़ाइन फ़ाइल -> प्लगइन -> Snapdrop';
 
   @override
   String get qr_screen_button_scanning => 'स्कैनिंग...';
@@ -141,10 +148,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get send_screen_send_more_button => 'भेजें';
 
   @override
-  String get app_conditions_internet_connection => 'अपना इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें!';
+  String get app_conditions_internet_connection =>
+      'अपना इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें!';
 
   @override
-  String get app_conditions_image_selection_limit => 'केवल 10 छवियाँ चुन सकते हैं!';
+  String get app_conditions_image_selection_limit =>
+      'केवल 10 छवियाँ चुन सकते हैं!';
 
   @override
   String get app_conditions_size_limit => 'फ़ाइल आकार सीमा अधिक हो गई';

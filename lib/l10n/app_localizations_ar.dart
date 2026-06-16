@@ -12,7 +12,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get app_share_dialog_text_1 => 'شارك Snapdrop مع زملائك';
 
   @override
-  String get app_share_dialog_text_2 => 'لقد قمت بمشاركة الصور بنجاح 3 مرات. انشر كلمة عن Snapdrop لكي يستفيد زملاؤك أيضًا!';
+  String get app_share_dialog_text_2 =>
+      'لقد قمت بمشاركة الصور بنجاح 3 مرات. انشر كلمة عن Snapdrop لكي يستفيد زملاؤك أيضًا!';
 
   @override
   String get app_share_dialog_share_now_button => 'شارك الآن';
@@ -21,10 +22,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get app_share_dialog_maybe_later_button => 'ربما لاحقًا';
 
   @override
-  String get app_share_text_1 => '🚀 اكتشف سناب دروب - أسهل طريقة لنقل الصور مباشرة إلى تصاميمك في فيجما! 🎨\n\n';
+  String get app_share_text_1 =>
+      '🚀 اكتشف سناب دروب - أسهل طريقة لنقل الصور مباشرة إلى تصاميمك في فيجما! 🎨\n\n';
 
   @override
-  String get app_share_text_2 => '📲 قم بالتحميل الآن وحسن سير عملك التصميمي:\n\n';
+  String get app_share_text_2 =>
+      '📲 قم بالتحميل الآن وحسن سير عملك التصميمي:\n\n';
 
   @override
   String get language_selection_herotext_1 => 'اختر';
@@ -57,7 +60,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get showcase_one_title => 'زر القائمة المنسدلة';
 
   @override
-  String get showcase_one_subtitle => 'اختر الألبومات التي تريد اختيار الصور منها';
+  String get showcase_one_subtitle =>
+      'اختر الألبومات التي تريد اختيار الصور منها';
 
   @override
   String get showcase_two_title => 'اختر الصور';
@@ -99,7 +103,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get qr_screen_herotext_3 => 'امسح رمز QR للاتصال';
 
   @override
-  String get qr_screen_info_button => 'افتح Figma -> ملف التصميم -> المكون الإضافي -> Snapdrop';
+  String get qr_screen_info_button =>
+      'افتح Figma -> ملف التصميم -> المكون الإضافي -> Snapdrop';
 
   @override
   String get qr_screen_button_scanning => 'جاري المسح...';
@@ -141,10 +146,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get send_screen_send_more_button => 'إرسال';
 
   @override
-  String get app_conditions_internet_connection => 'تحقق من اتصالك بالإنترنت وحاول مرة أخرى!';
+  String get app_conditions_internet_connection =>
+      'تحقق من اتصالك بالإنترنت وحاول مرة أخرى!';
 
   @override
-  String get app_conditions_image_selection_limit => 'يمكن اختيار ما يصل إلى 10 صور فقط!';
+  String get app_conditions_image_selection_limit =>
+      'يمكن اختيار ما يصل إلى 10 صور فقط!';
 
   @override
   String get app_conditions_size_limit => 'تم تجاوز حد حجم الملف';

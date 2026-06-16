@@ -12,7 +12,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get app_share_dialog_text_1 => 'Compartir Snapdrop con tus colegas';
 
   @override
-  String get app_share_dialog_text_2 => 'Has compartido imágenes con éxito 3 veces. ¡Difunde la palabra sobre Snapdrop para que tus colegas también puedan beneficiarse!';
+  String get app_share_dialog_text_2 =>
+      'Has compartido imágenes con éxito 3 veces. ¡Difunde la palabra sobre Snapdrop para que tus colegas también puedan beneficiarse!';
 
   @override
   String get app_share_dialog_share_now_button => 'Compartir ahora';
@@ -21,10 +22,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get app_share_dialog_maybe_later_button => 'Quizás luego';
 
   @override
-  String get app_share_text_1 => '🚀 ¡Descubre Snapdrop, la forma más fácil de transferir imágenes directamente a tus diseños de Figma! 🎨\n\n';
+  String get app_share_text_1 =>
+      '🚀 ¡Descubre Snapdrop, la forma más fácil de transferir imágenes directamente a tus diseños de Figma! 🎨\n\n';
 
   @override
-  String get app_share_text_2 => '📲 Descarga ahora y optimiza tu flujo de trabajo de diseño:\n\n';
+  String get app_share_text_2 =>
+      '📲 Descarga ahora y optimiza tu flujo de trabajo de diseño:\n\n';
 
   @override
   String get language_selection_herotext_1 => 'Seleccione su';
@@ -57,13 +60,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get showcase_one_title => 'Botón Desplegable';
 
   @override
-  String get showcase_one_subtitle => 'Seleccione los álbumes de los que quiere elegir fotos';
+  String get showcase_one_subtitle =>
+      'Seleccione los álbumes de los que quiere elegir fotos';
 
   @override
   String get showcase_two_title => 'Seleccionar Imágenes';
 
   @override
-  String get showcase_two_subtitle => 'Seleccione las imágenes que quiere compartir';
+  String get showcase_two_subtitle =>
+      'Seleccione las imágenes que quiere compartir';
 
   @override
   String get showcase_three_title => 'Botón Conectar';
@@ -99,7 +104,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get qr_screen_herotext_3 => 'Escanear Código QR para Conectar';
 
   @override
-  String get qr_screen_info_button => 'Abrir Figma -> Archivo de Diseño -> Plugin -> Snapdrop';
+  String get qr_screen_info_button =>
+      'Abrir Figma -> Archivo de Diseño -> Plugin -> Snapdrop';
 
   @override
   String get qr_screen_button_scanning => 'Escaneando...';
@@ -141,11 +147,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get send_screen_send_more_button => 'Enviar';
 
   @override
-  String get app_conditions_internet_connection => '¡Verifique su Conexión a Internet y vuelva a intentarlo!';
+  String get app_conditions_internet_connection =>
+      '¡Verifique su Conexión a Internet y vuelva a intentarlo!';
 
   @override
-  String get app_conditions_image_selection_limit => '¡Solo puede seleccionar hasta 10 imágenes!';
+  String get app_conditions_image_selection_limit =>
+      '¡Solo puede seleccionar hasta 10 imágenes!';
 
   @override
-  String get app_conditions_size_limit => 'Límite de Tamaño de Archivo Excedido';
+  String get app_conditions_size_limit =>
+      'Límite de Tamaño de Archivo Excedido';
 }

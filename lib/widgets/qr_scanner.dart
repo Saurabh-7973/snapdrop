@@ -193,7 +193,18 @@ class _QRScannerState extends State<QRScanner> {
   }
 
   connectSocket() async {
-    '${result!.code}'.toString().split('=')[1];
+    // Guard malformed QR codes: a valid pairing QR carries "...=<room>".
+    // Without this, split('=')[1] throws RangeError and crashes the scan flow.
+    final code = result?.code;
+    if (code == null || code.split('=').length != 2) {
+      _qrViewController?.pauseCamera();
+      setState(() {
+        isTimeout = true;
+        scannerVisible = false;
+        connectionStatus = false;
+      });
+      return;
+    }
 
     socketService = SocketService(url: '${result!.code}');
     socketService!.connectToSocketServer();

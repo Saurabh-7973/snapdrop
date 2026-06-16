@@ -12,7 +12,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app_share_dialog_text_1 => 'Share Snapdrop with Your Colleagues';
 
   @override
-  String get app_share_dialog_text_2 => 'You\'ve successfully shared images 3 times. Spread the word about Snapdrop so your colleagues can benefit too!';
+  String get app_share_dialog_text_2 =>
+      'You\'ve successfully shared images 3 times. Spread the word about Snapdrop so your colleagues can benefit too!';
 
   @override
   String get app_share_dialog_share_now_button => 'Share Now';
@@ -21,10 +22,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app_share_dialog_maybe_later_button => 'Maybe Later';
 
   @override
-  String get app_share_text_1 => '🚀 Discover Snapdrop - the easiest way to transfer images directly to your Figma designs! 🎨\n\n';
+  String get app_share_text_1 =>
+      '🚀 Discover Snapdrop - the easiest way to transfer images directly to your Figma designs! 🎨\n\n';
 
   @override
-  String get app_share_text_2 => '📲 Download now and streamline your design workflow:\n\n';
+  String get app_share_text_2 =>
+      '📲 Download now and streamline your design workflow:\n\n';
 
   @override
   String get language_selection_herotext_1 => 'Select your';
@@ -57,7 +60,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showcase_one_title => 'Dropdown Button';
 
   @override
-  String get showcase_one_subtitle => 'Select albums you want to choose photos from';
+  String get showcase_one_subtitle =>
+      'Select albums you want to choose photos from';
 
   @override
   String get showcase_two_title => 'Select Images';
@@ -99,7 +103,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get qr_screen_herotext_3 => 'Scan QR Code to Connect';
 
   @override
-  String get qr_screen_info_button => 'Open Figma -> Design File -> Plugin -> Snapdrop';
+  String get qr_screen_info_button =>
+      'Open Figma -> Design File -> Plugin -> Snapdrop';
 
   @override
   String get qr_screen_button_scanning => 'Scanning...';
@@ -141,10 +146,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get send_screen_send_more_button => 'Send';
 
   @override
-  String get app_conditions_internet_connection => 'Check your Internet Connection and try again!';
+  String get app_conditions_internet_connection =>
+      'Check your Internet Connection and try again!';
 
   @override
-  String get app_conditions_image_selection_limit => 'Can Only select upto 10 Images!';
+  String get app_conditions_image_selection_limit =>
+      'Can Only select upto 10 Images!';
 
   @override
   String get app_conditions_size_limit => 'File Size Limit Exceded';

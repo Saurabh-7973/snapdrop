@@ -12,15 +12,31 @@ subprojects {
 subprojects {
     project.evaluationDependsOn(':app')
 
+    // Align every plugin module to JVM target 17. Some plugins (e.g. photo_manager)
+    // set their own android.compileOptions, which on a JDK 21 host defaults Java to 21
+    // while Kotlin stays at 17 -> "Inconsistent JVM-target" build failure. plugins.withId
+    // fires when the Android plugin applies, so we override its compileOptions safely
+    // (afterEvaluate can't be used here because evaluationDependsOn(':app') pre-evaluates).
+    // :app sets Java 17 itself and is pre-evaluated by evaluationDependsOn above
+    // (so afterEvaluate would throw for it). Only the plugin modules need the override,
+    // applied in afterEvaluate so it runs AFTER each plugin sets its own compileOptions.
+    if (project.name != "app") {
+        project.afterEvaluate {
+            if (project.extensions.findByName("android") != null) {
+                project.android {
+                    compileOptions {
+                        sourceCompatibility = JavaVersion.VERSION_17
+                        targetCompatibility = JavaVersion.VERSION_17
+                    }
+                }
+            }
+        }
+    }
+
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
             jvmTarget = "17"
         }
-    }
-
-    tasks.withType(JavaCompile).configureEach {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 

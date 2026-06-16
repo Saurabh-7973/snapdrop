@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:Snapdrop/services/check_app_version.dart';
 import 'package:Snapdrop/services/selected_language.dart';
 import 'package:flutter/material.dart';
