@@ -274,3 +274,25 @@ Backlog — NOT done (documented, no auto-build):
 - **Figma:** confirm plugin still works against current Figma plugin API; protocol frozen to match
   app; republish on Community if needed.
 - **Server:** alive — no action.
+
+---
+
+## §5 — Definition of done (status)
+
+| Brief criterion | Status |
+|---|---|
+| Builds + runs on current Flutter | ✅ Flutter 3.35.4 / Dart 3.9.2; debug APK builds, launches on API 37 |
+| Current target API | ✅ `targetSdk 35` (verify Play's current min before submit) |
+| New `applicationId` | ✅ `in.getsnapdrop.app` set + propagated (freerasp, share URL, manifests) |
+| New `google-services.json` | ⏳ **Human (Firebase).** Build not blocked — config is in `firebase_options.dart`; regenerate via `flutterfire configure` |
+| `qr_code_scanner` gone, scan→pair identical | ✅ Was already on maintained `qr_code_scanner_plus` fork; flow unchanged (no `mobile_scanner` needed) |
+| §1 business logic unchanged | ✅ Wire protocol, 7 analytics events, flows preserved; only approved crash-hardening + required package-id propagation |
+| Stability (v15/v17 crash) | ✅ `int.parse` + QR `split` crash guards added; maintained QR fork; cold-start clean to security gate |
+| 16 KB page size (Play req) | ✅ Fixed via `freerasp 7.5.1`; all arm64 `.so` ≥16 KB-aligned (re-verified) |
+| Data-safety SDK list | ✅ Written (Phase 3): Device/other IDs + Crash logs + Diagnostics; NOT Performance |
+| Signed release AAB | ⏳ **Blocked (human):** new signing key → freerasp cert hash → new Firebase app, then `flutter build appbundle --release` |
+| Full flow tested (image→QR→transfer) | ⏳ **Needs physical device** (app self-blocks on emulator by design) |
+| Zero unreviewed behavioral changes | ✅ All behavioral/risky items flagged here, none silent |
+
+**Net:** all code-side work done + verified to the limits an emulator allows. Remaining items are
+console/hardware tasks (Firebase, signing key, physical-device flow test), each flagged above.
