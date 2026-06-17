@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:Snapdrop/constant/global_showcase_key.dart';
@@ -19,14 +20,13 @@ import '../l10n/app_localizations.dart';
 import 'share_app_dialog.dart';
 
 class SendButton extends StatefulWidget {
-  SocketService? socketService;
-  List<AssetEntity>? selectedAssetList;
+  final SocketService? socketService;
+  final List<AssetEntity>? selectedAssetList;
 
-  bool isIntentSharing = false;
-  List<SharedMediaFile>? listOfMedia;
-  bool transferCompleted = false;
+  final bool isIntentSharing;
+  final List<SharedMediaFile>? listOfMedia;
 
-  SendButton(
+  const SendButton(
       {super.key,
       required this.isIntentSharing,
       this.listOfMedia,
@@ -41,6 +41,15 @@ class _SendButtonState extends State<SendButton> {
   List<SharedMediaFile>? listOfImageModal = [];
 
   List<Map<String, dynamic>>? listOfMaps;
+
+  bool transferCompleted = false;
+  StreamSubscription<bool>? _ackSub;
+
+  @override
+  void dispose() {
+    _ackSub?.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -66,13 +75,13 @@ class _SendButtonState extends State<SendButton> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     if (widget.isIntentSharing) {
       await sendFilesToServerIntent();
-      widget.socketService!.imageReceivedStream().listen((value) async {
+      _ackSub = widget.socketService!.imageReceivedStream().listen((value) async {
         //Asking for review
         reviewCounter = prefs.getInt('reviewCounter');
         if (value == true) {
           if (mounted) {
             setState(() {
-              widget.transferCompleted = true;
+              transferCompleted = true;
               FirstTimeLogin.setFirstTimeLoginFalse();
             });
           }
@@ -113,11 +122,11 @@ class _SendButtonState extends State<SendButton> {
     } else {
       await sendFilesToServer();
       //Commented for now ()
-      widget.socketService!.imageReceivedStream().listen((value) async {
+      _ackSub = widget.socketService!.imageReceivedStream().listen((value) async {
         if (value == true) {
           if (mounted) {
             setState(() {
-              widget.transferCompleted = true;
+              transferCompleted = true;
               FirstTimeLogin.setFirstTimeLoginFalse();
             });
           }
