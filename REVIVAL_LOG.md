@@ -319,6 +319,24 @@ Backlog — NOT done (documented, no auto-build):
 
 ---
 
+## ⚠️ Security stack REMOVED (post-revival decision)
+
+After review, the entire anti-tamper/RASP stack was **removed** — this is a free QR
+image-transfer utility with no login, accounts, payments, or stored personal data, so RASP
+(banking/fintech tooling) added no value and actively harmed UX (locked out rooted phones,
+dev-mode-on devices, emulators; FLAG_SECURE blocked screenshots on a *sharing* app) and required
+a Talsec account that's no longer accessible. Removed:
+- Dart: `freerasp` dependency, `lib/services/telsec_raspfree_checker.dart`,
+  `lib/services/jailbreak_detector.dart`, `lib/widgets/security_screen.dart`, all refs in `main.dart`.
+- Native: `MainActivity.kt` security block + `DeveloperModeChecker.kt` / `EmulatorChecker.kt` /
+  `OverlayDetector.kt` / `RootDetector.kt` / `SecurityUtils.kt` + `FLAG_SECURE`.
+- Kept: Crashlytics/Analytics (telemetry, not security).
+The earlier "gate security to release-only" work is therefore **superseded** — there is no security
+layer left to gate. Verified: builds, launches on real device, no Security Alert, no crash.
+
+**Branch policy:** this work lives on `revival/2026` and is **not to be merged into `main`** (per
+owner instruction).
+
 ## §5 — Definition of done (status)
 
 | Brief criterion | Status |

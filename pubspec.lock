@@ -81,14 +81,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
-  convert:
-    dependency: transitive
-    description:
-      name: convert
-      sha256: b30acd5944035672bc15c6b7a8b47d773e41e2f17de064350988c5d02adb1c68
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.2"
   cross_file:
     dependency: transitive
     description:
@@ -275,14 +267,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_plugin_android_lifecycle:
-    dependency: transitive
-    description:
-      name: flutter_plugin_android_lifecycle
-      sha256: "5a1e6fb2c0561958d7e4c33574674bda7b77caaca7a33b758876956f2902eea3"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.27"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -309,14 +293,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  freerasp:
-    dependency: "direct main"
-    description:
-      name: freerasp
-      sha256: "5b9a3402a7a30d928897e2264e2700a30db1df14de289f500b3a0cf50dc19df2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.5.1"
   http:
     dependency: transitive
     description:

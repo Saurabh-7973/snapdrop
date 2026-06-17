@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:Snapdrop/services/check_app_version.dart';
 import 'package:Snapdrop/services/selected_language.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +9,6 @@ import '../l10n/app_localizations.dart';
 import 'screen/home_screen.dart';
 import 'screen/onboard_screen.dart';
 import 'screen/qr_screen.dart';
-import 'services/jailbreak_detector.dart';
-import 'services/telsec_raspfree_checker.dart';
 import 'utils/firebase_initalization_class.dart';
 import 'package:flutter_upgrade_version/flutter_upgrade_version.dart';
 
@@ -28,13 +25,6 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Security/anti-tamper (jailbreak/emulator + Talsec RASP) enforce only in release.
-  // freeRASP flags any debuggable build as compromised, so debug/profile builds would
-  // be blocked on every device — gate it so the app is testable while keeping release
-  // fully protected. RASP check itself is started in MyApp.initState (also gated).
-  if (kReleaseMode) {
-    await JailbreakDetector.checkJailbreakStatus();
-  }
   await FirebaseInitalizationClass.initalizeFireBase();
   FirebaseInitalizationClass.initalizeFireBaseAnalytics();
   FirebaseInitalizationClass.enableDataCollection();
@@ -69,17 +59,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Locale? _locale;
   PackageInfo _packageInfo = PackageInfo();
   int? reviewCounter;
-  late TelsecRaspfreeChecker securityChecker;
 
   @override
   void initState() {
     super.initState();
-    securityChecker = TelsecRaspfreeChecker(context);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       firstTimeInstallation();
-      if (kReleaseMode) {
-        securityChecker.automatedSecurityCheck();
-      }
     });
     WidgetsBinding.instance.addObserver(this);
 
