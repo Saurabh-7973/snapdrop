@@ -18,9 +18,9 @@ class TelsecRaspfreeChecker {
     final config = TalsecConfig(
       androidConfig: AndroidConfig(
         packageName: 'in.getsnapdrop.app',
-        // FLAG (§4): this hash is the OLD upload key (dead account). A new app gets a
+        // FLAG (§4): base64Hash is the OLD upload key (dead account). A new app gets a
         // NEW signing key -> regenerate the SHA-256 cert hash from the new key and
-        // replace base64Hash above, or RASP onAppIntegrity will block the release.
+        // replace it, or RASP onAppIntegrity will block the release.
         signingCertHashes: [base64Hash],
       ),
       iosConfig: IOSConfig(

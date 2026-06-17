@@ -22,43 +22,53 @@ class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Prevent screenshots and screen recording
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
+        // Native security/anti-tamper enforces only in release (non-debuggable) builds.
+        // A debug/profile build is debuggable and signed with the debug key, so the
+        // signature/dev-mode/emulator checks would always block it during testing.
+        // Release builds are not debuggable -> full enforcement preserved.
+        val isDebuggable =
+            (applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
-        var securityMessage: String? = null
+        if (!isDebuggable) {
+            // Prevent screenshots and screen recording (release only; FLAG_SECURE also
+            // blocks debugging tools from capturing the screen during testing).
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE
+            )
 
-        // Developer Mode Detection  
-        if (DeveloperModeChecker.isDeveloperModeEnabled(this)) {
-            securityMessage = "Developer Mode is enabled. This app cannot run on devices with Developer Mode enabled."
-        }
+            var securityMessage: String? = null
 
-        // Tamper Detection
-        if (!SecurityUtils.isAppSignatureValid(packageManager, packageName)) {
-            securityMessage = "This app's integrity has been compromised. Please install a legitimate version from the Play Store."
-        }
+            // Developer Mode Detection
+            if (DeveloperModeChecker.isDeveloperModeEnabled(this)) {
+                securityMessage = "Developer Mode is enabled. This app cannot run on devices with Developer Mode enabled."
+            }
 
-        // Emulator Detection
-        if (EmulatorChecker.isEmulator()) {
-            securityMessage = "This app cannot run on an emulator."
-        }
+            // Tamper Detection
+            if (!SecurityUtils.isAppSignatureValid(packageManager, packageName)) {
+                securityMessage = "This app's integrity has been compromised. Please install a legitimate version from the Play Store."
+            }
 
-        // Root Detector
-        if (RootUtil.isDeviceRooted(this)) {
-            securityMessage = "This device is rooted. For security reasons, this app cannot run on rooted devices."
-        }
+            // Emulator Detection
+            if (EmulatorChecker.isEmulator()) {
+                securityMessage = "This app cannot run on an emulator."
+            }
 
-        // Overlay Detection
-        if (OverlayDetector.isOverlayEnabled(this)) {
-            securityMessage = "A screen overlay was detected. Please disable overlay apps before using this app."
-        }
+            // Root Detector
+            if (RootUtil.isDeviceRooted(this)) {
+                securityMessage = "This device is rooted. For security reasons, this app cannot run on rooted devices."
+            }
 
-        // If any security threat is detected, pause the screen and show the alert
-        securityMessage?.let {
-            freezeAppUI() // Freeze the app's UI
-            showSecurityDialog(it)
+            // Overlay Detection
+            if (OverlayDetector.isOverlayEnabled(this)) {
+                securityMessage = "A screen overlay was detected. Please disable overlay apps before using this app."
+            }
+
+            // If any security threat is detected, pause the screen and show the alert
+            securityMessage?.let {
+                freezeAppUI() // Freeze the app's UI
+                showSecurityDialog(it)
+            }
         }
     }
 

@@ -60,7 +60,7 @@ flutter:
     - assets/animations/
     - assets/svg_asset/
     - assets/logo/
-#    - .env
+    - .env
 
 
   fonts:

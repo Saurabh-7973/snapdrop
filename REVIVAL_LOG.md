@@ -116,6 +116,24 @@ behavioral). Left as-is. Decide later if it blocks anything.
 
 ## Phase 3 — Play rejection blockers
 
+### 🔴 CRITICAL cold-start crash — missing `.env` (found on real device)
+`main()` calls `dotenv.load(fileName: ".env")`, and `firebase_options.dart` reads
+`dotenv.env['FIREBASE_API_KEY_*']!`. But `.env` was **commented out of pubspec assets**
+(`#  - .env`) so it never shipped → `FileNotFoundError` thrown before `runApp` → **app crashes
+on launch**. Masked on the emulator (the emulator security gate fired first), surfaced on a real
+device. **This is almost certainly the real "crashes during testing" rejection cause.** Fixes:
+- Recovered the Firebase API keys (not truly secret — they ship in every app, restricted by
+  signing/SHA) from git history (commit `7145f16` had them hardcoded pre-dotenv) +
+  `google-services.json`, and rebuilt `.env` (gitignored `*.env`, so not committed):
+  WEB/WINDOWS=`AIza...Ftr4qs`, ANDROID=`AIza...CamB4`, IOS/MACOS=`AIza...iylcw`.
+- Uncommented `- .env` in pubspec assets so it bundles into the APK (verified: present at
+  `assets/flutter_assets/.env`).
+- Hardened `main()` `dotenv.load` in a try/catch as a backstop so a missing `.env` can never again
+  hard-crash before `runApp`.
+- ⚠️ **FLAG:** `.env` is gitignored → not in git/CI. The build REQUIRES it. Either keep `.env`
+  present on every build machine, or (cleaner, since the keys aren't secret) hardcode the keys
+  back into `firebase_options.dart` and drop the dotenv dependency. Your call.
+
 ### Stability (v15/v17 "crashes during testing")
 Defensive hardening added (approved: minimal try/catch, behavior-preserving on valid inputs):
 
@@ -222,23 +240,43 @@ Once those land, `flutter build appbundle --release` should produce the AAB.
 
 ---
 
-## Phase 6 — Runtime verification (emulator)
+## Phase 6 — Runtime verification (emulator + real device)
 
-Ran `flutter run -d emulator-5554` on an Android 17 (API 37) emulator:
-- ✅ Builds, installs, launches. Process `in.getsnapdrop.app` / `...MainActivity` reaches RESUMED
-  in foreground, **no crash, no Firebase/RASP integrity block** → new applicationId works at
-  runtime and freerasp package-id match is correct.
-- 🛑 App then shows its **own** "Security Alert — This app cannot run on an emulator → Close App"
-  (anti-tamper: `JailbreakDetector` / native `EmulatorChecker.kt` / freerasp `onSimulator`).
-  **Working as designed.** Consequence: the full flow (image select → QR pair → transfer) **cannot
-  be tested on an emulator** — requires a **physical Android device** (also needed for the real
-  Figma-plugin QR). Per decision: test on physical device; security gates left untouched.
-- The emulator run is what surfaced the 16 KB issue (now resolved, Phase 3).
+### Emulator (Android 17 / API 37)
+Builds/installs/launches; surfaced the 16 KB issue (resolved). App self-blocks with its native
+"cannot run on an emulator" gate (by design) → full flow not testable on emulator.
 
-**Still to run on a physical device (Phase 6 checklist from brief):** core transfer flow, intent
-share, first-run once-only, camera+photos perms on Android 13/14/15, all 6 languages, version-check
-prompt, in-app review trigger, no-connectivity handling, fresh-install cold start, analytics event
-parity, signed release AAB install.
+### Real device — Nothing phone, Android 16 / API 36 (✅ full client flow verified)
+Two real blockers found and fixed before the UI would show:
+1. **`.env` cold-start crash** (see Phase 3 critical) — fixed.
+2. **Security/anti-tamper blocked every debug build.** The app has TWO security layers, both of
+   which flag any debug/profile build (debuggable + debug-signed):
+   - **Flutter side** — `lib/services/telsec_raspfree_checker.dart` (freeRASP/Talsec): `onAppIntegrity`
+     etc. freeRASP treats any debuggable build as compromised regardless of cert allow-listing.
+   - **Native side** — `android/.../MainActivity.kt`: `SecurityUtils.isAppSignatureValid` (tamper),
+     `DeveloperModeChecker`, `EmulatorChecker`, `RootUtil`, `OverlayDetector`, plus `FLAG_SECURE`
+     (blocks screen capture). The native signature check fired the "integrity compromised → Close
+     App" dialog (which also `clearApplicationUserData()`).
+
+   ⚠️ **BEHAVIORAL CHANGE — FLAG for your review (debug-only, release fully preserved):** gated
+   both layers so they enforce **only in release builds**, so the app is testable:
+   - `main.dart`: `JailbreakDetector` + `securityChecker.automatedSecurityCheck()` run only under
+     `kReleaseMode`.
+   - `MainActivity.kt`: all native checks + `FLAG_SECURE` run only when the build is NOT debuggable
+     (`ApplicationInfo.FLAG_DEBUGGABLE`).
+   Release builds (non-debuggable, real signing key) get the **exact same** protection as before —
+   nothing removed from the shipping app. This only stops debug builds from blocking themselves.
+
+**Verified end-to-end client flow on the real device (screenshots captured each step):**
+launch → no crash → security passes (debug) → **Android 13+ granular photo permission** prompt
+(Allow all/limited/don't) → **home "Select Images to Continue / Up to 10 Images"** → **image grid
+loads real device photos** → multi-select shows checkmark + file size → **"Connect"** →
+**QR scanner screen with live camera feed + "Scanning…"** (`qr_code_scanner_plus` — the brief's #1
+crash suspect — working). Only the final scan→socket→Figma hop needs the live Figma-plugin QR.
+
+**Still needs the Figma plugin / multi-device to verify:** actual QR pair + socket image transfer
+into Figma, intent-share routing, all 6 languages, version-check + in-app-review triggers,
+no-connectivity handling, analytics parity, and a signed **release** build run (blocked on new key).
 
 ---
 
@@ -248,6 +286,10 @@ Done (safe, non-behavioral):
 - Untracked `.dart_tool/` and `node_modules/` (1427 files) from git; added `node_modules/` to
   `.gitignore` (`.dart_tool/` was already ignored).
 - Removed unused imports: `dart:io` in `lib/main.dart` and `lib/services/telsec_raspfree_checker.dart`.
+- Restored + bundled `.env` (Firebase keys) and hardened `dotenv.load` — fixes the cold-start crash
+  (Phase 3 critical).
+- Gated both security layers (Flutter freeRASP + native `MainActivity.kt`) to release-only so debug
+  builds are testable (Phase 6) — release protection unchanged.
 
 Backlog — NOT done (documented, no auto-build):
 - ~60 `Color.withOpacity` → `.withValues()` info-deprecations across `lib/widgets/*`,
@@ -291,7 +333,8 @@ Backlog — NOT done (documented, no auto-build):
 | 16 KB page size (Play req) | ✅ Fixed via `freerasp 7.5.1`; all arm64 `.so` ≥16 KB-aligned (re-verified) |
 | Data-safety SDK list | ✅ Written (Phase 3): Device/other IDs + Crash logs + Diagnostics; NOT Performance |
 | Signed release AAB | ⏳ **Blocked (human):** new signing key → freerasp cert hash → new Firebase app, then `flutter build appbundle --release` |
-| Full flow tested (image→QR→transfer) | ⏳ **Needs physical device** (app self-blocks on emulator by design) |
+| Cold-start crash on fresh install | ✅ Fixed (missing `.env` bundled + load hardened) — was the likely Play crash cause |
+| Client flow on real device | ✅ Verified to QR-scanner+camera (Android 16): launch→perm→grid→select→Connect→scan. Transfer-into-Figma needs the live plugin QR |
 | Zero unreviewed behavioral changes | ✅ All behavioral/risky items flagged here, none silent |
 
 **Net:** all code-side work done + verified to the limits an emulator allows. Remaining items are

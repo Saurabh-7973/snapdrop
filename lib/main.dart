@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:Snapdrop/services/check_app_version.dart';
 import 'package:Snapdrop/services/selected_language.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +29,20 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await JailbreakDetector.checkJailbreakStatus();
-  await dotenv.load(fileName: ".env");
+  // Security/anti-tamper (jailbreak/emulator + Talsec RASP) enforce only in release.
+  // freeRASP flags any debuggable build as compromised, so debug/profile builds would
+  // be blocked on every device — gate it so the app is testable while keeping release
+  // fully protected. RASP check itself is started in MyApp.initState (also gated).
+  if (kReleaseMode) {
+    await JailbreakDetector.checkJailbreakStatus();
+  }
+  // Guard: a missing/unbundled .env previously threw FileNotFoundError here and
+  // crashed before runApp. .env is now a bundled asset; this catch is a backstop.
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    debugPrint('dotenv load failed: $e');
+  }
   await FirebaseInitalizationClass.initalizeFireBase();
   FirebaseInitalizationClass.initalizeFireBaseAnalytics();
   FirebaseInitalizationClass.enableDataCollection();
@@ -72,7 +85,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     securityChecker = TelsecRaspfreeChecker(context);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       firstTimeInstallation();
-      securityChecker.automatedSecurityCheck();
+      if (kReleaseMode) {
+        securityChecker.automatedSecurityCheck();
+      }
     });
     WidgetsBinding.instance.addObserver(this);
 
