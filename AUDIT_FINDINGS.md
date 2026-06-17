@@ -60,7 +60,22 @@ the Revival work already closed — noted here as **resolved**, not open.)*
 - **Fix:** store/cancel all subscriptions; dispose socket when leaving the transfer flow.
 - **Risk:** low–medium; verify resume-from-background still routes one intent share.
 
-### P1-3 · Image encode/transfer on the UI isolate, full bytes in memory
+> **Phase-B re-assessment (measured/inspected — Area D):** cold-start ≈ **3020 ms (debug,
+> `am start -W`)**; release is materially faster. P1-3 and P1-4 below were **largely overestimated**
+> — see strike-through notes. Disciplined outcome: no speculative perf code written; the existing
+> implementation is sound. Startup-deferral (defer Firebase init) was **declined**: the first
+> analytics events + crash handlers depend on Firebase being initialized before the post-frame
+> callback, so deferring risks §1 ordering for a marginal, JIT-masked gain.
+
+### P1-3 · ~~Image encode/transfer on the UI isolate~~ → reclassified P2 (memory only)
+**Re-assessment:** there is **no resize/compression/encoding** in the code — transfer sends the
+original bytes via async `File.readAsBytes` (already off the CPU path), so "encoding on the UI
+isolate" does not apply. The only real cost is loading several full images' bytes concurrently
+(memory) on a low-end device with many large selections. Fixing that means restructuring the
+**proven-working** transfer (stream per image) — a behavioral risk for low payoff at the "Up to 10"
+limit. **Deferred to P2**; revisit only if field memory traces (now wired, P1-8) show pressure.
+
+### P1-3-original · Image encode/transfer on the UI isolate, full bytes in memory
 - **Where:** `connect.dart` `sendFilesToServer*` → `originFile`/`fileToBuffer` (full `Uint8List`) →
   `sendImages` one emit per image; no resize/compress; `compute`/isolate: **none**.
 - **Why:** selecting many or large images loads every full image into memory and blocks the UI →
@@ -70,7 +85,16 @@ the Revival work already closed — noted here as **resolved**, not open.)*
 - **Risk:** medium — must not alter the bytes the plugin receives unless you approve compression
   (that's a §1 flag — changes what arrives in Figma). Default: same bytes, just off-isolate.
 
-### P1-4 · Gallery grid rebuilds wholesale + loads the entire album
+### P1-4 · ~~Gallery grid~~ → mostly already sound; minor items reclassified P2
+**Re-assessment:** the grid is already `GridView.builder` (lazy) rendering `AssetEntityImage` at a
+**250px thumbnail** size (never full bytes), and `GridView.builder` wraps each cell in a
+`RepaintBoundary` by default. So the big jank levers are already in place. Remaining, lower-value:
+the album list loads all `AssetEntity` **handles** at once (light metadata, not image bytes — minor),
+and a selection tap rebuilds `build()` (the builder still re-runs only for visible cells). Isolating
+selection to per-cell `ValueListenable` + paginating the handle list are **P2 polish**, not jank
+fixes. No change made (would be gold-plating). Original finding kept below for the record.
+
+### P1-4-original · Gallery grid rebuilds wholesale + loads the entire album
 - **Where:** `dropdown_view.dart` (`GridView.builder` ✓ but 9× `setState` at widget scope; selection
   toggles rebuild the whole grid); `media_provider.dart:15` `getAssetListRange(0, assetCount)` loads
   **every** asset at once. No `RepaintBoundary`/`cacheExtent`.
