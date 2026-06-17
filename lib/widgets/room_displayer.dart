@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../constant/theme_contants.dart';
 
 class RoomDisplayer extends StatelessWidget {
   String senderId;
@@ -19,7 +18,7 @@ class RoomDisplayer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.all(12),
@@ -37,11 +36,11 @@ class RoomDisplayer extends StatelessWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
+                        color: Colors.blue.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.blueAccent.withOpacity(0.7),
+                            color: Colors.blueAccent.withValues(alpha: 0.7),
                             blurRadius: 18,
                             spreadRadius: -3,
                             offset: const Offset(0, 0),
@@ -58,7 +57,7 @@ class RoomDisplayer extends StatelessWidget {
                     Text(
                       senderMessage,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withValues(alpha: 0.7),
                         fontSize: 12,
                       ),
                     ),
@@ -85,11 +84,11 @@ class RoomDisplayer extends StatelessWidget {
             width: 0.6,
             height: 45,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(50),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   blurRadius: 8,
                   spreadRadius: 0,
                   offset: const Offset(0, 0),
@@ -110,11 +109,11 @@ class RoomDisplayer extends StatelessWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
+                        color: Colors.green.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.greenAccent.withOpacity(0.7),
+                            color: Colors.greenAccent.withValues(alpha: 0.7),
                             blurRadius: 18,
                             spreadRadius: -3,
                             offset: const Offset(0, 0),
@@ -131,7 +130,7 @@ class RoomDisplayer extends StatelessWidget {
                     Text(
                       receiverMessage,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withValues(alpha: 0.7),
                         fontSize: 12,
                       ),
                     ),

@@ -35,6 +35,11 @@ migrate_working_dir/
 # Figma plugin / Node
 node_modules/
 
+# Android signing (never commit keystore or passwords)
+key.properties
+*.jks
+*.keystore
+
 # Symbolication related
 app.*.symbols
 

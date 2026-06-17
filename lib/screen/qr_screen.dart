@@ -31,7 +31,6 @@ class QRScreen extends StatefulWidget {
 class _QRScreenState extends State<QRScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
   bool showInfoPanel = false;
 
   @override
@@ -41,11 +40,6 @@ class _QRScreenState extends State<QRScreen>
     _controller = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
-    );
-
-    _scaleAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutBack,
     );
 
     _controller.forward();
@@ -193,7 +187,7 @@ class _QRScreenState extends State<QRScreen>
                                         boxShadow: [
                                           // ✅ Very Subtle Outer Highlight Glow
                                           BoxShadow(
-                                            color: Colors.white.withOpacity(
+                                            color: Colors.white.withValues(alpha: 
                                                 0.3), // Light subtle glow
                                             blurRadius: 25, // Soft spread
                                             spreadRadius: 1, // Minimal spread
@@ -203,7 +197,7 @@ class _QRScreenState extends State<QRScreen>
                                           // ✅ Maintain Depth Shadow (but very light)
                                           BoxShadow(
                                             color:
-                                                Colors.black.withOpacity(0.04),
+                                                Colors.black.withValues(alpha: 0.04),
                                             blurRadius: 12,
                                             spreadRadius: 1,
                                             offset: Offset(0, 3),
@@ -326,7 +320,7 @@ class _QRScreenState extends State<QRScreen>
                 const SizedBox(height: 4),
                 Text(description,
                     style: ThemeConstant.smallTextSizeLight.copyWith(
-                      color: Colors.black.withOpacity(0.9),
+                      color: Colors.black.withValues(alpha: 0.9),
                     )),
               ],
             ),

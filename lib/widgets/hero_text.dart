@@ -84,8 +84,8 @@ class HeroText extends StatelessWidget {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              ThemeConstant.primaryAppColor.withOpacity(0.6),
-                              ThemeConstant.whiteColor.withOpacity(0.2)
+                              ThemeConstant.primaryAppColor.withValues(alpha: 0.6),
+                              ThemeConstant.whiteColor.withValues(alpha: 0.2)
                             ],
                           ),
                         ),

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:Snapdrop/services/app_share_service.dart';
 
 class ShareAppScreen extends StatelessWidget {
-  const ShareAppScreen({Key? key}) : super(key: key);
+  const ShareAppScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.9), // Dark overlay
+      backgroundColor: Colors.black.withValues(alpha: 0.9), // Dark overlay
       body: Stack(
         children: [
           // Main Content
@@ -21,7 +21,7 @@ class ShareAppScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white.withValues(alpha: 0.1),
                   ),
                   child: Icon(
                     Icons.share_rounded,
@@ -120,23 +120,6 @@ class ShareAppScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // Share Icon Button
-  Widget _buildShareButton(IconData icon, String platform) {
-    return GestureDetector(
-      onTap: () {
-        // Implement sharing logic for each platform
-      },
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white.withOpacity(0.2),
-        ),
-        child: Icon(icon, color: Colors.white, size: 30),
       ),
     );
   }

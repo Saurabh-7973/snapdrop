@@ -66,11 +66,11 @@ class _FloatingSquaresState extends State<FloatingSquares>
             height: square.size,
             width: square.size,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.08),
+              color: Colors.white.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(2),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.white.withOpacity(0.03),
+                  color: Colors.white.withValues(alpha: 0.03),
                   blurRadius: 8,
                   spreadRadius: 2,
                 ),

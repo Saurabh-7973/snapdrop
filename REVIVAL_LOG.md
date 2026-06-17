@@ -337,6 +337,35 @@ layer left to gate. Verified: builds, launches on real device, no Security Alert
 **Branch policy:** this work lives on `revival/2026` and is **not to be merged into `main`** (per
 owner instruction).
 
+## Release build + cleanup (code-side, done)
+
+- **Lint cleanup:** 98 → 22 analyze issues, 0 errors. `dart fix` (imports/curly/super-params);
+  mechanical `Color.withOpacity(x)` → `.withValues(alpha: x)` across 9 files (50 sites,
+  behavior-identical); removed dead `_buildShareButton`, unused `_scaleAnimation`,
+  `_compareVersions`, duplicate aliased import + `print`→`debugPrint` in `check_app_version.dart`.
+  Remaining 22 are intentionally left (must_be_immutable design, use_build_context_synchronously,
+  WillPopScope, package name `Snapdrop`) — behavioral/cosmetic, not worth the risk.
+- **Removed unused dep:** `flutter_svg` (no `SvgPicture` usage anywhere).
+- **Release signing set up + signed AAB built:**
+  - Generated upload keystore `android/app/upload-keystore.jks` (alias `upload`, RSA 2048,
+    10000-day validity) + `android/key.properties`. **Both gitignored — NOT in the repo.**
+  - ⚠️ **CREDENTIALS (save these / replace before publishing):** storePassword=`snapdrop2026`,
+    keyPassword=`snapdrop2026`, keyAlias=`upload`, storeFile=`upload-keystore.jks`. **Back up the
+    `.jks` somewhere safe** — once it's the Play upload key, losing it means you can't ship updates
+    (Play App Signing recovery aside). If you'd rather own a key with your own password, regenerate
+    it and replace `key.properties` before the first Play upload.
+  - `flutter build appbundle --release` → **signed `app-release.aab` (46 MB)**. Also built release
+    APK (54 MB) and ran it on the real device: **onboarding UI renders, no crash, no security
+    block** (security fully removed); R8/minify/shrink OK (Crashlytics keep-rules fine).
+- **Release Firebase finding:** manual `Firebase.initializeApp(options: …)` works → Core +
+  **Crashlytics OK**. But native **Firebase Analytics is disabled** in release: `E FA: Missing
+  google_app_id`. The Analytics SDK needs the `google_app_id`/`google_api_key` **string resources**
+  that only the `com.google.gms.google-services` Gradle plugin generates from `google-services.json`
+  — `firebase_options.dart` alone doesn't provide them. ⚠️ **So Analytics stays off until the
+  Firebase task is done:** add the new Android app `in.getsnapdrop.app`, drop the new
+  `google-services.json` into `android/app/`, and apply the google-services plugin. (Same human
+  task already listed; this just confirms Analytics specifically depends on it.)
+
 ## §5 — Definition of done (status)
 
 | Brief criterion | Status |
@@ -350,7 +379,8 @@ owner instruction).
 | Stability (v15/v17 crash) | ✅ `int.parse` + QR `split` crash guards added; maintained QR fork; cold-start clean to security gate |
 | 16 KB page size (Play req) | ✅ Fixed via `freerasp 7.5.1`; all arm64 `.so` ≥16 KB-aligned (re-verified) |
 | Data-safety SDK list | ✅ Written (Phase 3): Device/other IDs + Crash logs + Diagnostics; NOT Performance |
-| Signed release AAB | ⏳ **Blocked (human):** new signing key → freerasp cert hash → new Firebase app, then `flutter build appbundle --release` |
+| Signed release AAB | ✅ **Built + signed + runs** (`app-release.aab`, 46 MB; release APK verified on device). Keystore is a placeholder — replace/back up before publishing (creds above) |
+| Firebase Analytics in release | ⏳ **Needs google-services.json + gms plugin** (new Firebase app). Core + Crashlytics already work; Analytics disabled until then (`Missing google_app_id`) |
 | Cold-start crash on fresh install | ✅ Fixed (missing `.env` bundled + load hardened) — was the likely Play crash cause |
 | Full flow on real device (image→QR→transfer) | ✅ **User-confirmed working end-to-end** — images transfer into Figma. Client path also screenshot-verified launch→perm→grid→select→Connect→QR-camera (Android 16) |
 | Zero unreviewed behavioral changes | ✅ All behavioral/risky items flagged here, none silent |

@@ -182,7 +182,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                             borderRadius: BorderRadius.circular(30),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 15,
                                 spreadRadius: -5,
                                 offset: const Offset(0, 5),
@@ -217,7 +217,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.4), // Dark overlay to blend in
+            color: Colors.black.withValues(alpha: 0.4), // Dark overlay to blend in
             borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
@@ -235,7 +235,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.white.withOpacity(0.1),
+                          color: Colors.white.withValues(alpha: 0.1),
                           blurRadius: 12,
                           spreadRadius: 2,
                         ),
@@ -259,13 +259,13 @@ class _OnboardScreenState extends State<OnboardScreen> {
                 _languages.firstWhere(
                     (lang) => lang["code"] == _selectedLanguage)["name"]!,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.95), // Brighter text
+                  color: Colors.white.withValues(alpha: 0.95), // Brighter text
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   shadows: [
                     Shadow(
                       blurRadius: 4,
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       offset: const Offset(0, 0),
                     ),
                   ],
@@ -295,7 +295,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Frosted Glass
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.6),
+                color: Colors.black.withValues(alpha: 0.6),
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(20)),
               ),
@@ -321,7 +321,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                           width: 50,
                           height: 3,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.3),
+                            color: Colors.white.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
@@ -346,19 +346,19 @@ class _OnboardScreenState extends State<OnboardScreen> {
                               vertical: 12, horizontal: 18),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? ThemeConstant.primaryAppColor.withOpacity(0.2)
+                                ? ThemeConstant.primaryAppColor.withValues(alpha: 0.2)
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(
                               color: isSelected
                                   ? ThemeConstant.primaryAppColor
-                                  : Colors.white.withOpacity(0.2),
+                                  : Colors.white.withValues(alpha: 0.2),
                             ),
                             boxShadow: isSelected
                                 ? [
                                     BoxShadow(
                                       color: ThemeConstant.primaryAppColor
-                                          .withOpacity(0.3),
+                                          .withValues(alpha: 0.3),
                                       blurRadius: 10,
                                       spreadRadius: 1,
                                     )
@@ -399,11 +399,11 @@ class _OnboardScreenState extends State<OnboardScreen> {
                       height: screenHeight / 16,
                       width: screenWidth / 3,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
+                        color: Colors.white.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(30),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withValues(alpha: 0.1),
                             blurRadius: 15,
                             spreadRadius: -5,
                             offset: const Offset(0, 5),

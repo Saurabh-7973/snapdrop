@@ -13,7 +13,6 @@ dependencies:
     sdk: flutter
 
   photo_manager: ^3.6.4
-  flutter_svg: ^2.0.5
   socket_io_client: ^3.0.2
   flutter_launcher_icons: ^0.14.3
   receive_sharing_intent: ^1.8.1

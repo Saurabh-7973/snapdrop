@@ -258,14 +258,14 @@ class _QRScannerState extends State<QRScanner> {
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 30,
                     spreadRadius: 0,
                     offset: const Offset(0, 20),
@@ -280,14 +280,14 @@ class _QRScannerState extends State<QRScanner> {
                   children: [
                     Icon(
                       Icons.timer_off_rounded,
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       size: 38,
                     ),
                     const SizedBox(height: 15),
                     Text(
                       "Session Expired",
                       style: ThemeConstant.smallTextSizeLight.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -296,7 +296,7 @@ class _QRScannerState extends State<QRScanner> {
                       "No QR Code was scanned.\nTap below to restart.",
                       textAlign: TextAlign.center,
                       style: ThemeConstant.smallTextSizeLight.copyWith(
-                        color: Colors.white.withOpacity(0.6),
+                        color: Colors.white.withValues(alpha: 0.6),
                       ),
                     ),
                     const SizedBox(height: 20),

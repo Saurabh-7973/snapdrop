@@ -439,8 +439,9 @@ class _DropDownViewState extends State<DropDownView> {
                                                   },
                                                   loadingBuilder: (context,
                                                       child, loadingProgress) {
-                                                    if (loadingProgress == null)
+                                                    if (loadingProgress == null) {
                                                       return child;
+                                                    }
                                                     return Shimmer.fromColors(
                                                       baseColor:
                                                           Colors.grey[800]!,
@@ -465,7 +466,7 @@ class _DropDownViewState extends State<DropDownView> {
                                                   borderRadius:
                                                       BorderRadius.circular(5),
                                                   color: Colors.black
-                                                      .withOpacity(0.6),
+                                                      .withValues(alpha: 0.6),
                                                 ),
                                               ),
                                             AnimatedSwitcher(
@@ -507,7 +508,7 @@ class _DropDownViewState extends State<DropDownView> {
                                                             shape:
                                                                 BoxShape.circle,
                                                             color: Colors.black
-                                                                .withOpacity(
+                                                                .withValues(alpha: 
                                                                     0.4),
                                                             border: Border.all(
                                                               color:
@@ -542,7 +543,7 @@ class _DropDownViewState extends State<DropDownView> {
                                                                     .circular(
                                                                         15),
                                                             color: Colors.black
-                                                                .withOpacity(
+                                                                .withValues(alpha: 
                                                                     0.35),
                                                           ),
                                                           child: Padding(
@@ -614,8 +615,9 @@ class _DropDownViewState extends State<DropDownView> {
                                                 },
                                                 loadingBuilder: (context, child,
                                                     loadingProgress) {
-                                                  if (loadingProgress == null)
+                                                  if (loadingProgress == null) {
                                                     return child;
+                                                  }
                                                   return Shimmer.fromColors(
                                                     baseColor:
                                                         Colors.grey[800]!,
@@ -640,7 +642,7 @@ class _DropDownViewState extends State<DropDownView> {
                                                 borderRadius:
                                                     BorderRadius.circular(5),
                                                 color: Colors.black
-                                                    .withOpacity(0.5),
+                                                    .withValues(alpha: 0.5),
                                               ),
                                             ),
                                           AnimatedSwitcher(
@@ -681,7 +683,7 @@ class _DropDownViewState extends State<DropDownView> {
                                                           shape:
                                                               BoxShape.circle,
                                                           color: Colors.black
-                                                              .withOpacity(0.4),
+                                                              .withValues(alpha: 0.4),
                                                           border: Border.all(
                                                             color: Colors.white,
                                                             width: 2,
@@ -713,7 +715,7 @@ class _DropDownViewState extends State<DropDownView> {
                                                               BorderRadius
                                                                   .circular(15),
                                                           color: Colors.black
-                                                              .withOpacity(
+                                                              .withValues(alpha: 
                                                                   0.35),
                                                         ),
                                                         child: Padding(
@@ -842,7 +844,7 @@ class _DropDownViewState extends State<DropDownView> {
                                           if (selectedAssetList.isNotEmpty)
                                             BoxShadow(
                                               color: Colors.black
-                                                  .withOpacity(0.15),
+                                                  .withValues(alpha: 0.15),
                                               blurRadius: 20,
                                               spreadRadius: 2,
                                               offset: const Offset(0, 10),
@@ -923,16 +925,16 @@ class _DropDownViewState extends State<DropDownView> {
                                 scale: scale,
                                 child: Shimmer.fromColors(
                                   baseColor: ThemeConstant.primaryThemeColor
-                                      .withOpacity(0.6),
+                                      .withValues(alpha: 0.6),
                                   highlightColor: ThemeConstant.greenAccentColor
-                                      .withOpacity(0.6),
+                                      .withValues(alpha: 0.6),
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: ThemeConstant.primaryThemeColor,
                                       borderRadius: BorderRadius.circular(10),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
+                                          color: Colors.black.withValues(alpha: 0.1),
                                           blurRadius: 10,
                                           spreadRadius: 2,
                                         ),
