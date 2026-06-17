@@ -27,6 +27,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FirebaseInitalizationClass.initalizeFireBase();
   FirebaseInitalizationClass.initalizeFireBaseAnalytics();
+  FirebaseInitalizationClass.initalizePerformance();
   FirebaseInitalizationClass.enableDataCollection();
   FirebaseInitalizationClass.catchFatalErrors();
   FirebaseInitalizationClass.catchAsynchronusErrors();

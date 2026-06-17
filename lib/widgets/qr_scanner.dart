@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:Snapdrop/constant/global_showcase_key.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
+import '../utils/firebase_initalization_class.dart';
 // import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -194,11 +196,16 @@ class _QRScannerState extends State<QRScanner> {
     });
   }
 
+  Trace? _pairTrace;
+
   connectSocket() async {
     // Guard malformed QR codes: a valid pairing QR carries "...=<room>".
     // Without this, split('=')[1] throws RangeError and crashes the scan flow.
     final code = result?.code;
-    if (code == null || code.split('=').length != 2) {
+    if (code == null || SocketService.parseRoomId(code) == null) {
+      FirebaseInitalizationClass.breadcrumb('pairing: invalid QR scanned');
+      FirebaseInitalizationClass.eventTracker(
+          'pairing_failed', {'reason': 'invalid_qr'});
       _qrViewController?.pauseCamera();
       setState(() {
         isTimeout = true;
@@ -208,6 +215,14 @@ class _QRScannerState extends State<QRScanner> {
       return;
     }
 
+    // Funnel: pairing started (additive — existing events unchanged). Trace
+    // time-to-pair; stopped once the socket connection is established below.
+    FirebaseInitalizationClass.setCustomKey('screen', 'qr_scanner');
+    FirebaseInitalizationClass.breadcrumb('pairing_started');
+    FirebaseInitalizationClass.eventTracker('pairing_started', {});
+    _pairTrace = FirebaseInitalizationClass.newTrace('time_to_pair');
+    await _pairTrace?.start();
+
     socketService = SocketService(url: '${result!.code}');
     socketService!.connectToSocketServer();
 
@@ -216,6 +231,11 @@ class _QRScannerState extends State<QRScanner> {
           ? connectionStatus = true
           : connectionStatus = false;
     });
+
+    FirebaseInitalizationClass.setCustomKey('paired', true);
+    FirebaseInitalizationClass.breadcrumb('pairing_success');
+    FirebaseInitalizationClass.eventTracker('pairing_success', {});
+    await _pairTrace?.stop();
 
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;

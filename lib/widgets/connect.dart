@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:Snapdrop/constant/global_showcase_key.dart';
 import 'package:Snapdrop/services/in_app_review_service.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,7 @@ class _SendButtonState extends State<SendButton> {
 
   bool transferCompleted = false;
   StreamSubscription<bool>? _ackSub;
+  Trace? _transferTrace;
 
   @override
   void dispose() {
@@ -72,6 +74,21 @@ class _SendButtonState extends State<SendButton> {
   fileTransfer() async {
     int? reviewCounter;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Funnel: transfer started (additive — existing file_share_completed kept).
+    final int imageCount = widget.isIntentSharing
+        ? (widget.listOfMedia?.length ?? 0)
+        : (widget.selectedAssetList?.length ?? 0);
+    final String method =
+        widget.isIntentSharing ? 'intent_sharing' : 'non_intent_sharing';
+    FirebaseInitalizationClass.setCustomKey('transfer_state', 'started');
+    FirebaseInitalizationClass.setCustomKey('image_count', imageCount);
+    FirebaseInitalizationClass.breadcrumb('transfer_started ($method, $imageCount)');
+    FirebaseInitalizationClass.eventTracker('transfer_started',
+        {'sharing_method': method, 'image_count': imageCount});
+    _transferTrace = FirebaseInitalizationClass.newTrace('transfer_duration');
+    await _transferTrace?.start();
+
     if (widget.isIntentSharing) {
       await sendFilesToServerIntent();
       _ackSub = widget.socketService!.imageReceivedStream().listen((value) async {
@@ -83,6 +100,12 @@ class _SendButtonState extends State<SendButton> {
               transferCompleted = true;
               FirstTimeLogin.setFirstTimeLoginFalse();
             });
+            // Funnel: transfer success (additive).
+            FirebaseInitalizationClass.setCustomKey('transfer_state', 'success');
+            FirebaseInitalizationClass.eventTracker('transfer_success',
+                {'sharing_method': method, 'image_count': imageCount});
+            await _transferTrace?.stop();
+            _transferTrace = null;
           }
 
           if (reviewCounter == 0) {
@@ -128,6 +151,12 @@ class _SendButtonState extends State<SendButton> {
               transferCompleted = true;
               FirstTimeLogin.setFirstTimeLoginFalse();
             });
+            // Funnel: transfer success (additive).
+            FirebaseInitalizationClass.setCustomKey('transfer_state', 'success');
+            FirebaseInitalizationClass.eventTracker('transfer_success',
+                {'sharing_method': method, 'image_count': imageCount});
+            await _transferTrace?.stop();
+            _transferTrace = null;
           }
 
           //Asking for review
@@ -248,6 +277,11 @@ class _SendButtonState extends State<SendButton> {
         String imageExtension = getImageExtension(value.path);
 
         widget.socketService!.fileToBuffer(value.path).then((unitFile) {
+          if (unitFile == null) {
+            FirebaseInitalizationClass.recordNonFatal(
+                'fileToBuffer returned null', StackTrace.current,
+                reason: 'transfer: unreadable file ${value.path}');
+          }
           String? userId = widget.socketService!.userId;
           widget.socketService!.sendImages(
               name: imageName,
