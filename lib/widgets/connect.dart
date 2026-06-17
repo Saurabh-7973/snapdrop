@@ -133,7 +133,7 @@ class _SendButtonState extends State<SendButton> {
           }
         }
 
-        reviewCounter = reviewCounter! + 1;
+        reviewCounter = (reviewCounter ?? 0) + 1;
         await prefs.setInt('reviewCounter', reviewCounter!);
       });
       //Event (File Share)
@@ -187,7 +187,7 @@ class _SendButtonState extends State<SendButton> {
           }
         }
 
-        reviewCounter = reviewCounter! + 1;
+        reviewCounter = (reviewCounter ?? 0) + 1;
         await prefs.setInt('reviewCounter', reviewCounter!);
       });
       //Event (File Share)
@@ -271,9 +271,18 @@ class _SendButtonState extends State<SendButton> {
   }
 
   sendFilesToServer() {
-    for (int i = 0; i < widget.selectedAssetList!.length; i++) {
-      widget.selectedAssetList![i].originFile.then((value) {
-        String imageName = getImageName(value!.path);
+    final assets = widget.selectedAssetList;
+    if (assets == null) return;
+    for (int i = 0; i < assets.length; i++) {
+      assets[i].originFile.then((value) {
+        // Guard: originFile can be null (asset file unavailable) -> was a crash.
+        if (value == null) {
+          FirebaseInitalizationClass.recordNonFatal(
+              'originFile returned null', StackTrace.current,
+              reason: 'transfer: asset file unavailable');
+          return;
+        }
+        String imageName = getImageName(value.path);
         String imageExtension = getImageExtension(value.path);
 
         widget.socketService!.fileToBuffer(value.path).then((unitFile) {
@@ -294,13 +303,18 @@ class _SendButtonState extends State<SendButton> {
   }
 
   sendFilesToServerIntent() {
-    for (int i = 0; i < widget.listOfMedia!.length; i++) {
-      String imageName = getImageName("${widget.listOfMedia![i].path}}");
-      String imageExtension = getImageExtension(widget.listOfMedia![i].path);
+    final media = widget.listOfMedia;
+    if (media == null) return;
+    for (int i = 0; i < media.length; i++) {
+      String imageName = getImageName("${media[i].path}}");
+      String imageExtension = getImageExtension(media[i].path);
 
-      widget.socketService!
-          .fileToBuffer(widget.listOfMedia![i].path)
-          .then((unitFile) {
+      widget.socketService!.fileToBuffer(media[i].path).then((unitFile) {
+        if (unitFile == null) {
+          FirebaseInitalizationClass.recordNonFatal(
+              'fileToBuffer returned null', StackTrace.current,
+              reason: 'transfer(intent): unreadable file ${media[i].path}');
+        }
         String? userId = widget.socketService!.userId;
         widget.socketService!.sendImages(
             name: imageName,

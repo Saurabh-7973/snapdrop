@@ -1,4 +1,28 @@
-# Snapdrop — Quality Audit Findings (Phase A)
+# Snapdrop — Quality Audit Findings
+
+## Phase B status (what was done)
+- **[A] P1-1/2/7/10** ✅ SocketTransport interface, single broadcast stream (leak fixed), dispose +
+  subscription cancellation, `parseRoomId`, real test suite (5 tests).
+- **[B] P1-9 + analyzer** ✅ CI rewritten (branches, Flutter 3.35, dropped `.env` step, analyze+test);
+  **analyzer 98 → 0**; widget hygiene (final fields), mounted guards, PopScope, dead code removed.
+- **[C] P1-8** ✅ `firebase_performance` + non-fatals/custom-keys/breadcrumbs + additive funnel
+  (`pairing_*`, `transfer_*`) + `time_to_pair`/`transfer_duration` traces. **Old events kept.**
+  (Emits in the field once google-services.json lands — P0-2.)
+- **[D] P1-3/P1-4** ✅ Re-assessed & measured (cold-start ~3020ms debug); **no speculative perf
+  code** — grid already lazy+thumbnailed+repaint-bounded, no encoding to move off-isolate. Heavier
+  items reclassified P2. Startup-deferral declined (§1 ordering risk).
+- **[E] P1-5/P1-6** ✅ Hardened the **crash-prone** force-unwraps on the transfer path (originFile
+  null, fileToBuffer null, reviewCounter null, null asset/media lists) with guards + non-fatals.
+  Full `Result`-type error architecture **deferred P2** — the brief says prefer tightening over
+  heavy architecture at this size; the silent catches are now logged, not swallowed.
+- **P0-2** ⏳ google-services.json (Firebase human task) — observability/analytics dormant until then.
+- **P0-1** ⏳ room-ID entropy — needs the relay-server / `Plugin` source; cannot verify from client.
+
+**Ship gate:** P1-1…P1-9 closed; P0-2 is the one code-adjacent dependency (a console task). P2 deferred.
+
+---
+
+# Snapdrop — Quality Audit Findings (Phase A, original)
 
 Branch `quality/2026`. **Audit only — no code changed.** Severity per brief §3 (P0 before next
 release · P1 high-impact next · P2 post-launch). Each: file · why · fix · risk-of-fixing.
