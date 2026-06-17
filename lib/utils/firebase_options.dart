@@ -3,7 +3,6 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -41,8 +40,12 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static FirebaseOptions web = FirebaseOptions(
-    apiKey: dotenv.env['FIREBASE_API_KEY_WEB']!,
+  // Firebase apiKeys are public client identifiers (they ship in google-services.json /
+  // every Firebase app); access is restricted by app signing SHA + Firebase security
+  // rules, not by key secrecy. Hardcoded here per FlutterFire's own generated default —
+  // replaces the previous .env/dotenv indirection that crashed when .env wasn't bundled.
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCgxNnuaJg409evjzct-f6Vpx091Ftr4qs',
     appId: '1:62956973537:web:4d99fd567d8ee6c12ef6a0',
     messagingSenderId: '62956973537',
     projectId: 'snapdrop-e786e',
@@ -51,16 +54,16 @@ class DefaultFirebaseOptions {
     measurementId: 'G-S08SZ2HBJ4',
   );
 
-  static FirebaseOptions android = FirebaseOptions(
-    apiKey: dotenv.env['FIREBASE_API_KEY_ANDROID']!,
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyBuUx4ccbaw3Chp03JKTquk--CNPtCamB4',
     appId: '1:62956973537:android:0aad956b137b85632ef6a0',
     messagingSenderId: '62956973537',
     projectId: 'snapdrop-e786e',
     storageBucket: 'snapdrop-e786e.appspot.com',
   );
 
-  static FirebaseOptions ios = FirebaseOptions(
-    apiKey: dotenv.env['FIREBASE_API_KEY_IOS']!,
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyBm6zqCp5FgOLRjwYJQ-3NXnrliyKiylcw',
     appId: '1:62956973537:ios:3318cca4e8de70602ef6a0',
     messagingSenderId: '62956973537',
     projectId: 'snapdrop-e786e',
@@ -68,8 +71,8 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.example.snapdrop',
   );
 
-  static FirebaseOptions macos = FirebaseOptions(
-    apiKey: dotenv.env['FIREBASE_API_KEY_MACOS']!,
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyBm6zqCp5FgOLRjwYJQ-3NXnrliyKiylcw',
     appId: '1:62956973537:ios:3318cca4e8de70602ef6a0',
     messagingSenderId: '62956973537',
     projectId: 'snapdrop-e786e',
@@ -77,8 +80,8 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.example.snapdrop',
   );
 
-  static FirebaseOptions windows = FirebaseOptions(
-    apiKey: dotenv.env['FIREBASE_API_KEY_WINDOWS']!,
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCgxNnuaJg409evjzct-f6Vpx091Ftr4qs',
     appId: '1:62956973537:web:83cf764f2e7008ca2ef6a0',
     messagingSenderId: '62956973537',
     projectId: 'snapdrop-e786e',

@@ -116,23 +116,23 @@ behavioral). Left as-is. Decide later if it blocks anything.
 
 ## Phase 3 — Play rejection blockers
 
-### 🔴 CRITICAL cold-start crash — missing `.env` (found on real device)
-`main()` calls `dotenv.load(fileName: ".env")`, and `firebase_options.dart` reads
+### 🔴 CRITICAL cold-start crash — missing `.env` (found on real device) — RESOLVED
+`main()` called `dotenv.load(fileName: ".env")`, and `firebase_options.dart` read
 `dotenv.env['FIREBASE_API_KEY_*']!`. But `.env` was **commented out of pubspec assets**
 (`#  - .env`) so it never shipped → `FileNotFoundError` thrown before `runApp` → **app crashes
 on launch**. Masked on the emulator (the emulator security gate fired first), surfaced on a real
-device. **This is almost certainly the real "crashes during testing" rejection cause.** Fixes:
-- Recovered the Firebase API keys (not truly secret — they ship in every app, restricted by
-  signing/SHA) from git history (commit `7145f16` had them hardcoded pre-dotenv) +
-  `google-services.json`, and rebuilt `.env` (gitignored `*.env`, so not committed):
-  WEB/WINDOWS=`AIza...Ftr4qs`, ANDROID=`AIza...CamB4`, IOS/MACOS=`AIza...iylcw`.
-- Uncommented `- .env` in pubspec assets so it bundles into the APK (verified: present at
-  `assets/flutter_assets/.env`).
-- Hardened `main()` `dotenv.load` in a try/catch as a backstop so a missing `.env` can never again
-  hard-crash before `runApp`.
-- ⚠️ **FLAG:** `.env` is gitignored → not in git/CI. The build REQUIRES it. Either keep `.env`
-  present on every build machine, or (cleaner, since the keys aren't secret) hardcode the keys
-  back into `firebase_options.dart` and drop the dotenv dependency. Your call.
+device. **This is almost certainly the real "crashes during testing" rejection cause.**
+
+**Final fix (after a security review flagged shipping `.env` as a bundled asset):** removed the
+dotenv indirection entirely and **hardcoded the Firebase apiKeys back into `firebase_options.dart`**
+— which is exactly what FlutterFire's own `flutterfire configure` generates. Firebase apiKeys are
+public client identifiers (they already ship in `google-services.json` / every Firebase app);
+access is gated by app-signing SHA + Firebase security rules, not key secrecy. So this is not a
+secret leak. Keys were recovered from git history (commit `7145f16`, pre-dotenv) +
+`google-services.json`. Then: deleted `.env`, removed `- .env` from assets, dropped the
+`flutter_dotenv` dependency and all `dotenv` imports. Verified: APK no longer contains `.env`,
+`FirebaseApp initialization successful` on the real device, no crash. No more gitignored-file
+build dependency, no bundled-secret finding.
 
 ### Stability (v15/v17 "crashes during testing")
 Defensive hardening added (approved: minimal try/catch, behavior-preserving on valid inputs):
@@ -334,7 +334,7 @@ Backlog — NOT done (documented, no auto-build):
 | Data-safety SDK list | ✅ Written (Phase 3): Device/other IDs + Crash logs + Diagnostics; NOT Performance |
 | Signed release AAB | ⏳ **Blocked (human):** new signing key → freerasp cert hash → new Firebase app, then `flutter build appbundle --release` |
 | Cold-start crash on fresh install | ✅ Fixed (missing `.env` bundled + load hardened) — was the likely Play crash cause |
-| Client flow on real device | ✅ Verified to QR-scanner+camera (Android 16): launch→perm→grid→select→Connect→scan. Transfer-into-Figma needs the live plugin QR |
+| Full flow on real device (image→QR→transfer) | ✅ **User-confirmed working end-to-end** — images transfer into Figma. Client path also screenshot-verified launch→perm→grid→select→Connect→QR-camera (Android 16) |
 | Zero unreviewed behavioral changes | ✅ All behavioral/risky items flagged here, none silent |
 
 **Net:** all code-side work done + verified to the limits an emulator allows. Remaining items are

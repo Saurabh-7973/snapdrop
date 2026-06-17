@@ -14,7 +14,6 @@ import 'services/jailbreak_detector.dart';
 import 'services/telsec_raspfree_checker.dart';
 import 'utils/firebase_initalization_class.dart';
 import 'package:flutter_upgrade_version/flutter_upgrade_version.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final List<Locale> appLocales = [
   const Locale('en'),
@@ -35,13 +34,6 @@ void main() async {
   // fully protected. RASP check itself is started in MyApp.initState (also gated).
   if (kReleaseMode) {
     await JailbreakDetector.checkJailbreakStatus();
-  }
-  // Guard: a missing/unbundled .env previously threw FileNotFoundError here and
-  // crashed before runApp. .env is now a bundled asset; this catch is a backstop.
-  try {
-    await dotenv.load(fileName: ".env");
-  } catch (e) {
-    debugPrint('dotenv load failed: $e');
   }
   await FirebaseInitalizationClass.initalizeFireBase();
   FirebaseInitalizationClass.initalizeFireBaseAnalytics();
