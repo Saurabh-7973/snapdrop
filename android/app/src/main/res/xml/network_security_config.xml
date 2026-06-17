@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Defense-in-depth: the app only talks to getsnapdrop.in over wss/https and to
+     Firebase over https, so disallow cleartext (HTTP/ws) traffic entirely. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>

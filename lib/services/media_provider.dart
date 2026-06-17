@@ -9,19 +9,12 @@ class MediaProviderServices {
 
   Future<List<AssetEntity>> loadAsset(AssetPathEntity selectedAlbum) async {
     int assetCount = await selectedAlbum.assetCountAsync;
-    if (assetCount > 0) {
-      assetCount - 1;
-    }
-    List<AssetEntity> assetList = await selectedAlbum.getAssetListRange(start: 0, end: assetCount);
+    List<AssetEntity> assetList =
+        await selectedAlbum.getAssetListRange(start: 0, end: assetCount);
     return assetList;
   }
 
   static Future<int> getAssetCount(AssetPathEntity selectedAlbum) async {
-    int assetCount;
-    assetCount = await selectedAlbum.assetCountAsync;
-    if (assetCount > 0) {
-      assetCount - 1;
-    }
-    return assetCount;
+    return await selectedAlbum.assetCountAsync;
   }
 }

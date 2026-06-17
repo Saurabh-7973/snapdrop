@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:Snapdrop/constant/global_showcase_key.dart';
 import 'package:Snapdrop/services/in_app_review_service.dart';
@@ -334,7 +334,7 @@ class _SendButtonState extends State<SendButton> {
       child: Center(
         child: ElevatedButton(
           onPressed: () {
-            exit(0);
+            SystemNavigator.pop();
           },
           style: ElevatedButton.styleFrom(
               minimumSize: Size(screenWidth / 2.6, 50),
