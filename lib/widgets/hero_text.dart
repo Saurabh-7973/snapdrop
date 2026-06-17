@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import '../constant/theme_contants.dart';
 
 class HeroText extends StatelessWidget {
-  String firstLine;
-  String secondLine;
-  String thirdLine;
-  int? size;
+  final String firstLine;
+  final String secondLine;
+  final String thirdLine;
+  final int? size;
 
-  HeroText(
+  const HeroText(
       {super.key,
       required this.firstLine,
       required this.secondLine,

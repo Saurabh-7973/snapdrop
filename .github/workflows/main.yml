@@ -1,43 +1,43 @@
-name: Flutter CI/CD
+name: Flutter CI
 
 on:
   push:
-    branches: [ saurabh_dev ]
+    branches: [ main, revival/2026, quality/2026 ]
   pull_request:
-    branches: [ saurabh_dev ]
+    branches: [ main ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v4
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.29.0'  # or 3.29.x when fully stable in GitHub Actions
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.4'
+          channel: stable
+          cache: true
 
-        # ✅ Create .env from GitHub secrets
-    - name: Create .env file from secrets
-      run: |
-        echo "FIREBASE_API_KEY_ANDROID=${{ secrets.FIREBASE_API_KEY_ANDROID }}" >> .env
-        echo "FIREBASE_API_KEY_IOS=${{ secrets.FIREBASE_API_KEY_IOS }}" >> .env
-        echo "FIREBASE_API_KEY_WEB=${{ secrets.FIREBASE_API_KEY_WEB }}" >> .env
-        echo "FIREBASE_API_KEY_MACOS=${{ secrets.FIREBASE_API_KEY_MACOS }}" >> .env
-        echo "FIREBASE_API_KEY_WINDOWS=${{ secrets.FIREBASE_API_KEY_WINDOWS }}" >> .env
-    
-    - name: Install Dependencies
-      run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
 
-    - name: Build APK
-      run: flutter build apk --release
+      - name: Analyze
+        run: flutter analyze
 
-    # Optional: Upload artifact
-    - name: Upload Build
-      uses: actions/upload-artifact@v4
-      with:
-        name: release-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
+      - name: Test
+        run: flutter test
+
+      # Debug build only: the release keystore (key.properties / *.jks) is not in
+      # the repo, so a signed release build can't run in CI. This proves the app
+      # compiles; the signed AAB is produced locally / via a release pipeline.
+      - name: Build debug APK
+        run: flutter build apk --debug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk

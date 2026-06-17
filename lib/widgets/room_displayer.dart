@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class RoomDisplayer extends StatelessWidget {
-  String senderId;
-  String receiverId;
-  String senderMessage;
-  String receiverMessage;
+  final String senderId;
+  final String receiverId;
+  final String senderMessage;
+  final String receiverMessage;
 
-  RoomDisplayer({
+  const RoomDisplayer({
     super.key,
     required this.senderId,
     required this.receiverId,

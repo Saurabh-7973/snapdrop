@@ -3,9 +3,9 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 
 class SelectedImagesViewer extends StatelessWidget {
-  List<AssetEntity> selectedAssetList;
+  final List<AssetEntity> selectedAssetList;
 
-  SelectedImagesViewer({super.key, required this.selectedAssetList});
+  const SelectedImagesViewer({super.key, required this.selectedAssetList});
 
   @override
   Widget build(BuildContext context) {

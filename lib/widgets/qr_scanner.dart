@@ -19,11 +19,11 @@ import '../l10n/app_localizations.dart';
 class QRScanner extends StatefulWidget {
   // const QRScanner({super.key});
 
-  List<AssetEntity>? selectedAssetList;
-  List<SharedMediaFile>? listOfMedia;
-  bool isIntentSharing = false;
+  final List<AssetEntity>? selectedAssetList;
+  final List<SharedMediaFile>? listOfMedia;
+  final bool isIntentSharing;
 
-  QRScanner(
+  const QRScanner(
       {super.key,
       this.selectedAssetList,
       required this.isIntentSharing,
@@ -64,7 +64,9 @@ class _QRScannerState extends State<QRScanner> {
   @override
   void dispose() {
     _timeoutTimer?.cancel();
-    _qrViewController?.dispose();
+    // QRViewController self-disposes when QRView unmounts (its dispose() is
+    // deprecated/no-op); just drop the reference.
+    _qrViewController = null;
     super.dispose();
   }
 
@@ -216,6 +218,7 @@ class _QRScannerState extends State<QRScanner> {
     });
 
     Future.delayed(const Duration(seconds: 2), () {
+      if (!mounted) return;
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         if (widget.isIntentSharing) {
           return SendFile(
@@ -349,6 +352,7 @@ class _QRScannerState extends State<QRScanner> {
       child: ElevatedButton(
           onPressed: () async {
             await CheckInternetConnectivity.hasNetwork().then((value) {
+              if (!mounted) return;
               if (value) {
                 if (result != null) {
                   connectSocket();

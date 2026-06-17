@@ -11,7 +11,6 @@ import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
 import '../screen/home_screen.dart';
-import '../services/check_internet_connectivity.dart';
 import '../services/first_time_login.dart';
 import '../services/socket_service.dart';
 import '../utils/firebase_initalization_class.dart';
@@ -96,7 +95,7 @@ class _SendButtonState extends State<SendButton> {
             });
           }
 
-          if (reviewCounter == 3) {
+          if (reviewCounter == 3 && mounted) {
             //App Share Widget
             showDialog(
               context: context,
@@ -144,7 +143,7 @@ class _SendButtonState extends State<SendButton> {
             });
           }
 
-          if (reviewCounter == 3) {
+          if (reviewCounter == 3 && mounted) {
             //App Share Widget
             showDialog(
               context: context,
@@ -278,43 +277,6 @@ class _SendButtonState extends State<SendButton> {
     }
   }
 
-  Widget sendFilesToServerButton(screenWidth) {
-    return SizedBox(
-      width: screenWidth / 1.3,
-      height: 50,
-      child: ElevatedButton(
-          onPressed: () async {
-            await CheckInternetConnectivity.hasNetwork().then((value) async {
-              if (value) {
-                fileTransfer();
-              } else {
-                var snackbarLimit = SnackBar(
-                    backgroundColor: ThemeConstant.primaryAppColor,
-                    content: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        AppLocalizations.of(context)!
-                            .app_conditions_internet_connection,
-                        style: ThemeConstant.smallTextSizeLight,
-                      ),
-                    ));
-                ScaffoldMessenger.of(context).showSnackBar(snackbarLimit);
-              }
-            });
-          },
-          style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30))),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              AppLocalizations.of(context)!.send_screen_connect_button,
-              style: ThemeConstant.smallTextSizeDarkFontWidth,
-            ),
-          )),
-    );
-  }
 
   Widget closeButton(screenWidth) {
     return Container(

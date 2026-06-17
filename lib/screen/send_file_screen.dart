@@ -16,14 +16,14 @@ import '../widgets/room_displayer.dart';
 import '../widgets/selected_images.dart';
 
 class SendFile extends StatelessWidget {
-  String roomId;
-  List<AssetEntity>? selectedAssetList;
-  SocketService? socketService;
-  bool isIntentSharing = false;
-  List<SharedMediaFile>? listOfMedia;
-  int imageCount;
+  final String roomId;
+  final List<AssetEntity>? selectedAssetList;
+  final SocketService? socketService;
+  final bool isIntentSharing;
+  final List<SharedMediaFile>? listOfMedia;
+  final int imageCount;
 
-  SendFile({
+  const SendFile({
     super.key,
     this.selectedAssetList,
     this.listOfMedia,

@@ -7,13 +7,13 @@ import '../screen/qr_screen.dart';
 import '../services/socket_service.dart';
 
 class IntentFileDisplayer extends StatelessWidget {
-  List<AssetEntity>? selectedAssetList;
-  SocketService? socketService;
-  bool isIntentSharing = false;
-  List<SharedMediaFile>? listOfMedia;
-  bool connectDisplayer = false;
+  final List<AssetEntity>? selectedAssetList;
+  final SocketService? socketService;
+  final bool isIntentSharing;
+  final List<SharedMediaFile>? listOfMedia;
+  final bool connectDisplayer;
 
-  IntentFileDisplayer({
+  const IntentFileDisplayer({
     super.key,
     required this.isIntentSharing,
     this.listOfMedia,

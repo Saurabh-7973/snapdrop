@@ -11,9 +11,9 @@ import '../widgets/hero_text.dart';
 import '../l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
-  SocketService? socketService;
-  bool isIntentSharing = false;
-  HomeScreen(
+  final SocketService? socketService;
+  final bool isIntentSharing;
+  const HomeScreen(
       {super.key, required this.socketService, required this.isIntentSharing});
 
   @override

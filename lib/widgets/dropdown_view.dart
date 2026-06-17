@@ -20,8 +20,10 @@ import '../services/permission_provider.dart';
 import '../services/socket_service.dart';
 import '../l10n/app_localizations.dart';
 
+// P2: holds services + a ScrollController as widget fields and mutates
+// isIntentSharing in initState — should move into State. Deferred (behavior-sensitive).
+// ignore: must_be_immutable
 class DropDownView extends StatefulWidget {
-  // bool isTransferCompleted;
   SocketService? socketService;
   bool isIntentSharing;
   DropDownView({super.key, this.socketService, required this.isIntentSharing});
@@ -790,9 +792,8 @@ class _DropDownViewState extends State<DropDownView> {
                                                   await FileImageServices()
                                                       .getTotalImageSize(
                                                           selectedAssetList);
-
+                                              if (!context.mounted) return;
                                               if (size < 5.0) {
-                                                if (!mounted) return;
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(

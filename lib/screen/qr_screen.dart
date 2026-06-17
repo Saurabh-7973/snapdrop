@@ -13,11 +13,11 @@ import '../widgets/hero_text.dart';
 import '../widgets/qr_scanner.dart';
 
 class QRScreen extends StatefulWidget {
-  List<AssetEntity>? selectedAssetList;
-  bool isIntentSharing = false;
-  List<SharedMediaFile>? listOfMedia;
+  final List<AssetEntity>? selectedAssetList;
+  final bool isIntentSharing;
+  final List<SharedMediaFile>? listOfMedia;
 
-  QRScreen({
+  const QRScreen({
     super.key,
     this.selectedAssetList,
     required this.isIntentSharing,
@@ -84,8 +84,15 @@ class _QRScreenState extends State<QRScreen>
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final shouldPop = await _onWillPop();
+        if (shouldPop && context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
