@@ -3,11 +3,11 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:showcaseview/showcaseview.dart';
 
-import '../constant/theme_contants.dart';
 import '../floating_squares.dart';
 import '../services/socket_service.dart';
 import '../l10n/app_localizations.dart';
 
+import '../widgets/app_background.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/connect.dart';
 import '../widgets/hero_text.dart';
@@ -37,32 +37,18 @@ class SendFile extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      backgroundColor: ThemeConstant.primaryAppColor,
-      body: Stack(
-        children: [
-          /// ✅ **Background Gradient**
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  ThemeConstant.primaryAppColor,
-                  ThemeConstant.primaryAppColorGradient2,
-                  ThemeConstant.primaryAppColorGradient3,
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+    return AppBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: [
+            /// ✅ **Floating Triangles Animation**
+            Positioned.fill(
+              child: FloatingSquares(),
             ),
-          ),
 
-          /// ✅ **Floating Triangles Animation**
-          Positioned.fill(
-            child: FloatingSquares(),
-          ),
-
-          /// ✅ **Main Content**
-          SafeArea(
+            /// ✅ **Main Content**
+            SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(15),
               child: Column(
@@ -130,6 +116,7 @@ class SendFile extends StatelessWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }

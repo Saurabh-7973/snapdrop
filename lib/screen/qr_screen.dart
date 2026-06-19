@@ -8,6 +8,7 @@ import '../constant/theme_contants.dart';
 import '../l10n/app_localizations.dart';
 
 import '../floating_squares.dart';
+import '../widgets/app_background.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/hero_text.dart';
 import '../widgets/qr_scanner.dart';
@@ -93,18 +94,7 @@ class _QRScreenState extends State<QRScreen>
           Navigator.of(context).pop();
         }
       },
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              ThemeConstant.primaryAppColor,
-              ThemeConstant.primaryAppColorGradient2,
-              ThemeConstant.primaryAppColorGradient3
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      child: AppBackground(
         child: Scaffold(
           backgroundColor: Colors.transparent,
           body: Stack(
@@ -115,8 +105,9 @@ class _QRScreenState extends State<QRScreen>
               ),
 
               // Header
-              Padding(
-                padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
+              SafeArea(
+                child: Padding(
+                padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -284,6 +275,7 @@ class _QRScreenState extends State<QRScreen>
                     ),
                   ],
                 ),
+              ),
               ),
             ],
           ),

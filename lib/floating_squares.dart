@@ -11,12 +11,17 @@ class FloatingSquares extends StatefulWidget {
 
 class _FloatingSquaresState extends State<FloatingSquares>
     with SingleTickerProviderStateMixin {
-  late Ticker _ticker;
+  // Floating-squares motif disabled for now (perf / visual review).
+  // Flip back to true to re-enable the animated overlay.
+  static const bool _enabled = false;
+
+  Ticker? _ticker;
   List<Square> squares = [];
 
   @override
   void initState() {
     super.initState();
+    if (!_enabled) return;
     _ticker = createTicker((_) => setState(() {}))..start();
     _generateSquares();
   }
@@ -38,12 +43,13 @@ class _FloatingSquaresState extends State<FloatingSquares>
 
   @override
   void dispose() {
-    _ticker.dispose();
+    _ticker?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_enabled) return const SizedBox.shrink();
     return Stack(
       children: squares.map((square) => _buildSquare(square)).toList(),
     );

@@ -75,3 +75,5 @@ version
 # firebase_options.dart
 google-services.json
 *.env
+# superpowers brainstorm companion
+.superpowers/

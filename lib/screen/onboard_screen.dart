@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../floating_squares.dart';
 import '../main.dart';
 import '../utils/firebase_initalization_class.dart';
+import '../widgets/app_background.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/hero_text.dart';
 import '../widgets/intro_widget.dart';
@@ -62,29 +63,16 @@ class _OnboardScreenState extends State<OnboardScreen> {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
-    return Container(
-      color: ThemeConstant.primaryAppColor,
-      child: SafeArea(
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                ThemeConstant.primaryAppColor,
-                ThemeConstant.primaryAppColorGradient2,
-                ThemeConstant.primaryAppColorGradient3
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Stack(
-              children: [
-                const FloatingSquares(),
-                Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
+    return AppBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: [
+            const FloatingSquares(),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
                     children: [
                       Stack(
                         children: [
@@ -200,12 +188,11 @@ class _OnboardScreenState extends State<OnboardScreen> {
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildLanguageSelector() {

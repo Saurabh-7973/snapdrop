@@ -73,11 +73,19 @@ class _DropDownViewState extends State<DropDownView> {
     });
   }
 
+  /// photo_manager can return an album with an empty [name] (e.g. a single
+  /// unnamed image bucket on Android 13+). Fall back to a readable label so
+  /// the dropdown never renders a blank row.
+  String albumLabel(AssetPathEntity album) {
+    if (album.name.trim().isNotEmpty) return album.name;
+    return album.isAll ? 'Recent' : 'All Photos';
+  }
+
   void filterAlbums() {
     if (mounted) {
       setState(() {
         filteredAlbumList = albumList
-            .where((album) => album.name
+            .where((album) => albumLabel(album)
                 .toLowerCase()
                 .contains(searchController.text.toLowerCase()))
             .toList();
@@ -195,7 +203,7 @@ class _DropDownViewState extends State<DropDownView> {
                                               Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
-                                                  album.name,
+                                                  albumLabel(album),
                                                   style: ThemeConstant
                                                       .smallTextSizeLight
                                                       .copyWith(
@@ -268,7 +276,7 @@ class _DropDownViewState extends State<DropDownView> {
                                     child: Align(
                                       alignment: Alignment.centerLeft,
                                       child: Text(
-                                        album.name,
+                                        albumLabel(album),
                                         overflow: TextOverflow.ellipsis,
                                         style: ThemeConstant.smallTextSizeLight
                                             .copyWith(
@@ -969,8 +977,8 @@ class _DropDownViewState extends State<DropDownView> {
         widget._mediaProviderServices.loadAlbums(hasAll).then((listOfAlbum) {
           if (listOfAlbum.isNotEmpty) {
             // Sort the list alphabetically by album name
-            listOfAlbum.sort(
-                (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+            listOfAlbum.sort((a, b) =>
+                albumLabel(a).toLowerCase().compareTo(albumLabel(b).toLowerCase()));
             if (mounted) {
               setState(() {
                 albumList = listOfAlbum;
