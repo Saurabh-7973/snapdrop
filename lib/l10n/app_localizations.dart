@@ -262,6 +262,24 @@ abstract class AppLocalizations {
   /// **'Connect'**
   String get home_screen_button;
 
+  /// No description provided for @send_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send_button;
+
+  /// No description provided for @connection_connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get connection_connected;
+
+  /// No description provided for @connection_not_connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected — scan to connect'**
+  String get connection_not_connected;
+
   /// No description provided for @home_album_view_all.
   ///
   /// In en, this message translates to:

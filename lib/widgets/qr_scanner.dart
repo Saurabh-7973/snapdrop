@@ -14,6 +14,7 @@ import '../constant/theme_contants.dart';
 import '../screen/send_file_screen.dart';
 import '../services/check_internet_connectivity.dart';
 import '../services/first_time_login.dart';
+import '../services/session_controller.dart';
 import '../services/socket_service.dart';
 import '../l10n/app_localizations.dart';
 import 'app_toast.dart';
@@ -219,13 +220,13 @@ class _QRScannerState extends State<QRScanner>
     _pairTrace = FirebaseInitalizationClass.newTrace('time_to_pair');
     await _pairTrace?.start();
 
-    socketService = SocketService(url: '${result!.code}');
-    socketService!.connectToSocketServer();
+    // Pair through the app-level session (persists across picker<->transfer so
+    // subsequent sends skip the QR). Same SocketService/wire contract.
+    sessionController.pair('${result!.code}');
+    socketService = sessionController.socket;
 
     setState(() {
-      socketService != null
-          ? connectionStatus = true
-          : connectionStatus = false;
+      connectionStatus = socketService != null;
     });
 
     FirebaseInitalizationClass.setCustomKey('paired', true);

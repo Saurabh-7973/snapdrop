@@ -43,6 +43,9 @@ class SocketService implements SocketTransport {
   SocketService({required String url}) : _url = url;
   io.Socket? socket;
 
+  /// Raw pairing URL/QR payload this service was created from (read-only).
+  String get url => _url;
+
   // Single broadcast controller for image-received acks (was created per call).
   final StreamController<bool> _imageReceivedController =
       StreamController<bool>.broadcast();

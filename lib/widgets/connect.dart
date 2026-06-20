@@ -13,6 +13,7 @@ import 'package:showcaseview/showcaseview.dart';
 import '../constant/theme_contants.dart';
 import '../screen/home_screen.dart';
 import '../services/first_time_login.dart';
+import '../services/session_controller.dart';
 import '../services/socket_service.dart';
 import '../utils/firebase_initalization_class.dart';
 import '../l10n/app_localizations.dart';
@@ -73,6 +74,7 @@ class _SendButtonState extends State<SendButton> {
     });
 
     //Immediate File Transfer
+    sessionController.markTransferring();
     fileTransfer();
   }
 
@@ -107,6 +109,7 @@ class _SendButtonState extends State<SendButton> {
               transferCompleted = true;
               FirstTimeLogin.setFirstTimeLoginFalse();
             });
+            sessionController.markComplete();
             widget.onTransferCompleted?.call();
             // Funnel: transfer success (additive).
             FirebaseInitalizationClass.setCustomKey(
@@ -158,6 +161,7 @@ class _SendButtonState extends State<SendButton> {
               transferCompleted = true;
               FirstTimeLogin.setFirstTimeLoginFalse();
             });
+            sessionController.markComplete();
             widget.onTransferCompleted?.call();
             // Funnel: transfer success (additive).
             FirebaseInitalizationClass.setCustomKey(
@@ -330,8 +334,25 @@ class _SendButtonState extends State<SendButton> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 6),
       child: ElevatedButton(
-        onPressed: () {
-          SystemNavigator.pop();
+        onPressed: () async {
+          // Close ends the session cleanly (no zombie socket). Intent-share
+          // variant exits the app; picker variant returns to Home disconnected.
+          await sessionController.disconnect();
+          if (!mounted) return;
+          if (widget.isIntentSharing) {
+            SystemNavigator.pop();
+          } else {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                  socketService: null,
+                  isIntentSharing: false,
+                ),
+              ),
+              (route) => false,
+            );
+          }
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,

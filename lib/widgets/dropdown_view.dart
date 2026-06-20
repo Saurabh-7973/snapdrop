@@ -12,7 +12,9 @@ import 'package:showcaseview/showcaseview.dart';
 import '../constant/global_showcase_key.dart';
 import '../constant/theme_contants.dart';
 import '../screen/qr_screen.dart';
+import '../screen/send_file_screen.dart';
 import '../services/file_image.dart';
+import '../services/session_controller.dart';
 import '../services/first_time_login.dart';
 import '../services/media_provider.dart';
 import '../services/permission_provider.dart';
@@ -775,18 +777,45 @@ class _DropDownViewState extends State<DropDownView> {
                                                           selectedAssetList);
                                               if (!context.mounted) return;
                                               if (size < 5.0) {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        QRScreen(
-                                                      selectedAssetList:
-                                                          selectedAssetList,
-                                                      isIntentSharing: widget
-                                                          .isIntentSharing,
+                                                // Live session -> Send straight
+                                                // over the same socket (no QR).
+                                                // Else -> Connect (scan first).
+                                                if (sessionController
+                                                    .isConnected) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SendFile(
+                                                        selectedAssetList:
+                                                            selectedAssetList,
+                                                        isIntentSharing: false,
+                                                        imageCount:
+                                                            selectedAssetList
+                                                                .length,
+                                                        roomId: sessionController
+                                                                .roomId ??
+                                                            '',
+                                                        socketService:
+                                                            sessionController
+                                                                .socket,
+                                                      ),
                                                     ),
-                                                  ),
-                                                );
+                                                  );
+                                                } else {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          QRScreen(
+                                                        selectedAssetList:
+                                                            selectedAssetList,
+                                                        isIntentSharing: widget
+                                                            .isIntentSharing,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
                                               } else {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(
@@ -856,9 +885,14 @@ class _DropDownViewState extends State<DropDownView> {
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     Text(
-                                                      AppLocalizations.of(
-                                                              context)!
-                                                          .home_screen_button,
+                                                      sessionController
+                                                              .isConnected
+                                                          ? AppLocalizations.of(
+                                                                  context)!
+                                                              .send_button
+                                                          : AppLocalizations.of(
+                                                                  context)!
+                                                              .home_screen_button,
                                                       style: ThemeConstant
                                                           .smallTextSizeDarkFontWidth,
                                                     ),

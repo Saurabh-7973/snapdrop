@@ -89,6 +89,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get home_screen_button => '连接';
 
   @override
+  String get send_button => 'Send';
+
+  @override
+  String get connection_connected => 'Connected';
+
+  @override
+  String get connection_not_connected => 'Not connected — scan to connect';
+
+  @override
   String get home_album_view_all => 'View all';
 
   @override
