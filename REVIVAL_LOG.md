@@ -387,3 +387,34 @@ owner instruction).
 
 **Net:** all code-side work done + verified to the limits an emulator allows. Remaining items are
 console/hardware tasks (Firebase, signing key, physical-device flow test), each flagged above.
+
+---
+
+## 2026-06-20 — UI re-skin (`design/2026 [B]`) + revival follow-ups
+
+Separate from the revival compatibility work above: a full locked-design UI re-skin
+landed on branch `design/2026` (commit `706b852`) — presentation only, wire
+contract/flows/analytics untouched. See `snapdrop_mockups/` for the 7 ground-truth mockups.
+
+Revival-relevant follow-ups done today:
+- **`targetSdk 35 → 36`** (`android/app/build.gradle`). compileSdk already 36; the
+  re-skin added edge-to-edge (`SystemUiMode.edgeToEdge` + content-only SafeArea),
+  which API 36 (Android 16) enforces — so the bump is aligned, not a new risk.
+- **QR scanner decision (reconfirmed):** keep `qr_code_scanner_plus` (maintained fork).
+  The discontinued `qr_code_scanner` is already gone; a `mobile_scanner` rewrite would
+  touch the frozen scan→pair path for no extra benefit. Not done by design.
+- **`share_plus` call site:** left as `Share.share(...)`. Resolved version is **10.1.4**,
+  where that IS the current API — `SharePlus.instance.share(ShareParams(...))` only
+  exists in v11+. The brief's "v10 uses SharePlus.instance" note is inaccurate for the
+  pinned version; no migration needed unless share_plus is bumped to 11+.
+- **Fresh signed release AAB rebuilt** on targetSdk 36 + the re-skin.
+
+Still HUMAN-only (unchanged, blocking publish):
+- **Firebase:** add the new Android app (`in.getsnapdrop.app`) to the project and drop in
+  a new `google-services.json` — current one is keyed to the old `com.saurabh7973.snapdrop`,
+  so Analytics is disabled (`Missing google_app_id`). Can't generate it here.
+- **Signing key:** replace the placeholder keystore + enroll Play App Signing before publishing.
+- **Play Console forms:** data-safety (list already in this log), privacy policy URL,
+  content rating, app access.
+- **Phase-0 relay:** effectively confirmed alive earlier (images transferred into Figma
+  end-to-end) — re-verify once more right before submission.
