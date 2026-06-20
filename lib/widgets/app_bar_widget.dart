@@ -13,7 +13,7 @@ class AppBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
+      height: 42, // mockup nav height
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
@@ -22,7 +22,7 @@ class AppBarWidget extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
         child: Row(
           children: [
             if (showBackButton)

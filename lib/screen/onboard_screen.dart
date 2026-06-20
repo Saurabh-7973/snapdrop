@@ -73,7 +73,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                 child: Column(
                   children: [
                     const AppBarWidget(),
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 30), // mockup head margin-top
                     Text(
                       '${AppLocalizations.of(context)!.onboard_hero_text_1}\n${AppLocalizations.of(context)!.onboard_hero_text_2}',
                       textAlign: TextAlign.center,

@@ -79,7 +79,7 @@ Future<void> _loadFonts() async {
   await loader.load();
 }
 
-Widget _harness(Widget child, {double topInset = 30}) {
+Widget _harness(Widget child, {double topInset = 35}) {
   return MediaQuery(
     // Simulate a status-bar top inset so SafeArea pushes content down like the
     // mockup's status-bar row does. diff.py crops this strip from both sides.
@@ -154,7 +154,7 @@ void main() {
         listOfMedia: _seedMedia(5),
         imageCount: 5,
       ),
-      topInset: 27,
+      topInset: 31,
     ));
     await tester.pump(const Duration(milliseconds: 200));
     if (complete) {
@@ -178,7 +178,7 @@ void main() {
   // interior. Everything around it (title, Figma line, brackets, button) is real.
   Future<void> shootQr(WidgetTester tester, String shot,
       {required Size physical,
-      double topInset = 30,
+      double topInset = 35,
       Duration settle = const Duration(milliseconds: 700),
       void Function(BuildContext)? after}) async {
     tester.view.physicalSize = physical;
@@ -207,7 +207,7 @@ void main() {
     // The 20s timeout fires -> isTimeout state (no platform view).
     await shootQr(tester, 'qr_timeout',
         physical: const Size(918, 1992),
-        topInset: 27,
+        topInset: 31,
         settle: const Duration(seconds: 21));
   });
 
@@ -215,7 +215,7 @@ void main() {
     // Scanning viewport + the dark on-brand toast.
     await shootQr(tester, 'qr_nointernet',
         physical: const Size(918, 1992),
-        topInset: 27,
+        topInset: 31,
         after: (c) => appToast(c, AppLocalizations.of(c)!.no_internet_connection));
   });
 
@@ -231,6 +231,7 @@ void main() {
 
     late BuildContext ctx;
     await tester.pumpWidget(_harness(
+      topInset: 30,
       AppBackground(
         child: Scaffold(
           backgroundColor: Colors.transparent,
