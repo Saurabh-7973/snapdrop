@@ -33,7 +33,7 @@ Future<bool?> showAppDialog({
         child: Dialog(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 18),
           child: _AppDialogCard(
             icon: icon,
             title: title,

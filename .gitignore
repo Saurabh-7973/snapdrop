@@ -77,3 +77,6 @@ google-services.json
 *.env
 # superpowers brainstorm companion
 .superpowers/
+
+# pixel-diff QA artifacts (regenerable via tools/)
+qa/

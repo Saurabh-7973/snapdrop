@@ -34,7 +34,7 @@ class IntroWidget extends StatelessWidget {
               style: const TextStyle(
                 fontFamily: 'Inter',
                 color: Color(0xFFEEF1EF),
-                fontSize: 15.5,
+                fontSize: 15,
                 height: 1.35,
                 fontWeight: FontWeight.w500,
               ),
