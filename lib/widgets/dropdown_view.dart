@@ -386,8 +386,8 @@ class _DropDownViewState extends State<DropDownView> {
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
-                                  mainAxisSpacing: 6,
-                                  crossAxisSpacing: 6,
+                                  mainAxisSpacing: 8,
+                                  crossAxisSpacing: 8,
                                   childAspectRatio: (2 / 3)),
                           itemBuilder: (context, index) {
                             return GestureDetector(
@@ -429,7 +429,7 @@ class _DropDownViewState extends State<DropDownView> {
                                             Positioned.fill(
                                               child: ClipRRect(
                                                 borderRadius:
-                                                    BorderRadius.circular(5),
+                                                    BorderRadius.circular(11),
                                                 child: AssetEntityImage(
                                                   assetList[index],
                                                   thumbnailSize:
@@ -476,7 +476,7 @@ class _DropDownViewState extends State<DropDownView> {
                                                 width: double.infinity,
                                                 decoration: BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.circular(5),
+                                                      BorderRadius.circular(11),
                                                   color: Colors.black
                                                       .withValues(alpha: 0.6),
                                                 ),
@@ -589,7 +589,7 @@ class _DropDownViewState extends State<DropDownView> {
                                           Positioned.fill(
                                             child: ClipRRect(
                                               borderRadius:
-                                                  BorderRadius.circular(5),
+                                                  BorderRadius.circular(11),
                                               child: AssetEntityImage(
                                                 assetList[index],
                                                 thumbnailSize:
@@ -635,7 +635,7 @@ class _DropDownViewState extends State<DropDownView> {
                                               width: double.infinity,
                                               decoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(5),
+                                                    BorderRadius.circular(11),
                                                 color: Colors.black
                                                     .withValues(alpha: 0.5),
                                               ),
@@ -890,8 +890,8 @@ class _DropDownViewState extends State<DropDownView> {
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
-                        mainAxisSpacing: 6,
-                        crossAxisSpacing: 6,
+                        mainAxisSpacing: 8,
+                        crossAxisSpacing: 8,
                         childAspectRatio: (2 / 3),
                       ),
                       itemBuilder: (context, index) {

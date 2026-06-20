@@ -41,10 +41,10 @@ class IntentFileDisplayer extends StatelessWidget {
             itemBuilder: (context, index) {
               return Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(11),
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(11),
                   child: Image.file(
                     File(listOfMedia![index].path),
                     fit: BoxFit.cover,
