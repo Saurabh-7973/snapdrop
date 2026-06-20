@@ -349,11 +349,12 @@ owner instruction).
 - **Release signing set up + signed AAB built:**
   - Generated upload keystore `android/app/upload-keystore.jks` (alias `upload`, RSA 2048,
     10000-day validity) + `android/key.properties`. **Both gitignored — NOT in the repo.**
-  - ⚠️ **CREDENTIALS (save these / replace before publishing):** storePassword=`snapdrop2026`,
-    keyPassword=`snapdrop2026`, keyAlias=`upload`, storeFile=`upload-keystore.jks`. **Back up the
-    `.jks` somewhere safe** — once it's the Play upload key, losing it means you can't ship updates
-    (Play App Signing recovery aside). If you'd rather own a key with your own password, regenerate
-    it and replace `key.properties` before the first Play upload.
+  - ⚠️ **The original placeholder keystore had its password committed here and is therefore
+    compromised — DO NOT use it for publishing.** On 2026-06-20 a fresh upload keystore was
+    generated with a private password (kept out of the repo, in `android/key.properties` only,
+    which is gitignored). Credentials live in your password manager, not this log. **Back up the
+    `.jks` + password somewhere safe.** (The old `snapdrop2026` password remains in git *history*;
+    harmless since that key is never uploaded, and Play App Signing can reset an upload key anyway.)
   - `flutter build appbundle --release` → **signed `app-release.aab` (46 MB)**. Also built release
     APK (54 MB) and ran it on the real device: **onboarding UI renders, no crash, no security
     block** (security fully removed); R8/minify/shrink OK (Crashlytics keep-rules fine).
