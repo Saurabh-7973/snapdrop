@@ -843,7 +843,7 @@ class _DropDownViewState extends State<DropDownView> {
                                       duration:
                                           const Duration(milliseconds: 300),
                                       width: screenWidth / 2.6,
-                                      height: 50,
+                                      height: 52,
                                       margin: const EdgeInsets.symmetric(
                                         vertical: 8,
                                         horizontal: 8,

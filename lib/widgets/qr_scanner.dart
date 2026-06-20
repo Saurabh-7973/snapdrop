@@ -17,6 +17,7 @@ import '../services/first_time_login.dart';
 import '../services/session_controller.dart';
 import '../services/socket_service.dart';
 import '../l10n/app_localizations.dart';
+import 'app_button.dart';
 import 'app_toast.dart';
 import 'figma_logo.dart';
 
@@ -390,76 +391,50 @@ class _QRScannerState extends State<QRScanner>
   /// Restart Scan (timed out) or Connect (grey until a code reads, then white).
   Widget _actionButton(BuildContext context) {
     if (isTimeout) {
-      return SizedBox(
-        width: 220,
-        height: 48,
-        child: ElevatedButton(
-          onPressed: activateQrScanner,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(999)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.refresh_rounded,
-                  color: ThemeConstant.buttonInk, size: 18),
-              const SizedBox(width: 9),
-              Text(
-                AppLocalizations.of(context)!.qr_restart_scan,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  color: ThemeConstant.buttonInk,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-        ),
+      return AppButton(
+        label: AppLocalizations.of(context)!.qr_restart_scan,
+        icon: Icons.refresh_rounded,
+        width: 236,
+        onTap: activateQrScanner,
       );
     }
 
     final bool ready = result != null;
-    return SizedBox(
-      width: 236,
-      height: 48,
-      child: ElevatedButton(
-        onPressed: () async {
-          if (result == null) return;
-          final msg = AppLocalizations.of(context)!.no_internet_connection;
-          final hasNet = await CheckInternetConnectivity.hasNetwork();
-          if (!context.mounted) return;
-          if (hasNet) {
-            connectSocket();
-          } else {
-            appToast(context, msg);
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor:
-              ready ? Colors.white : Colors.white.withValues(alpha: 0.13),
-          elevation: 0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
-        ),
-        child: Text(
-          ready
-              ? AppLocalizations.of(context)!
-                  .qr_screen_button_scanning_completed
-              : AppLocalizations.of(context)!.home_screen_button, // "Connect" (mockup)
-          style: TextStyle(
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w700,
-            fontSize: 15.5,
-            color: ready
-                ? ThemeConstant.buttonInk
-                : Colors.white.withValues(alpha: 0.5),
+    // Grey/disabled until a code reads, then a solid-white primary.
+    if (!ready) {
+      return SizedBox(
+        width: 236,
+        height: 52,
+        child: Material(
+          color: Colors.white.withValues(alpha: 0.13),
+          shape: const StadiumBorder(),
+          child: Center(
+            child: Text(
+              AppLocalizations.of(context)!.home_screen_button, // "Connect"
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w700,
+                fontSize: 15.5,
+                color: Colors.white.withValues(alpha: 0.5),
+              ),
+            ),
           ),
         ),
-      ),
+      );
+    }
+    return AppButton(
+      label: AppLocalizations.of(context)!.qr_screen_button_scanning_completed,
+      width: 236,
+      onTap: () async {
+        final msg = AppLocalizations.of(context)!.no_internet_connection;
+        final hasNet = await CheckInternetConnectivity.hasNetwork();
+        if (!context.mounted) return;
+        if (hasNet) {
+          connectSocket();
+        } else {
+          appToast(context, msg);
+        }
+      },
     );
   }
 

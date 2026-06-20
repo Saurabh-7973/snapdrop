@@ -18,6 +18,7 @@ import '../services/socket_service.dart';
 import '../utils/firebase_initalization_class.dart';
 import '../l10n/app_localizations.dart';
 
+import 'app_button.dart';
 import 'share_app_dialog.dart';
 
 class SendButton extends StatefulWidget {
@@ -210,49 +211,39 @@ class _SendButtonState extends State<SendButton> {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
-
     // Buttons appear only once the transfer is complete; in-progress shows
     // nothing (matches snapdrop_transfer_faithful.html).
     if (!transferCompleted) return const SizedBox.shrink();
-    return SizedBox(
-      width: screenWidth,
-      height: screenHeight / 12,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const Spacer(),
-          widget.isIntentSharing == true
-              ? closeButton(screenWidth)
-              : Showcase(
-                  targetPadding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-                  key: GlobalShowcaseKeys.showcaseSeven,
-                  tooltipBackgroundColor: const Color(0xff161616),
-                  textColor: ThemeConstant.whiteColor,
-                  title: AppLocalizations.of(context)!.showcase_five_title,
-                  description:
-                      AppLocalizations.of(context)!.showcase_five_subtitle,
-                  //onBarrierClick: () => debugPrint('close button clicked'),
-                  child: closeButton(screenWidth)),
-          widget.isIntentSharing == true
-              ? sendMoreButton(screenWidth, widget.isIntentSharing)
-              : Showcase(
-                  targetPadding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-                  key: GlobalShowcaseKeys.showcaseEight,
-                  tooltipBackgroundColor: const Color(0xff161616),
-                  textColor: ThemeConstant.whiteColor,
-                  title: AppLocalizations.of(context)!.showcase_six_title,
-                  description:
-                      AppLocalizations.of(context)!.showcase_six_subtitle,
-                  //onBarrierClick: () => debugPrint('send more button clicked'),
-                  child: sendMoreButton(screenWidth, widget.isIntentSharing),
-                ),
-          const Spacer(),
-        ],
-      ),
+
+    final close = widget.isIntentSharing
+        ? closeButton()
+        : Showcase(
+            targetPadding: const EdgeInsets.all(4),
+            key: GlobalShowcaseKeys.showcaseSeven,
+            tooltipBackgroundColor: const Color(0xff161616),
+            textColor: ThemeConstant.whiteColor,
+            title: AppLocalizations.of(context)!.showcase_five_title,
+            description: AppLocalizations.of(context)!.showcase_five_subtitle,
+            child: closeButton());
+    final sendMore = widget.isIntentSharing
+        ? sendMoreButton()
+        : Showcase(
+            targetPadding: const EdgeInsets.all(4),
+            key: GlobalShowcaseKeys.showcaseEight,
+            tooltipBackgroundColor: const Color(0xff161616),
+            textColor: ThemeConstant.whiteColor,
+            title: AppLocalizations.of(context)!.showcase_six_title,
+            description: AppLocalizations.of(context)!.showcase_six_subtitle,
+            child: sendMoreButton());
+
+    // §5 two-button row: edge-to-edge within content padding, equal split,
+    // 12dp gap, both 52dp.
+    return Row(
+      children: [
+        Expanded(child: close),
+        const SizedBox(width: 12),
+        Expanded(child: sendMore),
+      ],
     );
   }
 
@@ -330,103 +321,53 @@ class _SendButtonState extends State<SendButton> {
     }
   }
 
-  Widget closeButton(screenWidth) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 6),
-      child: ElevatedButton(
-        onPressed: () async {
-          // Close ends the session cleanly (no zombie socket). Intent-share
-          // variant exits the app; picker variant returns to Home disconnected.
-          await sessionController.disconnect();
-          if (!mounted) return;
-          if (widget.isIntentSharing) {
-            SystemNavigator.pop();
-          } else {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomeScreen(
-                  socketService: null,
-                  isIntentSharing: false,
-                ),
-              ),
-              (route) => false,
-            );
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          side: BorderSide(
-              color: Colors.white.withValues(alpha: 0.45), width: 1.4),
-          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.close_rounded, color: Colors.white, size: 16),
-            const SizedBox(width: 7),
-            Text(
-              AppLocalizations.of(context)!.send_screen_close_button,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                color: Colors.white,
-                fontSize: 14.5,
-                fontWeight: FontWeight.w700,
+  Widget closeButton() {
+    return AppButton.secondary(
+      label: AppLocalizations.of(context)!.send_screen_close_button,
+      icon: Icons.close_rounded,
+      onTap: () async {
+        // Close ends the session cleanly (no zombie socket). Intent-share
+        // variant exits the app; picker variant returns to Home disconnected.
+        await sessionController.disconnect();
+        if (!mounted) return;
+        if (widget.isIntentSharing) {
+          SystemNavigator.pop();
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeScreen(
+                socketService: null,
+                isIntentSharing: false,
               ),
             ),
-          ],
-        ),
-      ),
+            (route) => false,
+          );
+        }
+      },
     );
   }
 
-  Widget sendMoreButton(screenWidth, isIntentSharing) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 6),
-      child: ElevatedButton(
-        onPressed: () {
-          // this is for not showing the tutorial again
-          FirstTimeLogin.setFirstTimeLoginFalse();
-          //Event (Tutorial Completed)
-          FirebaseInitalizationClass.eventTracker(
-              'tutorial_completed', {'first_time': 'false'});
+  Widget sendMoreButton() {
+    return AppButton(
+      label: AppLocalizations.of(context)!.send_screen_send_more_button,
+      icon: Icons.add,
+      onTap: () {
+        // this is for not showing the tutorial again
+        FirstTimeLogin.setFirstTimeLoginFalse();
+        //Event (Tutorial Completed)
+        FirebaseInitalizationClass.eventTracker(
+            'tutorial_completed', {'first_time': 'false'});
 
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => HomeScreen(
-                        socketService: widget.socketService,
-                        isIntentSharing: false,
-                      )),
-              (Route route) => false);
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.add, color: ThemeConstant.buttonInk, size: 16),
-            const SizedBox(width: 7),
-            Text(
-              AppLocalizations.of(context)!.send_screen_send_more_button,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                color: ThemeConstant.buttonInk,
-                fontSize: 14.5,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-      ),
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                      socketService: widget.socketService,
+                      isIntentSharing: false,
+                    )),
+            (Route route) => false);
+      },
     );
   }
 }

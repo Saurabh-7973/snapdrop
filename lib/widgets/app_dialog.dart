@@ -171,7 +171,7 @@ class _DialogButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 44,
+        height: 52,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: solid ? Colors.white : Colors.transparent,
