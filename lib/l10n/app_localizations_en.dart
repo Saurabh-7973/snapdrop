@@ -39,19 +39,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get language_selection_continue => 'Continue';
 
   @override
-  String get onboard_hero_text_1 => 'Share images';
+  String get onboard_hero_text_1 => 'Send images';
 
   @override
-  String get onboard_hero_text_2 => 'directly to Figma';
+  String get onboard_hero_text_2 => 'straight to Figma';
 
   @override
-  String get onboard_step_1 => 'Select Images';
+  String get onboard_subline => 'Phone to canvas, in seconds.';
 
   @override
-  String get onboard_step_2 => 'Scan QR in Figma Plugin';
+  String get onboard_step_1 => 'Pick up to 10 images from your phone';
 
   @override
-  String get onboard_step_3 => 'Share';
+  String get onboard_step_2 => 'Scan the QR in your Figma plugin';
+
+  @override
+  String get onboard_step_3 => 'They land straight on your canvas';
 
   @override
   String get onboard_button_text => 'Get Started';
@@ -79,13 +82,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_screen_herotext_1 => 'Select Images';
 
   @override
-  String get home_screen_herotext_2 => 'to Continue';
+  String get home_screen_herotext_2 => 'to continue';
 
   @override
-  String get home_screen_herotext_3 => 'Up to 10 Images';
+  String get home_screen_herotext_3 => 'Upto 10 images';
 
   @override
   String get home_screen_button => 'Connect';
+
+  @override
+  String get home_album_view_all => 'View all';
+
+  @override
+  String get empty_state_title => 'No images here yet';
+
+  @override
+  String get empty_state_body =>
+      'Photos in this album will appear here. Try another album above.';
 
   @override
   String get showcase_four_title => 'QR Scanner';
@@ -94,13 +107,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showcase_four_subtitle => 'Click to Scan QR Code';
 
   @override
-  String get qr_screen_herotext_1 => 'Scan QR Code';
+  String get qr_screen_herotext_1 => 'Select a plugin';
 
   @override
-  String get qr_screen_herotext_2 => 'to Continue';
+  String get qr_screen_herotext_2 => 'to continue';
 
   @override
-  String get qr_screen_herotext_3 => 'Scan QR Code to Connect';
+  String get qr_screen_herotext_3 => 'Scan QR Code to connect';
+
+  @override
+  String get qr_timed_out_label => 'Scan timed out';
+
+  @override
+  String get qr_timed_out_message =>
+      'No QR code scanned — it may have expired.';
+
+  @override
+  String get qr_restart_scan => 'Restart Scan';
+
+  @override
+  String get no_internet_connection => 'No internet connection';
 
   @override
   String get qr_screen_info_button =>
@@ -131,6 +157,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get send_screen_hero_text_2 => 'Images';
 
   @override
+  String get send_screen_transferring => 'Transferring';
+
+  @override
+  String get send_screen_complete_1 => 'Transfer';
+
+  @override
+  String get send_screen_complete_2 => 'Complete';
+
+  @override
   String get send_screen_connected_to => 'CONNECTED TO';
 
   @override
@@ -155,4 +190,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get app_conditions_size_limit => 'File Size Limit Exceded';
+
+  @override
+  String get permission_dialog_title => 'Allow photo access';
+
+  @override
+  String get permission_dialog_body =>
+      'Snapdrop needs your photos to send them to Figma. Nothing leaves your phone until you pick and send.';
+
+  @override
+  String get permission_dialog_allow => 'Allow';
+
+  @override
+  String get permission_dialog_exit => 'Exit';
+
+  @override
+  String get exit_dialog_title => 'Leave Snapdrop?';
+
+  @override
+  String get exit_dialog_body => 'Your current selection won\'t be saved.';
+
+  @override
+  String get exit_dialog_exit => 'Exit';
+
+  @override
+  String get exit_dialog_cancel => 'Cancel';
+
+  @override
+  String get share_dialog_title => 'Enjoying Snapdrop?';
+
+  @override
+  String get share_dialog_body =>
+      'If it saved you time, passing it to another designer helps more than you\'d think.';
+
+  @override
+  String get share_dialog_share => 'Share';
+
+  @override
+  String get share_dialog_maybe_later => 'Maybe later';
 }

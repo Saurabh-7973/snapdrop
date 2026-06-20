@@ -45,6 +45,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboard_hero_text_2 => 'إلى Figma';
 
   @override
+  String get onboard_subline => 'Phone to canvas, in seconds.';
+
+  @override
   String get onboard_step_1 => 'اختر الصور';
 
   @override
@@ -88,6 +91,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get home_screen_button => 'اتصال';
 
   @override
+  String get home_album_view_all => 'View all';
+
+  @override
+  String get empty_state_title => 'No images here yet';
+
+  @override
+  String get empty_state_body =>
+      'Photos in this album will appear here. Try another album above.';
+
+  @override
   String get showcase_four_title => 'ماسح QR';
 
   @override
@@ -101,6 +114,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get qr_screen_herotext_3 => 'امسح رمز QR للاتصال';
+
+  @override
+  String get qr_timed_out_label => 'Scan timed out';
+
+  @override
+  String get qr_timed_out_message =>
+      'No QR code scanned — it may have expired.';
+
+  @override
+  String get qr_restart_scan => 'Restart Scan';
+
+  @override
+  String get no_internet_connection => 'No internet connection';
 
   @override
   String get qr_screen_info_button =>
@@ -131,6 +157,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get send_screen_hero_text_2 => 'الصور';
 
   @override
+  String get send_screen_transferring => 'Transferring';
+
+  @override
+  String get send_screen_complete_1 => 'Transfer';
+
+  @override
+  String get send_screen_complete_2 => 'Complete';
+
+  @override
   String get send_screen_connected_to => 'متصل بـ';
 
   @override
@@ -155,4 +190,42 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get app_conditions_size_limit => 'تم تجاوز حد حجم الملف';
+
+  @override
+  String get permission_dialog_title => 'Allow photo access';
+
+  @override
+  String get permission_dialog_body =>
+      'Snapdrop needs your photos to send them to Figma. Nothing leaves your phone until you pick and send.';
+
+  @override
+  String get permission_dialog_allow => 'Allow';
+
+  @override
+  String get permission_dialog_exit => 'Exit';
+
+  @override
+  String get exit_dialog_title => 'Leave Snapdrop?';
+
+  @override
+  String get exit_dialog_body => 'Your current selection won\'t be saved.';
+
+  @override
+  String get exit_dialog_exit => 'Exit';
+
+  @override
+  String get exit_dialog_cancel => 'Cancel';
+
+  @override
+  String get share_dialog_title => 'Enjoying Snapdrop?';
+
+  @override
+  String get share_dialog_body =>
+      'If it saved you time, passing it to another designer helps more than you\'d think.';
+
+  @override
+  String get share_dialog_share => 'Share';
+
+  @override
+  String get share_dialog_maybe_later => 'Maybe later';
 }

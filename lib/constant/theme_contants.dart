@@ -1,6 +1,35 @@
 import 'package:flutter/material.dart';
 
 class ThemeConstant {
+  // === 2026 locked design tokens (mockups in /snapdrop_mockups) ===
+  static const Color base = Color(0xFF142C1D); // base background
+  static const Color glowCore = Color(0xFF2C9967); // glow core
+  static const Color teal = Color(0xFF207D72); // teal
+  static const Color surface = Color(0xFF1E2A23); // dialogs/sheets/cards
+  static const Color ink = Color(0xFFFFFFFF); // primary text
+  static const Color muted = Color(0xFF9BA39E); // labels/secondary
+  static const Color accentGreen = Color(0xFF3BA873); // links/dots
+  static const Color softGreen = Color(0xFF8FD9B0); // icons
+  static const Color buttonInk = Color(0xFF0E1A12); // dark ink on white pills
+  static const Color toastSurface = Color(0xFF222E27); // on-brand toast
+
+  // Titles: ~800 weight, -0.015em tracking, white. (Inter tops at Bold —
+  // w800 renders as Bold.) Left- or center-aligned per screen.
+  static const TextStyle titleLarge = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 32.0,
+    height: 1.1,
+    fontWeight: FontWeight.w800,
+    letterSpacing: -0.48,
+    color: ink,
+  );
+  static const TextStyle subtitleMuted = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 15.0,
+    fontWeight: FontWeight.w400,
+    color: muted,
+  );
+
   //App Primary Colors
   static const Color primaryAppColor = Color(0xff206946);
   //static const Color primaryAppColor = Color(0xFF005540);

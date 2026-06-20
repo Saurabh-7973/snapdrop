@@ -102,7 +102,8 @@ class FirebaseInitalizationClass {
   // ---- Crashlytics depth (P1-8): non-fatals, custom keys, breadcrumbs ----
   /// Record a caught (non-fatal) exception with context, on the transfer/pairing/
   /// permission paths. No-op in debug to match the existing crash-handler gating.
-  static void recordNonFatal(Object error, StackTrace? stack, {String? reason}) {
+  static void recordNonFatal(Object error, StackTrace? stack,
+      {String? reason}) {
     if (!kDebugMode) {
       FirebaseCrashlytics.instance
           .recordError(error, stack, reason: reason, fatal: false);

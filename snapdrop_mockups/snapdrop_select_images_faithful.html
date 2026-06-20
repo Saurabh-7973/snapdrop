@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Snapdrop — Select Images (faithful)</title>
+<style>
+  :root{
+    --base:#142C1D;--bright:#2E8C5A;--green:#3BA873;
+    --ink:#FFFFFF;--muted:#9BA39E;--pill-ink:#0E1A12;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:Georgia,"Times New Roman",serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0C0D0E;color:#cfd3d1;font-family:var(--sans);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;gap:20px}
+  .label{font-family:var(--serif);font-style:italic;color:#8a908d;font-size:.95rem}
+
+  .phone{position:relative;width:344px;height:746px;border-radius:46px;overflow:hidden;background-color:var(--base);
+    box-shadow:0 30px 70px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.06)}
+  .phone::before{content:'';position:absolute;inset:0;z-index:0;
+    background:radial-gradient(118% 88% at 25% -6%, rgba(44,153,103,.55) 0%, rgba(20,44,29,0) 56%),
+              linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 100%);}
+  .screen{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;padding:13px 22px 0}
+
+  .sb{display:flex;justify-content:space-between;align-items:center;height:28px;color:#fff;font-size:.74rem;font-weight:600}
+  .nav{display:flex;align-items:center;justify-content:center;height:42px;margin-top:2px}
+  .wm{font-family:var(--serif);font-style:italic;font-size:1.24rem;color:#fff}
+
+  .title{font-size:2rem;line-height:1.1;font-weight:800;color:#fff;letter-spacing:-.015em;margin-top:14px}
+  .subtitle{color:var(--muted);font-size:.92rem;margin-top:8px}
+  .rule{height:1px;background:linear-gradient(90deg,rgba(255,255,255,.22),rgba(255,255,255,.03));margin:14px 0 16px;border-radius:1px}
+
+  .albumrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+  .albumrow .name{display:flex;align-items:center;gap:7px;color:#fff;font-weight:600;font-size:.96rem}
+  .albumrow .all{color:var(--green);font-weight:600;font-size:.88rem}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;overflow:hidden}
+  .cell{position:relative;aspect-ratio:3/4;border-radius:11px;overflow:hidden;border:1px solid rgba(255,255,255,.05);
+    background:linear-gradient(140deg,#28362d,#161d18)}
+  .cell.b{background:linear-gradient(140deg,#2e3942,#191f25)}
+  .cell.c{background:linear-gradient(140deg,#37312e,#1e1a18)}
+  .cell.d{background:linear-gradient(155deg,#243a2e,#13231a)}
+  .cell.e{background:linear-gradient(140deg,#323a30,#1b211a)}
+  .ck{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;
+    border:1.5px solid rgba(255,255,255,.85);background:rgba(0,0,0,.12)}
+  .ck.on{background:#fff;border-color:#fff;display:flex;align-items:center;justify-content:center}
+  .size{position:absolute;left:8px;bottom:7px;color:#fff;font-size:.66rem;font-weight:500;
+    text-shadow:0 1px 3px rgba(0,0,0,.7);letter-spacing:.2px}
+
+  .footer{margin-top:auto;display:flex;justify-content:center;padding:14px 0 0}
+  .connect{display:inline-flex;align-items:center;gap:9px;background:#fff;color:var(--pill-ink);
+    font-weight:700;font-size:.96rem;padding:13px 30px;border-radius:999px}
+  .home{height:5px;width:128px;border-radius:3px;background:rgba(255,255,255,.5);margin:12px auto 9px}
+</style>
+</head>
+<body>
+<div class="label">Select Images — faithful to your Figma · one defect fixed (MB label)</div>
+<div class="phone"><div class="screen">
+
+  <div class="sb"><span>11:27</span>
+    <span><svg width="50" height="12" viewBox="0 0 50 12" fill="#fff">
+      <rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.5" y="5.5" width="3" height="6.5" rx="1"/><rect x="9" y="3" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/>
+      <path d="M22 4.2C24.4 1.9 27 1 29.8 1S35.2 1.9 37.6 4.2" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M24.6 6.6C26 5.4 27.8 4.8 29.8 4.8s3.8.6 5.2 1.8" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round"/><circle cx="29.8" cy="9.4" r="1.3"/>
+      <rect x="42" y="1.5" width="6.4" height="9" rx="2.2" stroke="#fff" stroke-opacity=".5" fill="none"/><rect x="43.2" y="3" width="4" height="6" rx="1"/></svg></span>
+  </div>
+
+  <div class="nav"><span class="wm">Snapdrop</span></div>
+
+  <div class="title">Select Images<br>to continue</div>
+  <div class="subtitle">Upto 10 images</div>
+  <div class="rule"></div>
+
+  <div class="albumrow">
+    <span class="name">Screenshots
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+    <span class="all">View all</span>
+  </div>
+
+  <div class="grid">
+    <div class="cell"><span class="ck"></span></div>
+    <div class="cell b"><span class="ck on"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#142C1D" stroke-width="3.5"><path d="M5 12l5 5L20 6"/></svg></span><span class="size">2.5 MB</span></div>
+    <div class="cell c"><span class="ck"></span></div>
+    <div class="cell d"><span class="ck on"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#142C1D" stroke-width="3.5"><path d="M5 12l5 5L20 6"/></svg></span><span class="size">2 MB</span></div>
+    <div class="cell e"><span class="ck on"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#142C1D" stroke-width="3.5"><path d="M5 12l5 5L20 6"/></svg></span><span class="size">2 MB</span></div>
+    <div class="cell"><span class="ck"></span></div>
+    <div class="cell c"><span class="ck"></span></div>
+    <div class="cell b"><span class="ck"></span></div>
+    <div class="cell d"><span class="ck on"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#142C1D" stroke-width="3.5"><path d="M5 12l5 5L20 6"/></svg></span><span class="size">1.4 MB</span></div>
+  </div>
+
+  <div class="footer">
+    <span class="connect">Connect
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+  </div>
+  <div class="home"></div>
+
+</div></div>
+</body>
+</html>

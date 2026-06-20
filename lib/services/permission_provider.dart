@@ -12,8 +12,7 @@ class PermissionProviderServices {
     final version = deviceInfo.data['version']['release'];
     // Release strings like "8.1.0" would crash int.parse; tryParse on the
     // major component, fall back to 0 (legacy storage-permission path).
-    final majorVersion =
-        int.tryParse(version.toString().split('.').first) ?? 0;
+    final majorVersion = int.tryParse(version.toString().split('.').first) ?? 0;
     PermissionStatus status;
 
     if (Platform.isAndroid == true && majorVersion > 12) {

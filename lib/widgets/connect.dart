@@ -26,12 +26,17 @@ class SendButton extends StatefulWidget {
   final bool isIntentSharing;
   final List<SharedMediaFile>? listOfMedia;
 
+  /// Fired once the transfer is acknowledged complete, so the parent screen can
+  /// switch the title to "Transfer Complete" and reveal the action buttons.
+  final VoidCallback? onTransferCompleted;
+
   const SendButton(
       {super.key,
       required this.isIntentSharing,
       this.listOfMedia,
       required this.socketService,
-      this.selectedAssetList});
+      this.selectedAssetList,
+      this.onTransferCompleted});
 
   @override
   State<SendButton> createState() => _SendButtonState();
@@ -83,7 +88,8 @@ class _SendButtonState extends State<SendButton> {
         widget.isIntentSharing ? 'intent_sharing' : 'non_intent_sharing';
     FirebaseInitalizationClass.setCustomKey('transfer_state', 'started');
     FirebaseInitalizationClass.setCustomKey('image_count', imageCount);
-    FirebaseInitalizationClass.breadcrumb('transfer_started ($method, $imageCount)');
+    FirebaseInitalizationClass.breadcrumb(
+        'transfer_started ($method, $imageCount)');
     FirebaseInitalizationClass.eventTracker('transfer_started',
         {'sharing_method': method, 'image_count': imageCount});
     _transferTrace = FirebaseInitalizationClass.newTrace('transfer_duration');
@@ -91,7 +97,8 @@ class _SendButtonState extends State<SendButton> {
 
     if (widget.isIntentSharing) {
       await sendFilesToServerIntent();
-      _ackSub = widget.socketService!.imageReceivedStream().listen((value) async {
+      _ackSub =
+          widget.socketService!.imageReceivedStream().listen((value) async {
         //Asking for review
         reviewCounter = prefs.getInt('reviewCounter');
         if (value == true) {
@@ -100,8 +107,10 @@ class _SendButtonState extends State<SendButton> {
               transferCompleted = true;
               FirstTimeLogin.setFirstTimeLoginFalse();
             });
+            widget.onTransferCompleted?.call();
             // Funnel: transfer success (additive).
-            FirebaseInitalizationClass.setCustomKey('transfer_state', 'success');
+            FirebaseInitalizationClass.setCustomKey(
+                'transfer_state', 'success');
             FirebaseInitalizationClass.eventTracker('transfer_success',
                 {'sharing_method': method, 'image_count': imageCount});
             await _transferTrace?.stop();
@@ -120,10 +129,7 @@ class _SendButtonState extends State<SendButton> {
 
           if (reviewCounter == 3 && mounted) {
             //App Share Widget
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => ShareAppScreen(),
-            );
+            showShareDialog(context);
 
             //Event (App share)
             FirebaseInitalizationClass.eventTracker('app_share_called', {
@@ -144,15 +150,18 @@ class _SendButtonState extends State<SendButton> {
     } else {
       await sendFilesToServer();
       //Commented for now ()
-      _ackSub = widget.socketService!.imageReceivedStream().listen((value) async {
+      _ackSub =
+          widget.socketService!.imageReceivedStream().listen((value) async {
         if (value == true) {
           if (mounted) {
             setState(() {
               transferCompleted = true;
               FirstTimeLogin.setFirstTimeLoginFalse();
             });
+            widget.onTransferCompleted?.call();
             // Funnel: transfer success (additive).
-            FirebaseInitalizationClass.setCustomKey('transfer_state', 'success');
+            FirebaseInitalizationClass.setCustomKey(
+                'transfer_state', 'success');
             FirebaseInitalizationClass.eventTracker('transfer_success',
                 {'sharing_method': method, 'image_count': imageCount});
             await _transferTrace?.stop();
@@ -174,10 +183,7 @@ class _SendButtonState extends State<SendButton> {
 
           if (reviewCounter == 3 && mounted) {
             //App Share Widget
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => ShareAppScreen(),
-            );
+            showShareDialog(context);
 
             //Event (App share)
             FirebaseInitalizationClass.eventTracker('app_share_called', {
@@ -203,15 +209,10 @@ class _SendButtonState extends State<SendButton> {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
-    return
-        //widget.transferCompleted == false
-        // ? widget.isIntentSharing == true
-        //     ? sendFilesToServerButton(screenWidth)
-        //     : sendFilesToServerButton(screenWidth)
-        // :
-        // ? sendFilesToServerButton(screenWidth)
-        // :
-        SizedBox(
+    // Buttons appear only once the transfer is complete; in-progress shows
+    // nothing (matches snapdrop_transfer_faithful.html).
+    if (!transferCompleted) return const SizedBox.shrink();
+    return SizedBox(
       width: screenWidth,
       height: screenHeight / 12,
       child: Row(
@@ -325,43 +326,37 @@ class _SendButtonState extends State<SendButton> {
     }
   }
 
-
   Widget closeButton(screenWidth) {
     return Container(
-      width: screenWidth / 2.6,
-      height: 80,
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      child: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            SystemNavigator.pop();
-          },
-          style: ElevatedButton.styleFrom(
-              minimumSize: Size(screenWidth / 2.6, 50),
-              backgroundColor: Colors.transparent,
-              side: const BorderSide(color: Colors.white),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.close_rounded,
+      margin: const EdgeInsets.symmetric(horizontal: 6),
+      child: ElevatedButton(
+        onPressed: () {
+          SystemNavigator.pop();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          side: BorderSide(
+              color: Colors.white.withValues(alpha: 0.45), width: 1.4),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.close_rounded, color: Colors.white, size: 16),
+            const SizedBox(width: 7),
+            Text(
+              AppLocalizations.of(context)!.send_screen_close_button,
+              style: const TextStyle(
+                fontFamily: 'Inter',
                 color: Colors.white,
-                size: 22,
+                fontSize: 14.5,
+                fontWeight: FontWeight.w700,
               ),
-              const SizedBox(
-                width: 5,
-              ),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  AppLocalizations.of(context)!.send_screen_close_button,
-                  style: ThemeConstant.smallTextSizeWhiteFontWidth,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -369,52 +364,46 @@ class _SendButtonState extends State<SendButton> {
 
   Widget sendMoreButton(screenWidth, isIntentSharing) {
     return Container(
-      width: screenWidth / 2.6,
-      height: 80,
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      child: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // this is for not showing the tutorial again
-            FirstTimeLogin.setFirstTimeLoginFalse();
-            //Event (Tutorial Completed)
-            FirebaseInitalizationClass.eventTracker(
-                'tutorial_completed', {'first_time': 'false'});
+      margin: const EdgeInsets.symmetric(horizontal: 6),
+      child: ElevatedButton(
+        onPressed: () {
+          // this is for not showing the tutorial again
+          FirstTimeLogin.setFirstTimeLoginFalse();
+          //Event (Tutorial Completed)
+          FirebaseInitalizationClass.eventTracker(
+              'tutorial_completed', {'first_time': 'false'});
 
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => HomeScreen(
-                          socketService: widget.socketService,
-                          isIntentSharing: false,
-                        )),
-                (Route route) => false);
-          },
-          style: ElevatedButton.styleFrom(
-              minimumSize: Size(screenWidth / 2.6, 50),
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.add,
-                color: Colors.black,
-                size: 22,
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomeScreen(
+                        socketService: widget.socketService,
+                        isIntentSharing: false,
+                      )),
+              (Route route) => false);
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.add, color: ThemeConstant.buttonInk, size: 16),
+            const SizedBox(width: 7),
+            Text(
+              AppLocalizations.of(context)!.send_screen_send_more_button,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                color: ThemeConstant.buttonInk,
+                fontSize: 14.5,
+                fontWeight: FontWeight.w700,
               ),
-              const SizedBox(
-                width: 5,
-              ),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  AppLocalizations.of(context)!.send_screen_send_more_button,
-                  style: ThemeConstant.smallTextSizeDarkFontWidth,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -6,7 +6,6 @@ import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import '../utils/firebase_initalization_class.dart';
-// import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -17,10 +16,10 @@ import '../services/check_internet_connectivity.dart';
 import '../services/first_time_login.dart';
 import '../services/socket_service.dart';
 import '../l10n/app_localizations.dart';
+import 'app_toast.dart';
+import 'figma_logo.dart';
 
 class QRScanner extends StatefulWidget {
-  // const QRScanner({super.key});
-
   final List<AssetEntity>? selectedAssetList;
   final List<SharedMediaFile>? listOfMedia;
   final bool isIntentSharing;
@@ -35,7 +34,8 @@ class QRScanner extends StatefulWidget {
   State<QRScanner> createState() => _QRScannerState();
 }
 
-class _QRScannerState extends State<QRScanner> {
+class _QRScannerState extends State<QRScanner>
+    with SingleTickerProviderStateMixin {
   bool scannerVisible = false;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
@@ -48,9 +48,16 @@ class _QRScannerState extends State<QRScanner> {
   Timer? _timeoutTimer;
   bool isTimeout = false;
 
+  late final AnimationController _sweepController;
+
   @override
   void initState() {
     super.initState();
+    _sweepController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2600),
+    )..repeat(reverse: true);
+
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -66,6 +73,7 @@ class _QRScannerState extends State<QRScanner> {
   @override
   void dispose() {
     _timeoutTimer?.cancel();
+    _sweepController.dispose();
     // QRViewController self-disposes when QRView unmounts (its dispose() is
     // deprecated/no-op); just drop the reference.
     _qrViewController = null;
@@ -93,16 +101,16 @@ class _QRScannerState extends State<QRScanner> {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
-
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
+        _scanLabel(context),
+        const SizedBox(height: 22),
         widget.isIntentSharing == true
-            ? qrContainer(screenHeight, screenWidth)
+            ? qrContainer()
             : Showcase(
                 key: GlobalShowcaseKeys.showcaseFour,
-                targetBorderRadius: const BorderRadius.all(Radius.circular(15)),
+                targetBorderRadius: const BorderRadius.all(Radius.circular(22)),
                 tooltipBackgroundColor: const Color(0xff161616),
                 textColor: ThemeConstant.whiteColor,
                 title: AppLocalizations.of(context)!.showcase_four_title,
@@ -112,12 +120,18 @@ class _QRScannerState extends State<QRScanner> {
                 onBarrierClick: () => activateQrScanner(),
                 onTargetClick: () => activateQrScanner(),
                 onToolTipClick: () => activateQrScanner(),
-                child: qrContainer(screenHeight, screenWidth)),
-        const SizedBox(
-          height: 10,
-        ),
+                child: qrContainer()),
+        if (isTimeout) ...[
+          const SizedBox(height: 18),
+          Text(
+            AppLocalizations.of(context)!.qr_timed_out_message,
+            textAlign: TextAlign.center,
+            style: ThemeConstant.subtitleMuted.copyWith(fontSize: 14),
+          ),
+        ],
+        const SizedBox(height: 22),
         widget.isIntentSharing == true
-            ? qrConnectButton(screenWidth)
+            ? _actionButton(context)
             : Showcase(
                 targetPadding: const EdgeInsets.all(4),
                 key: GlobalShowcaseKeys.showcaseFive,
@@ -126,56 +140,38 @@ class _QRScannerState extends State<QRScanner> {
                 title: "Connect Button",
                 description: 'Indicates successful QR code scan',
                 onBarrierClick: () => debugPrint('qr connect clicked'),
-                child: qrConnectButton(screenWidth)),
-        const SizedBox(
-          height: 45,
+                child: _actionButton(context)),
+        const SizedBox(height: 26),
+        if (connectionStatus) _confirmRow(context),
+      ],
+    );
+  }
+
+  /// Figma label above the viewport — or the dim "Scan timed out" header.
+  Widget _scanLabel(BuildContext context) {
+    if (isTimeout) {
+      return Text(
+        AppLocalizations.of(context)!.qr_timed_out_label,
+        style: const TextStyle(
+          fontFamily: 'Inter',
+          color: Color(0xFF7C827F),
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
         ),
-        Visibility(
-          visible: connectionStatus,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    width: 10,
-                    height: 10,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.green,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      AppLocalizations.of(context)!
-                          .qr_screen_button_scanning_completed,
-                      style: const TextStyle(color: Colors.white70),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              if (result != null &&
-                  result!.code.toString().split('=').length == 2)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        '${result!.code}'.toString().split('=')[
-                            1], // If userId is null, an empty string is used
-                        style: ThemeConstant.smallTextSizeLight,
-                      ),
-                    )
-                  ],
-                ),
-            ],
+      );
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const FigmaLogo(height: 18),
+        const SizedBox(width: 8),
+        Text(
+          AppLocalizations.of(context)!.qr_screen_herotext_3,
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            color: Color(0xFFE7EAE8),
+            fontSize: 14.5,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
@@ -269,146 +265,249 @@ class _QRScannerState extends State<QRScanner> {
     }
   }
 
-  Widget qrContainer(screenHeight, screenWidth) {
+  /// Dark rounded viewport: corner brackets always; live camera + sweep when
+  /// scanning; dim refresh glyph when timed out; idle camera icon otherwise.
+  Widget qrContainer() {
+    Widget inner;
+    if (isTimeout) {
+      inner = Center(
+        child: Icon(Icons.refresh_rounded,
+            color: Colors.white.withValues(alpha: 0.34), size: 38),
+      );
+    } else if (scannerVisible) {
+      inner = Stack(
+        children: [
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(22),
+              child: QRView(key: qrKey, onQRViewCreated: _onQRViewController),
+            ),
+          ),
+          // subtle scan sweep
+          AnimatedBuilder(
+            animation: _sweepController,
+            builder: (context, _) {
+              return Positioned(
+                left: 16,
+                right: 16,
+                top: 22 + _sweepController.value * 150,
+                child: Container(
+                  height: 2,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(2),
+                    gradient: const LinearGradient(colors: [
+                      Color(0x005ED296),
+                      Color(0xD95ED296),
+                      Color(0x005ED296),
+                    ]),
+                    boxShadow: [
+                      BoxShadow(
+                          color: const Color(0xFF5ED296).withValues(alpha: 0.6),
+                          blurRadius: 10),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      );
+    } else {
+      inner = Center(
+        child: Icon(Icons.camera_alt_rounded,
+            color: Colors.white.withValues(alpha: 0.35), size: 22),
+      );
+    }
+
     return Container(
-      height: screenHeight / 2.8,
-      width: screenWidth / 1.3,
+      width: 208,
+      height: 208,
       decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 2),
-          borderRadius: BorderRadius.circular(15)),
-      child: isTimeout
-          ? AnimatedContainer(
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.2),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 30,
-                    spreadRadius: 0,
-                    offset: const Offset(0, 20),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.timer_off_rounded,
-                      color: Colors.white.withValues(alpha: 0.8),
-                      size: 38,
-                    ),
-                    const SizedBox(height: 15),
-                    Text(
-                      "Session Expired",
-                      style: ThemeConstant.smallTextSizeLight.copyWith(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      "No QR Code was scanned.\nTap below to restart.",
-                      textAlign: TextAlign.center,
-                      style: ThemeConstant.smallTextSizeLight.copyWith(
-                        color: Colors.white.withValues(alpha: 0.6),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        activateQrScanner();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: ThemeConstant.primaryAppColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        minimumSize: const Size(double.infinity, 45),
-                      ),
-                      child: Text(
-                        "Restart Scan",
-                        style: ThemeConstant.smallTextSizeWhiteFontWidth,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            )
-          : scannerVisible == false
-              ? const Center(
-                  child: CircleAvatar(
-                    foregroundColor: Colors.transparent,
-                    backgroundColor: Colors.transparent,
-                    child: Icon(
-                      Icons.camera_alt_rounded,
-                      color: Colors.grey,
-                      size: 18,
-                    ),
-                  ),
-                )
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: QRView(
-                    key: qrKey,
-                    onQRViewCreated: _onQRViewController,
-                  ),
-                ),
+        borderRadius: BorderRadius.circular(22),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isTimeout
+              ? const [Color(0xFF141D18), Color(0xFF0C110E)]
+              : const [Color(0xFF1B2C22), Color(0xFF0E1612)],
+        ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(child: inner),
+          ..._corners(),
+        ],
+      ),
     );
   }
 
-  Widget qrConnectButton(screenWidth) {
-    return SizedBox(
-      width: screenWidth / 1.3,
-      height: 50,
-      child: ElevatedButton(
-          onPressed: () async {
-            await CheckInternetConnectivity.hasNetwork().then((value) {
-              if (!mounted) return;
-              if (value) {
-                if (result != null) {
-                  connectSocket();
-                }
-              } else {
-                var snackbarLimit = SnackBar(
-                  backgroundColor: ThemeConstant.primaryAppColor,
-                  content: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      AppLocalizations.of(context)!
-                          .app_conditions_internet_connection,
-                      style: ThemeConstant.smallTextSizeDarkFontWidth,
-                    ),
-                  ),
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackbarLimit);
-              }
-            });
-          },
-          style: ElevatedButton.styleFrom(
-              backgroundColor: result != null ? Colors.green : Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30))),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              result != null
-                  ? AppLocalizations.of(context)!
-                      .qr_screen_button_scanning_completed
-                  : AppLocalizations.of(context)!.qr_screen_button_scanning,
-              style: result != null
-                  ? ThemeConstant.smallTextSizeWhiteFontWidth
-                  : ThemeConstant.smallTextSizeDarkFontWidth,
+  List<Widget> _corners() {
+    final color = Colors.white.withValues(alpha: isTimeout ? 0.18 : 0.5);
+    Widget c(
+            {double? top,
+            double? left,
+            double? right,
+            double? bottom,
+            required bool t,
+            required bool l}) =>
+        Positioned(
+          top: top,
+          left: left,
+          right: right,
+          bottom: bottom,
+          child: Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              border: Border(
+                top: t ? BorderSide(color: color, width: 2.5) : BorderSide.none,
+                bottom:
+                    !t ? BorderSide(color: color, width: 2.5) : BorderSide.none,
+                left:
+                    l ? BorderSide(color: color, width: 2.5) : BorderSide.none,
+                right:
+                    !l ? BorderSide(color: color, width: 2.5) : BorderSide.none,
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: t && l ? const Radius.circular(4) : Radius.zero,
+                topRight: t && !l ? const Radius.circular(4) : Radius.zero,
+                bottomLeft: !t && l ? const Radius.circular(4) : Radius.zero,
+                bottomRight: !t && !l ? const Radius.circular(4) : Radius.zero,
+              ),
             ),
-          )),
+          ),
+        );
+    return [
+      c(top: 16, left: 16, t: true, l: true),
+      c(top: 16, right: 16, t: true, l: false),
+      c(bottom: 16, left: 16, t: false, l: true),
+      c(bottom: 16, right: 16, t: false, l: false),
+    ];
+  }
+
+  /// Restart Scan (timed out) or Connect (grey until a code reads, then white).
+  Widget _actionButton(BuildContext context) {
+    if (isTimeout) {
+      return SizedBox(
+        width: 220,
+        height: 48,
+        child: ElevatedButton(
+          onPressed: activateQrScanner,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(999)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.refresh_rounded,
+                  color: ThemeConstant.buttonInk, size: 18),
+              const SizedBox(width: 9),
+              Text(
+                AppLocalizations.of(context)!.qr_restart_scan,
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  color: ThemeConstant.buttonInk,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final bool ready = result != null;
+    return SizedBox(
+      width: 236,
+      height: 48,
+      child: ElevatedButton(
+        onPressed: () async {
+          if (result == null) return;
+          final msg = AppLocalizations.of(context)!.no_internet_connection;
+          final hasNet = await CheckInternetConnectivity.hasNetwork();
+          if (!context.mounted) return;
+          if (hasNet) {
+            connectSocket();
+          } else {
+            appToast(context, msg);
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor:
+              ready ? Colors.white : Colors.white.withValues(alpha: 0.13),
+          elevation: 0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+        ),
+        child: Text(
+          ready
+              ? AppLocalizations.of(context)!
+                  .qr_screen_button_scanning_completed
+              : AppLocalizations.of(context)!.qr_screen_button_scanning,
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w700,
+            fontSize: 15.5,
+            color: ready
+                ? ThemeConstant.buttonInk
+                : Colors.white.withValues(alpha: 0.5),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Quiet pair confirmation: green dot + small-caps label + session id.
+  Widget _confirmRow(BuildContext context) {
+    final id = result?.code != null
+        ? (SocketService.parseRoomId('${result!.code}') ?? '')
+        : '';
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 7,
+              height: 7,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0xFF46C886),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              AppLocalizations.of(context)!
+                  .qr_screen_button_scanning_completed
+                  .toUpperCase(),
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                color: Color(0xFF8FA89A),
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.4,
+              ),
+            ),
+          ],
+        ),
+        if (id.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Text(
+            id,
+            style: const TextStyle(
+              fontFamily: 'monospace',
+              color: Color(0xFFEEF1EF),
+              fontSize: 13,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

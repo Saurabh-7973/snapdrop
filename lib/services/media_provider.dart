@@ -3,7 +3,8 @@ import 'package:photo_manager/photo_manager.dart';
 class MediaProviderServices {
   Future<List<AssetPathEntity>> loadAlbums(bool hasAll) async {
     List<AssetPathEntity> albumList = [];
-    albumList = await PhotoManager.getAssetPathList(type: RequestType.image, hasAll: hasAll);
+    albumList = await PhotoManager.getAssetPathList(
+        type: RequestType.image, hasAll: hasAll);
     return albumList;
   }
 

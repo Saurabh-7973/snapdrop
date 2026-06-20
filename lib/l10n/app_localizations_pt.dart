@@ -46,6 +46,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboard_hero_text_2 => 'diretamente para o Figma';
 
   @override
+  String get onboard_subline => 'Phone to canvas, in seconds.';
+
+  @override
   String get onboard_step_1 => 'Selecionar Imagens';
 
   @override
@@ -90,6 +93,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get home_screen_button => 'Conectar';
 
   @override
+  String get home_album_view_all => 'View all';
+
+  @override
+  String get empty_state_title => 'No images here yet';
+
+  @override
+  String get empty_state_body =>
+      'Photos in this album will appear here. Try another album above.';
+
+  @override
   String get showcase_four_title => 'QR Scanner';
 
   @override
@@ -103,6 +116,19 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get qr_screen_herotext_3 => 'Escanear Código QR para Conectar';
+
+  @override
+  String get qr_timed_out_label => 'Scan timed out';
+
+  @override
+  String get qr_timed_out_message =>
+      'No QR code scanned — it may have expired.';
+
+  @override
+  String get qr_restart_scan => 'Restart Scan';
+
+  @override
+  String get no_internet_connection => 'No internet connection';
 
   @override
   String get qr_screen_info_button =>
@@ -133,6 +159,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get send_screen_hero_text_2 => 'Transferidas';
 
   @override
+  String get send_screen_transferring => 'Transferring';
+
+  @override
+  String get send_screen_complete_1 => 'Transfer';
+
+  @override
+  String get send_screen_complete_2 => 'Complete';
+
+  @override
   String get send_screen_connected_to => 'CONECTADO A';
 
   @override
@@ -158,4 +193,42 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get app_conditions_size_limit =>
       'Limite de tamanho do arquivo excedido';
+
+  @override
+  String get permission_dialog_title => 'Allow photo access';
+
+  @override
+  String get permission_dialog_body =>
+      'Snapdrop needs your photos to send them to Figma. Nothing leaves your phone until you pick and send.';
+
+  @override
+  String get permission_dialog_allow => 'Allow';
+
+  @override
+  String get permission_dialog_exit => 'Exit';
+
+  @override
+  String get exit_dialog_title => 'Leave Snapdrop?';
+
+  @override
+  String get exit_dialog_body => 'Your current selection won\'t be saved.';
+
+  @override
+  String get exit_dialog_exit => 'Exit';
+
+  @override
+  String get exit_dialog_cancel => 'Cancel';
+
+  @override
+  String get share_dialog_title => 'Enjoying Snapdrop?';
+
+  @override
+  String get share_dialog_body =>
+      'If it saved you time, passing it to another designer helps more than you\'d think.';
+
+  @override
+  String get share_dialog_share => 'Share';
+
+  @override
+  String get share_dialog_maybe_later => 'Maybe later';
 }

@@ -9,7 +9,6 @@ import '../main.dart';
 import '../utils/firebase_initalization_class.dart';
 import '../widgets/app_background.dart';
 import '../widgets/app_bar_widget.dart';
-import '../widgets/hero_text.dart';
 import '../widgets/intro_widget.dart';
 import '../l10n/app_localizations.dart';
 
@@ -60,206 +59,146 @@ class _OnboardScreenState extends State<OnboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
-
     return AppBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
+        extendBody: true,
+        extendBodyBehindAppBar: true,
         body: Stack(
           children: [
             const FloatingSquares(),
             SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(15),
+                padding: const EdgeInsets.fromLTRB(26, 6, 26, 16),
                 child: Column(
-                    children: [
-                      Stack(
-                        children: [
-                          const AppBarWidget(),
-                          _buildLanguageSelector(),
-                        ],
-                      ),
-
-                      Expanded(
-                        flex: 9,
-                        child: HeroText(
-                          firstLine:
-                              AppLocalizations.of(context)!.onboard_hero_text_1,
-                          secondLine:
-                              AppLocalizations.of(context)!.onboard_hero_text_2,
-                          thirdLine: "",
-                        ),
-                      ),
-                      Expanded(
-                        flex: 9,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                          child: SizedBox(
-                            width: screenWidth,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              spacing: 20,
-                              children: [
-                                IntroWidget(
-                                  icon: Icons.image_outlined,
-                                  text: AppLocalizations.of(context)!
-                                      .onboard_step_1,
-                                ),
-                                IntroWidget(
-                                  icon: Icons.qr_code_scanner_outlined,
-                                  text: AppLocalizations.of(context)!
-                                      .onboard_step_2,
-                                ),
-                                IntroWidget(
-                                  icon: Icons.send_rounded,
-                                  text: AppLocalizations.of(context)!
-                                      .onboard_step_3,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      /// ✅ **Get Started Button**
-                      GestureDetector(
-                        onTap: () {
-                          FirebaseInitalizationClass.eventTracker(
-                              'tutorial_begin', {'tutorial_begin': 'true'});
-
-                          Navigator.of(context)
-                              .pushReplacement(PageRouteBuilder(
-                            transitionDuration:
-                                const Duration(milliseconds: 500),
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    HomeScreen(
-                              socketService: null,
-                              isIntentSharing: false,
-                            ),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              var slideTween = Tween<Offset>(
-                                begin: const Offset(1.0, 0.0),
-                                end: Offset.zero,
-                              ).animate(animation);
-
-                              var fadeTween = Tween<double>(
-                                begin: 0.3,
-                                end: 1.0,
-                              ).animate(animation);
-
-                              return FadeTransition(
-                                opacity: fadeTween,
-                                child: SlideTransition(
-                                  position: slideTween,
-                                  child: child,
-                                ),
-                              );
-                            },
-                          ));
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          height: screenHeight / 16,
-                          width: screenWidth / 3,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.1),
-                                blurRadius: 15,
-                                spreadRadius: -5,
-                                offset: const Offset(0, 5),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              AppLocalizations.of(context)!.onboard_button_text,
-                              style: ThemeConstant.smallTextSizeDarkFontWidth,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-  }
-
-  Widget _buildLanguageSelector() {
-    return Positioned(
-      top: 8,
-      right: 15,
-      child: GestureDetector(
-        onTap: _showLanguageModal,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-          decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.4), // Dark overlay to blend in
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              /// 🌐 **Glowing Globe Icon (Using Stack)**
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  /// **Blurred White Glow Behind the Icon**
-                  Container(
-                    width: 22,
-                    height: 22,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.1),
-                          blurRadius: 12,
-                          spreadRadius: 2,
-                        ),
-                      ],
+                  children: [
+                    const AppBarWidget(),
+                    const SizedBox(height: 30),
+                    Text(
+                      '${AppLocalizations.of(context)!.onboard_hero_text_1}\n${AppLocalizations.of(context)!.onboard_hero_text_2}',
+                      textAlign: TextAlign.center,
+                      style: ThemeConstant.titleLarge
+                          .copyWith(fontSize: 31, height: 1.12),
                     ),
-                  ),
-
-                  /// **Actual Icon**
-                  const Icon(
-                    Icons.language,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                ],
-              ),
-
-              const SizedBox(width: 6),
-
-              /// ✨ **Glowing Text Effect**
-              Text(
-                _languages.firstWhere(
-                    (lang) => lang["code"] == _selectedLanguage)["name"]!,
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.95), // Brighter text
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 4,
-                      color: Colors.white.withValues(alpha: 0.8),
-                      offset: const Offset(0, 0),
+                    const SizedBox(height: 10),
+                    Text(
+                      AppLocalizations.of(context)!.onboard_subline,
+                      textAlign: TextAlign.center,
+                      style: ThemeConstant.subtitleMuted,
                     ),
+                    const SizedBox(height: 40),
+                    IntroWidget(
+                      icon: Icons.image_outlined,
+                      text: AppLocalizations.of(context)!.onboard_step_1,
+                    ),
+                    const SizedBox(height: 22),
+                    IntroWidget(
+                      icon: Icons.qr_code_scanner_rounded,
+                      text: AppLocalizations.of(context)!.onboard_step_2,
+                    ),
+                    const SizedBox(height: 22),
+                    IntroWidget(
+                      icon: Icons.brush_rounded,
+                      text: AppLocalizations.of(context)!.onboard_step_3,
+                    ),
+                    const Spacer(),
+                    _languageChip(),
+                    const SizedBox(height: 18),
+                    _getStartedButton(context),
+                    const SizedBox(height: 4),
                   ],
                 ),
               ),
-            ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _languageChip() {
+    final name = _languages
+        .firstWhere((lang) => lang["code"] == _selectedLanguage)["name"]!;
+    return GestureDetector(
+      onTap: _showLanguageModal,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.04),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.language, color: Color(0xFFCFD6D2), size: 15),
+            const SizedBox(width: 8),
+            Text(
+              name,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                color: Color(0xFFCFD6D2),
+                fontSize: 13.5,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(width: 6),
+            const Icon(Icons.keyboard_arrow_down_rounded,
+                color: Color(0xFFCFD6D2), size: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _getStartedButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        FirebaseInitalizationClass.eventTracker(
+            'tutorial_begin', {'tutorial_begin': 'true'});
+        Navigator.of(context).pushReplacement(PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 500),
+          pageBuilder: (context, animation, secondaryAnimation) => HomeScreen(
+            socketService: null,
+            isIntentSharing: false,
           ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            final slideTween = Tween<Offset>(
+              begin: const Offset(1.0, 0.0),
+              end: Offset.zero,
+            ).animate(animation);
+            final fadeTween =
+                Tween<double>(begin: 0.3, end: 1.0).animate(animation);
+            return FadeTransition(
+              opacity: fadeTween,
+              child: SlideTransition(position: slideTween, child: child),
+            );
+          },
+        ));
+      },
+      child: Container(
+        width: 260,
+        height: 52,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              AppLocalizations.of(context)!.onboard_button_text,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                color: ThemeConstant.buttonInk,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(width: 9),
+            const Icon(Icons.arrow_forward_rounded,
+                color: ThemeConstant.buttonInk, size: 18),
+          ],
         ),
       ),
     );
@@ -282,7 +221,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Frosted Glass
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.6),
+                color: ThemeConstant.surface.withValues(alpha: 0.96),
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(20)),
               ),
@@ -333,24 +272,15 @@ class _OnboardScreenState extends State<OnboardScreen> {
                               vertical: 12, horizontal: 18),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? ThemeConstant.primaryAppColor.withValues(alpha: 0.2)
+                                ? ThemeConstant.accentGreen
+                                    .withValues(alpha: 0.16)
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(
                               color: isSelected
-                                  ? ThemeConstant.primaryAppColor
-                                  : Colors.white.withValues(alpha: 0.2),
+                                  ? ThemeConstant.accentGreen
+                                  : Colors.white.withValues(alpha: 0.12),
                             ),
-                            boxShadow: isSelected
-                                ? [
-                                    BoxShadow(
-                                      color: ThemeConstant.primaryAppColor
-                                          .withValues(alpha: 0.3),
-                                      blurRadius: 10,
-                                      spreadRadius: 1,
-                                    )
-                                  ]
-                                : [],
                           ),
                           child: Row(
                             children: [
@@ -369,6 +299,9 @@ class _OnboardScreenState extends State<OnboardScreen> {
                                   ),
                                 ),
                               ),
+                              if (isSelected)
+                                const Icon(Icons.check_rounded,
+                                    color: ThemeConstant.accentGreen, size: 20),
                             ],
                           ),
                         ),

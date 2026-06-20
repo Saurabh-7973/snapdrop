@@ -163,31 +163,37 @@ abstract class AppLocalizations {
   /// No description provided for @onboard_hero_text_1.
   ///
   /// In en, this message translates to:
-  /// **'Share images'**
+  /// **'Send images'**
   String get onboard_hero_text_1;
 
   /// No description provided for @onboard_hero_text_2.
   ///
   /// In en, this message translates to:
-  /// **'directly to Figma'**
+  /// **'straight to Figma'**
   String get onboard_hero_text_2;
+
+  /// No description provided for @onboard_subline.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone to canvas, in seconds.'**
+  String get onboard_subline;
 
   /// No description provided for @onboard_step_1.
   ///
   /// In en, this message translates to:
-  /// **'Select Images'**
+  /// **'Pick up to 10 images from your phone'**
   String get onboard_step_1;
 
   /// No description provided for @onboard_step_2.
   ///
   /// In en, this message translates to:
-  /// **'Scan QR in Figma Plugin'**
+  /// **'Scan the QR in your Figma plugin'**
   String get onboard_step_2;
 
   /// No description provided for @onboard_step_3.
   ///
   /// In en, this message translates to:
-  /// **'Share'**
+  /// **'They land straight on your canvas'**
   String get onboard_step_3;
 
   /// No description provided for @onboard_button_text.
@@ -241,13 +247,13 @@ abstract class AppLocalizations {
   /// No description provided for @home_screen_herotext_2.
   ///
   /// In en, this message translates to:
-  /// **'to Continue'**
+  /// **'to continue'**
   String get home_screen_herotext_2;
 
   /// No description provided for @home_screen_herotext_3.
   ///
   /// In en, this message translates to:
-  /// **'Up to 10 Images'**
+  /// **'Upto 10 images'**
   String get home_screen_herotext_3;
 
   /// No description provided for @home_screen_button.
@@ -255,6 +261,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connect'**
   String get home_screen_button;
+
+  /// No description provided for @home_album_view_all.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get home_album_view_all;
+
+  /// No description provided for @empty_state_title.
+  ///
+  /// In en, this message translates to:
+  /// **'No images here yet'**
+  String get empty_state_title;
+
+  /// No description provided for @empty_state_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos in this album will appear here. Try another album above.'**
+  String get empty_state_body;
 
   /// No description provided for @showcase_four_title.
   ///
@@ -271,20 +295,44 @@ abstract class AppLocalizations {
   /// No description provided for @qr_screen_herotext_1.
   ///
   /// In en, this message translates to:
-  /// **'Scan QR Code'**
+  /// **'Select a plugin'**
   String get qr_screen_herotext_1;
 
   /// No description provided for @qr_screen_herotext_2.
   ///
   /// In en, this message translates to:
-  /// **'to Continue'**
+  /// **'to continue'**
   String get qr_screen_herotext_2;
 
   /// No description provided for @qr_screen_herotext_3.
   ///
   /// In en, this message translates to:
-  /// **'Scan QR Code to Connect'**
+  /// **'Scan QR Code to connect'**
   String get qr_screen_herotext_3;
+
+  /// No description provided for @qr_timed_out_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan timed out'**
+  String get qr_timed_out_label;
+
+  /// No description provided for @qr_timed_out_message.
+  ///
+  /// In en, this message translates to:
+  /// **'No QR code scanned — it may have expired.'**
+  String get qr_timed_out_message;
+
+  /// No description provided for @qr_restart_scan.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart Scan'**
+  String get qr_restart_scan;
+
+  /// No description provided for @no_internet_connection.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection'**
+  String get no_internet_connection;
 
   /// No description provided for @qr_screen_info_button.
   ///
@@ -340,6 +388,24 @@ abstract class AppLocalizations {
   /// **'Images'**
   String get send_screen_hero_text_2;
 
+  /// No description provided for @send_screen_transferring.
+  ///
+  /// In en, this message translates to:
+  /// **'Transferring'**
+  String get send_screen_transferring;
+
+  /// No description provided for @send_screen_complete_1.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer'**
+  String get send_screen_complete_1;
+
+  /// No description provided for @send_screen_complete_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get send_screen_complete_2;
+
   /// No description provided for @send_screen_connected_to.
   ///
   /// In en, this message translates to:
@@ -387,6 +453,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'File Size Limit Exceded'**
   String get app_conditions_size_limit;
+
+  /// No description provided for @permission_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow photo access'**
+  String get permission_dialog_title;
+
+  /// No description provided for @permission_dialog_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapdrop needs your photos to send them to Figma. Nothing leaves your phone until you pick and send.'**
+  String get permission_dialog_body;
+
+  /// No description provided for @permission_dialog_allow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get permission_dialog_allow;
+
+  /// No description provided for @permission_dialog_exit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit'**
+  String get permission_dialog_exit;
+
+  /// No description provided for @exit_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave Snapdrop?'**
+  String get exit_dialog_title;
+
+  /// No description provided for @exit_dialog_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Your current selection won\'t be saved.'**
+  String get exit_dialog_body;
+
+  /// No description provided for @exit_dialog_exit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit'**
+  String get exit_dialog_exit;
+
+  /// No description provided for @exit_dialog_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get exit_dialog_cancel;
+
+  /// No description provided for @share_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Enjoying Snapdrop?'**
+  String get share_dialog_title;
+
+  /// No description provided for @share_dialog_body.
+  ///
+  /// In en, this message translates to:
+  /// **'If it saved you time, passing it to another designer helps more than you\'d think.'**
+  String get share_dialog_body;
+
+  /// No description provided for @share_dialog_share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share_dialog_share;
+
+  /// No description provided for @share_dialog_maybe_later.
+  ///
+  /// In en, this message translates to:
+  /// **'Maybe later'**
+  String get share_dialog_maybe_later;
 }
 
 class _AppLocalizationsDelegate

@@ -4,7 +4,6 @@ import 'package:Snapdrop/services/check_internet_connectivity.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lottie/lottie.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -19,6 +18,7 @@ import '../services/media_provider.dart';
 import '../services/permission_provider.dart';
 import '../services/socket_service.dart';
 import '../l10n/app_localizations.dart';
+import 'app_dialog.dart';
 
 // P2: holds services + a ScrollController as widget fields and mutates
 // isIntentSharing in initState — should move into State. Deferred (behavior-sensitive).
@@ -106,7 +106,6 @@ class _DropDownViewState extends State<DropDownView> {
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(context).size.height;
 
     return Column(
       children: [
@@ -127,204 +126,230 @@ class _DropDownViewState extends State<DropDownView> {
                   )
             : hasNoData == true
                 ? const SizedBox.shrink()
-                : Row(
-                    children: [
-                      Showcase(
-                        targetPadding: const EdgeInsets.symmetric(
-                            horizontal: 0, vertical: 0),
-                        key: GlobalShowcaseKeys.showcaseOne,
-                        tooltipBackgroundColor: const Color(0xff161616),
-                        textColor: ThemeConstant.whiteColor,
-                        title: AppLocalizations.of(context)!.showcase_one_title,
-                        description:
-                            AppLocalizations.of(context)!.showcase_one_subtitle,
-                        onBarrierClick: () => debugPrint('menu clicked'),
-                        child: SizedBox(
-                          width: screenWidth / 1.08,
-                          height: 50,
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton2<AssetPathEntity>(
-                              key: ValueKey(filteredAlbumList.length),
-                              isExpanded: true,
-                              value: filteredAlbumList.isNotEmpty
-                                  ? selectedAlbum
-                                  : null,
-                              iconStyleData: const IconStyleData(
-                                icon: Icon(
-                                  Icons.keyboard_arrow_down_rounded,
-                                  color: Colors.white,
-                                  size: 28,
-                                ),
-                              ),
-                              barrierColor: Colors.transparent,
-                              dropdownStyleData: DropdownStyleData(
-                                maxHeight: searchFocusNode.hasFocus
-                                    ? MediaQuery.of(context).size.height * 0.25
-                                    : MediaQuery.of(context).size.height * 0.5,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff161616),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              buttonStyleData: ButtonStyleData(
-                                width:
-                                    MediaQuery.of(context).size.width / 1.075,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 10),
-                                decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              items: filteredAlbumList.isNotEmpty
-                                  ? filteredAlbumList
-                                      .map<DropdownMenuItem<AssetPathEntity>>(
-                                          (album) {
-                                      bool isSelected = selectedAlbum == album;
-                                      return DropdownMenuItem<AssetPathEntity>(
-                                        value: album,
-                                        child: Container(
-                                          padding: const EdgeInsets.only(
-                                              top: 12,
-                                              bottom: 12,
-                                              left: 16,
-                                              right: 16),
-                                          decoration: BoxDecoration(
-                                            color: isSelected
-                                                ? ThemeConstant.primaryAppColor
-                                                : Colors.transparent,
-                                            borderRadius:
-                                                BorderRadius.circular(4),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  albumLabel(album),
-                                                  style: ThemeConstant
-                                                      .smallTextSizeLight
-                                                      .copyWith(
-                                                    color: isSelected
-                                                        ? Colors.white
-                                                        : Colors.grey,
-                                                  ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                              if (isSelected)
-                                                const Icon(
-                                                  Icons.check,
-                                                  color: Colors.white,
-                                                  size: 18,
-                                                ),
-                                            ],
-                                          ),
+                : SizedBox(
+                    height: 50,
+                    child: Showcase(
+                      targetPadding: const EdgeInsets.symmetric(
+                          horizontal: 0, vertical: 0),
+                      key: GlobalShowcaseKeys.showcaseOne,
+                      tooltipBackgroundColor: const Color(0xff161616),
+                      textColor: ThemeConstant.whiteColor,
+                      title: AppLocalizations.of(context)!.showcase_one_title,
+                      description:
+                          AppLocalizations.of(context)!.showcase_one_subtitle,
+                      onBarrierClick: () => debugPrint('menu clicked'),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2<AssetPathEntity>(
+                          key: ValueKey(filteredAlbumList.length),
+                          isExpanded: true,
+                          value: filteredAlbumList.isNotEmpty
+                              ? selectedAlbum
+                              : null,
+                          customButton: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        selectedAlbum != null
+                                            ? albumLabel(selectedAlbum!)
+                                            : '',
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: false,
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          color: Colors.white,
+                                          fontSize: 15.5,
+                                          fontWeight: FontWeight.w600,
                                         ),
-                                      );
-                                    }).toList()
-                                  : [
-                                      DropdownMenuItem<AssetPathEntity>(
-                                        value: null,
-                                        enabled: false,
-                                        child: Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 12),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    const Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        color: Colors.white,
+                                        size: 18),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                AppLocalizations.of(context)!
+                                    .home_album_view_all,
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  color: ThemeConstant.accentGreen,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                          barrierColor: Colors.transparent,
+                          dropdownStyleData: DropdownStyleData(
+                            maxHeight: searchFocusNode.hasFocus
+                                ? MediaQuery.of(context).size.height * 0.25
+                                : MediaQuery.of(context).size.height * 0.5,
+                            decoration: BoxDecoration(
+                              color: ThemeConstant.surface,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          buttonStyleData: ButtonStyleData(
+                            width: MediaQuery.of(context).size.width / 1.075,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          items: filteredAlbumList.isNotEmpty
+                              ? filteredAlbumList
+                                  .map<DropdownMenuItem<AssetPathEntity>>(
+                                      (album) {
+                                  bool isSelected = selectedAlbum == album;
+                                  return DropdownMenuItem<AssetPathEntity>(
+                                    value: album,
+                                    child: Container(
+                                      padding: const EdgeInsets.only(
+                                          top: 12,
+                                          bottom: 12,
+                                          left: 16,
+                                          right: 16),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? ThemeConstant.primaryAppColor
+                                            : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Align(
+                                            alignment: Alignment.centerLeft,
                                             child: Text(
-                                              'No albums with that name found',
+                                              albumLabel(album),
                                               style: ThemeConstant
                                                   .smallTextSizeLight
                                                   .copyWith(
-                                                color: Colors.grey,
+                                                color: isSelected
+                                                    ? Colors.white
+                                                    : Colors.grey,
                                               ),
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                              onChanged: (AssetPathEntity? album) {
-                                if (filteredAlbumList.isEmpty) return;
-                                if (mounted) {
-                                  setState(() {
-                                    selectedAlbum = album;
-                                    hasDataLoaded = false;
-                                  });
-                                }
-                                FocusScope.of(context).unfocus();
-                                if (selectedAlbum != null) {
-                                  widget._mediaProviderServices
-                                      .loadAsset(selectedAlbum!)
-                                      .then((value) {
-                                    if (mounted) {
-                                      setState(() {
-                                        assetList = value;
-                                        hasDataLoaded = true;
-                                      });
-                                    }
-                                  });
-                                }
-                              },
-                              selectedItemBuilder: (BuildContext context) {
-                                return albumList
-                                    .map<Widget>((AssetPathEntity album) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(left: 10),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        albumLabel(album),
-                                        overflow: TextOverflow.ellipsis,
-                                        style: ThemeConstant.smallTextSizeLight
-                                            .copyWith(
-                                          color: Colors.white,
-                                        ),
+                                          if (isSelected)
+                                            const Icon(
+                                              Icons.check,
+                                              color: Colors.white,
+                                              size: 18,
+                                            ),
+                                        ],
                                       ),
                                     ),
                                   );
-                                }).toList();
-                              },
-                              dropdownSearchData: DropdownSearchData(
-                                searchController: searchController,
-                                searchInnerWidgetHeight: 50,
-                                searchInnerWidget: Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: TextFormField(
-                                    controller: searchController,
-                                    focusNode: searchFocusNode,
-                                    cursorColor: ThemeConstant.primaryAppColor,
+                                }).toList()
+                              : [
+                                  DropdownMenuItem<AssetPathEntity>(
+                                    value: null,
+                                    enabled: false,
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12),
+                                        child: Text(
+                                          'No albums with that name found',
+                                          style: ThemeConstant
+                                              .smallTextSizeLight
+                                              .copyWith(
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                          onChanged: (AssetPathEntity? album) {
+                            if (filteredAlbumList.isEmpty) return;
+                            if (mounted) {
+                              setState(() {
+                                selectedAlbum = album;
+                                hasDataLoaded = false;
+                              });
+                            }
+                            FocusScope.of(context).unfocus();
+                            if (selectedAlbum != null) {
+                              widget._mediaProviderServices
+                                  .loadAsset(selectedAlbum!)
+                                  .then((value) {
+                                if (mounted) {
+                                  setState(() {
+                                    assetList = value;
+                                    hasDataLoaded = true;
+                                  });
+                                }
+                              });
+                            }
+                          },
+                          selectedItemBuilder: (BuildContext context) {
+                            return albumList
+                                .map<Widget>((AssetPathEntity album) {
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    albumLabel(album),
+                                    overflow: TextOverflow.ellipsis,
                                     style: ThemeConstant.smallTextSizeLight
                                         .copyWith(
-                                      color: ThemeConstant.primaryAppColor,
+                                      color: Colors.white,
                                     ),
-                                    decoration: InputDecoration(
-                                      isDense: true,
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 12,
-                                      ),
-                                      hintText: 'Search Album...',
-                                      hintStyle: ThemeConstant
-                                          .smallTextSizeLight
-                                          .copyWith(
-                                        color: ThemeConstant.primaryAppColor,
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                        borderSide: const BorderSide(
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                        borderSide: BorderSide(
-                                          color: ThemeConstant.primaryAppColor,
-                                        ),
-                                      ),
+                                  ),
+                                ),
+                              );
+                            }).toList();
+                          },
+                          dropdownSearchData: DropdownSearchData(
+                            searchController: searchController,
+                            searchInnerWidgetHeight: 50,
+                            searchInnerWidget: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: TextFormField(
+                                controller: searchController,
+                                focusNode: searchFocusNode,
+                                cursorColor: ThemeConstant.primaryAppColor,
+                                style:
+                                    ThemeConstant.smallTextSizeLight.copyWith(
+                                  color: ThemeConstant.primaryAppColor,
+                                ),
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 12,
+                                  ),
+                                  hintText: 'Search Album...',
+                                  hintStyle:
+                                      ThemeConstant.smallTextSizeLight.copyWith(
+                                    color: ThemeConstant.primaryAppColor,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(
+                                      color: ThemeConstant.primaryAppColor,
                                     ),
                                   ),
                                 ),
@@ -333,49 +358,13 @@ class _DropDownViewState extends State<DropDownView> {
                           ),
                         ),
                       ),
-                      const Spacer(),
-                    ],
+                    ),
                   ),
         SizedBox(
           height: 10,
         ),
-        hasNoData == true
-            ? Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: screenHeight / 4,
-                    ),
-                    Lottie.asset('assets/animations/void.json'),
-                    SizedBox(
-                      height: screenHeight / 8,
-                    ),
-                    //Feels like a Void, Nothing to show for Now!
-                    const FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        'Feels like a Void, No Images to Display!',
-                        style: ThemeConstant.largeTextSize,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        'Add images to get started',
-                        style: ThemeConstant.smallTextSizeLight,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
-              )
+        (hasNoData == true || (hasDataLoaded == true && assetList.isEmpty))
+            ? _emptyState(context)
             : hasDataLoaded == true
                 ? Expanded(
                     child: Stack(children: [
@@ -449,7 +438,8 @@ class _DropDownViewState extends State<DropDownView> {
                                                   },
                                                   loadingBuilder: (context,
                                                       child, loadingProgress) {
-                                                    if (loadingProgress == null) {
+                                                    if (loadingProgress ==
+                                                        null) {
                                                       return child;
                                                     }
                                                     return Shimmer.fromColors(
@@ -484,18 +474,27 @@ class _DropDownViewState extends State<DropDownView> {
                                                   milliseconds: 300),
                                               child: selectedAssetList.contains(
                                                       assetList[index])
-                                                  ? const Align(
+                                                  ? Align(
                                                       alignment:
                                                           Alignment.topRight,
                                                       child: Padding(
                                                         padding:
                                                             EdgeInsets.all(6.0),
-                                                        child: Icon(
-                                                          Icons
-                                                              .check_circle_rounded,
-                                                          size: 30,
-                                                          color: Colors.white,
-                                                        ),
+                                                        child: Container(
+                                                            width: 22,
+                                                            height: 22,
+                                                            decoration:
+                                                                const BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color: Colors
+                                                                        .white),
+                                                            child: const Icon(
+                                                                Icons.check,
+                                                                size: 15,
+                                                                color:
+                                                                    ThemeConstant
+                                                                        .base)),
                                                       ),
                                                     )
                                                   : Align(
@@ -518,8 +517,8 @@ class _DropDownViewState extends State<DropDownView> {
                                                             shape:
                                                                 BoxShape.circle,
                                                             color: Colors.black
-                                                                .withValues(alpha: 
-                                                                    0.4),
+                                                                .withValues(
+                                                                    alpha: 0.4),
                                                             border: Border.all(
                                                               color:
                                                                   Colors.white,
@@ -533,69 +532,43 @@ class _DropDownViewState extends State<DropDownView> {
                                             if (selectedAssetList
                                                 .contains(assetList[index]))
                                               FutureBuilder(
-                                                future: FileImageServices()
-                                                    .getImageSize(
-                                                        assetList[index]),
-                                                builder: (context, snapshot) {
-                                                  if (snapshot.hasData) {
+                                                  future: FileImageServices()
+                                                      .getImageSize(
+                                                          assetList[index]),
+                                                  builder: (context, snapshot) {
+                                                    if (!snapshot.hasData) {
+                                                      return const SizedBox
+                                                          .shrink();
+                                                    }
                                                     return Align(
-                                                      alignment:
-                                                          Alignment.bottomRight,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15),
-                                                            color: Colors.black
-                                                                .withValues(alpha: 
-                                                                    0.35),
-                                                          ),
-                                                          child: Padding(
+                                                        alignment: Alignment
+                                                            .bottomLeft,
+                                                        child: Padding(
                                                             padding:
                                                                 const EdgeInsets
-                                                                    .symmetric(
-                                                              vertical: 4,
-                                                              horizontal: 8,
-                                                            ),
-                                                            child: FittedBox(
-                                                              fit: BoxFit
-                                                                  .scaleDown,
-                                                              child: Text(
+                                                                    .only(
+                                                                    left: 8,
+                                                                    bottom: 7),
+                                                            child: Text(
                                                                 "${snapshot.data} MB",
-                                                                style: ThemeConstant
-                                                                    .smallTextSizeLight,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }
-                                                  return const Align(
-                                                    alignment:
-                                                        Alignment.bottomRight,
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsets.all(8.0),
-                                                      child: SizedBox(
-                                                        height: 10,
-                                                        width: 10,
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                          color: Colors.white,
-                                                          strokeWidth: 1.5,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
+                                                                style: const TextStyle(
+                                                                    fontFamily:
+                                                                        'Inter',
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize: 10.5,
+                                                                    fontWeight: FontWeight.w500,
+                                                                    shadows: [
+                                                                      Shadow(
+                                                                          blurRadius:
+                                                                              3,
+                                                                          color: Color(
+                                                                              0xB3000000),
+                                                                          offset: Offset(
+                                                                              0,
+                                                                              1))
+                                                                    ]))));
+                                                  }),
                                           ],
                                         ),
                                       )
@@ -660,18 +633,27 @@ class _DropDownViewState extends State<DropDownView> {
                                                 milliseconds: 300),
                                             child: selectedAssetList
                                                     .contains(assetList[index])
-                                                ? const Align(
+                                                ? Align(
                                                     alignment:
                                                         Alignment.topRight,
                                                     child: Padding(
                                                       padding:
                                                           EdgeInsets.all(6.0),
-                                                      child: Icon(
-                                                        Icons
-                                                            .check_circle_rounded,
-                                                        size: 30,
-                                                        color: Colors.white,
-                                                      ),
+                                                      child: Container(
+                                                          width: 22,
+                                                          height: 22,
+                                                          decoration:
+                                                              const BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  color: Colors
+                                                                      .white),
+                                                          child: const Icon(
+                                                              Icons.check,
+                                                              size: 15,
+                                                              color:
+                                                                  ThemeConstant
+                                                                      .base)),
                                                     ),
                                                   )
                                                 : Align(
@@ -693,7 +675,8 @@ class _DropDownViewState extends State<DropDownView> {
                                                           shape:
                                                               BoxShape.circle,
                                                           color: Colors.black
-                                                              .withValues(alpha: 0.4),
+                                                              .withValues(
+                                                                  alpha: 0.4),
                                                           border: Border.all(
                                                             color: Colors.white,
                                                             width: 2,
@@ -706,68 +689,46 @@ class _DropDownViewState extends State<DropDownView> {
                                           if (selectedAssetList
                                               .contains(assetList[index]))
                                             FutureBuilder(
-                                              future: FileImageServices()
-                                                  .getImageSize(
-                                                      assetList[index]),
-                                              builder: (context, snapshot) {
-                                                if (snapshot.hasData) {
+                                                future: FileImageServices()
+                                                    .getImageSize(
+                                                        assetList[index]),
+                                                builder: (context, snapshot) {
+                                                  if (!snapshot.hasData) {
+                                                    return const SizedBox
+                                                        .shrink();
+                                                  }
                                                   return Align(
-                                                    alignment:
-                                                        Alignment.bottomRight,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(15),
-                                                          color: Colors.black
-                                                              .withValues(alpha: 
-                                                                  0.35),
-                                                        ),
-                                                        child: Padding(
+                                                      alignment:
+                                                          Alignment.bottomLeft,
+                                                      child: Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                  .symmetric(
-                                                            vertical: 4,
-                                                            horizontal: 8,
-                                                          ),
-                                                          child: FittedBox(
-                                                            fit: BoxFit
-                                                                .scaleDown,
-                                                            child: Text(
+                                                                  .only(
+                                                                  left: 8,
+                                                                  bottom: 7),
+                                                          child: Text(
                                                               "${snapshot.data} MB",
-                                                              style: ThemeConstant
-                                                                  .smallTextSizeLight,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                }
-                                                return const Align(
-                                                  alignment:
-                                                      Alignment.bottomRight,
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsets.all(8.0),
-                                                    child: SizedBox(
-                                                      height: 10,
-                                                      width: 10,
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                        color: Colors.white,
-                                                        strokeWidth: 1.5,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            ),
+                                                              style: const TextStyle(
+                                                                  fontFamily:
+                                                                      'Inter',
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      10.5,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  shadows: [
+                                                                    Shadow(
+                                                                        blurRadius:
+                                                                            3,
+                                                                        color: Color(
+                                                                            0xB3000000),
+                                                                        offset: Offset(
+                                                                            0,
+                                                                            1))
+                                                                  ]))));
+                                                }),
                                         ],
                                       ));
                           }),
@@ -943,7 +904,8 @@ class _DropDownViewState extends State<DropDownView> {
                                       borderRadius: BorderRadius.circular(10),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.1),
+                                          color: Colors.black
+                                              .withValues(alpha: 0.1),
                                           blurRadius: 10,
                                           spreadRadius: 2,
                                         ),
@@ -969,6 +931,56 @@ class _DropDownViewState extends State<DropDownView> {
     );
   }
 
+  /// Quiet empty/void block (snapdrop_empty_inlanguage.html) — replaces the
+  /// loud void.json Lottie. Header + album switcher stay; only the grid area
+  /// becomes this calm block. No Connect button here.
+  Widget _emptyState(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 60),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 84,
+              height: 84,
+              decoration: BoxDecoration(
+                color: ThemeConstant.accentGreen.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
+              ),
+              child: Icon(
+                Icons.image_outlined,
+                color: ThemeConstant.softGreen.withValues(alpha: 0.7),
+                size: 40,
+              ),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              AppLocalizations.of(context)!.empty_state_title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                color: Color(0xFFE9ECE9),
+                fontSize: 16.5,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 7),
+            SizedBox(
+              width: 220,
+              child: Text(
+                AppLocalizations.of(context)!.empty_state_body,
+                textAlign: TextAlign.center,
+                style: ThemeConstant.subtitleMuted.copyWith(fontSize: 14),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   initialMethod(bool hasAll) {
     widget._permissionProviderServices
         .requestMediaAccessPermission()
@@ -977,8 +989,9 @@ class _DropDownViewState extends State<DropDownView> {
         widget._mediaProviderServices.loadAlbums(hasAll).then((listOfAlbum) {
           if (listOfAlbum.isNotEmpty) {
             // Sort the list alphabetically by album name
-            listOfAlbum.sort((a, b) =>
-                albumLabel(a).toLowerCase().compareTo(albumLabel(b).toLowerCase()));
+            listOfAlbum.sort((a, b) => albumLabel(a)
+                .toLowerCase()
+                .compareTo(albumLabel(b).toLowerCase()));
             if (mounted) {
               setState(() {
                 albumList = listOfAlbum;
@@ -1012,81 +1025,29 @@ class _DropDownViewState extends State<DropDownView> {
   }
 
   Future<void> _showMyDialog() async {
-    return showDialog<void>(
+    await showAppDialog(
       context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const FittedBox(
-              fit: BoxFit.scaleDown, child: Text('Permission Required')),
-          backgroundColor: ThemeConstant.whiteColor,
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    'This app requires Storage Permission to Work.',
-                    style: ThemeConstant.smallTextSizeDark,
-                  ),
-                ),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    'Would you like to allow the Permission? ',
-                    style: ThemeConstant.smallTextSizeDark,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const FittedBox(
-                  fit: BoxFit.scaleDown, child: Text('Approve')),
-              onPressed: () {
-                Navigator.of(context).pop();
-                initialMethod(hasAll);
-              },
-            ),
-            TextButton(
-              child:
-                  const FittedBox(fit: BoxFit.scaleDown, child: Text('Exit!')),
-              onPressed: () {
-                _handleExit();
-              },
-            ),
-          ],
-        );
-      },
+      barrierDismissible: false,
+      icon: Icons.photo_library_outlined,
+      title: AppLocalizations.of(context)!.permission_dialog_title,
+      body: AppLocalizations.of(context)!.permission_dialog_body,
+      primaryLabel: AppLocalizations.of(context)!.permission_dialog_allow,
+      secondaryLabel: AppLocalizations.of(context)!.permission_dialog_exit,
+      onPrimary: () => initialMethod(hasAll),
+      onSecondary: () => _handleExit(),
     );
   }
 
   void _handleExit() async {
-    showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text('Are you sure you want to exit?')),
-            content: const FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text('Unsaved data will be lost')),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const FittedBox(
-                    fit: BoxFit.scaleDown, child: Text('Cancel')),
-              ),
-              TextButton(
-                onPressed: () => exit(0),
-                child:
-                    const FittedBox(fit: BoxFit.scaleDown, child: Text('Exit')),
-              ),
-            ],
-          );
-        });
+    await showAppDialog(
+      context: context,
+      barrierDismissible: false,
+      icon: Icons.logout_rounded,
+      title: AppLocalizations.of(context)!.exit_dialog_title,
+      body: AppLocalizations.of(context)!.exit_dialog_body,
+      primaryLabel: AppLocalizations.of(context)!.exit_dialog_cancel,
+      secondaryLabel: AppLocalizations.of(context)!.exit_dialog_exit,
+      onSecondary: () => exit(0),
+    );
   }
 }

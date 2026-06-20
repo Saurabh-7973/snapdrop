@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
-import 'package:flutter/services.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
@@ -10,7 +9,7 @@ import '../l10n/app_localizations.dart';
 import '../floating_squares.dart';
 import '../widgets/app_background.dart';
 import '../widgets/app_bar_widget.dart';
-import '../widgets/hero_text.dart';
+import '../widgets/app_dialog.dart';
 import '../widgets/qr_scanner.dart';
 
 class QRScreen extends StatefulWidget {
@@ -29,62 +28,23 @@ class QRScreen extends StatefulWidget {
   State<QRScreen> createState() => _QRScreenState();
 }
 
-class _QRScreenState extends State<QRScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  bool showInfoPanel = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _toggleInfoPanel() {
-    HapticFeedback.lightImpact();
-    setState(() {
-      showInfoPanel = !showInfoPanel;
-    });
-  }
-
+class _QRScreenState extends State<QRScreen> {
   Future<bool> _onWillPop() async {
-    return (await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            backgroundColor: ThemeConstant.primaryAppColor,
-            title: const Text('Exit Confirmation'),
-            content: const Text('Do you really want to leave the QR screen?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Exit'),
-              ),
-            ],
-          ),
-        )) ??
-        false;
+    // Unified Exit confirmation (snapdrop_dialogs_inlanguage.html). Solid
+    // primary = Cancel (stay, the easy action); ghost = Exit (leave).
+    final stay = await showAppDialog(
+      context: context,
+      icon: Icons.logout_rounded,
+      title: AppLocalizations.of(context)!.exit_dialog_title,
+      body: AppLocalizations.of(context)!.exit_dialog_body,
+      primaryLabel: AppLocalizations.of(context)!.exit_dialog_cancel,
+      secondaryLabel: AppLocalizations.of(context)!.exit_dialog_exit,
+    );
+    return stay == false; // leave only when Exit (ghost) tapped
   }
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -97,61 +57,30 @@ class _QRScreenState extends State<QRScreen>
       child: AppBackground(
         child: Scaffold(
           backgroundColor: Colors.transparent,
+          extendBody: true,
+          extendBodyBehindAppBar: true,
           body: Stack(
             children: [
-              // Floating Triangles
-              Positioned.fill(
-                child: const FloatingSquares(),
-              ),
-
-              // Header
+              const Positioned.fill(child: FloatingSquares()),
               SafeArea(
                 child: Padding(
-                padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Stack(
-                      children: [
-                        AppBarWidget(
-                          showBackButton: true,
-                          onBack: () => Navigator.pop(context),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
+                  padding: const EdgeInsets.fromLTRB(22, 6, 22, 0),
+                  child: Column(
+                    children: [
+                      AppBarWidget(
+                        showBackButton: true,
+                        onBack: () => Navigator.pop(context),
+                      ),
+                      const SizedBox(height: 22),
+                      Text(
+                        '${AppLocalizations.of(context)!.qr_screen_herotext_1}\n${AppLocalizations.of(context)!.qr_screen_herotext_2}',
+                        textAlign: TextAlign.center,
+                        style: ThemeConstant.titleLarge.copyWith(height: 1.12),
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 10),
-                            child: InkWell(
-                              onTap: _toggleInfoPanel,
-                              child: Icon(
-                                showInfoPanel
-                                    ? Icons.qr_code_scanner_rounded
-                                    : Icons.info_outline_rounded,
-                                color: Colors.white,
-                                size: 28,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    // Hero Text
-                    HeroText(
-                      firstLine:
-                          AppLocalizations.of(context)!.qr_screen_herotext_1,
-                      secondLine:
-                          AppLocalizations.of(context)!.qr_screen_herotext_2,
-                      thirdLine: '',
-                    ),
-
-                    // QR Scanner and Info Panel (overlapping)
-                    Expanded(
-                      child: Stack(
-                        children: [
-                          // QR Scanner
-                          Positioned.fill(
+                            padding: const EdgeInsets.only(top: 26, bottom: 20),
                             child: widget.isIntentSharing
                                 ? QRScanner(
                                     isIntentSharing: widget.isIntentSharing,
@@ -166,165 +95,15 @@ class _QRScreenState extends State<QRScreen>
                                     ),
                                   ),
                           ),
-                          // Info Panel (Popup)
-                          if (showInfoPanel)
-                            Positioned(
-                              top: screenHeight * 0.001,
-                              left: screenWidth * 0.08,
-                              child: GestureDetector(
-                                onTap: _toggleInfoPanel,
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: Center(
-                                    child: Container(
-                                      height: screenHeight / 2.8,
-                                      width: screenWidth / 1.3,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(15),
-                                        boxShadow: [
-                                          // ✅ Very Subtle Outer Highlight Glow
-                                          BoxShadow(
-                                            color: Colors.white.withValues(alpha: 
-                                                0.3), // Light subtle glow
-                                            blurRadius: 25, // Soft spread
-                                            spreadRadius: 1, // Minimal spread
-                                            offset: Offset(
-                                                0, 2), // Slight lift effect
-                                          ),
-                                          // ✅ Maintain Depth Shadow (but very light)
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withValues(alpha: 0.04),
-                                            blurRadius: 12,
-                                            spreadRadius: 1,
-                                            offset: Offset(0, 3),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 20, right: 5, top: 5),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  'Steps',
-                                                  style: ThemeConstant
-                                                      .smallTextSize
-                                                      .copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18,
-                                                  ),
-                                                ),
-                                                IconButton(
-                                                  icon: Icon(
-                                                    Icons.close,
-                                                    color: ThemeConstant
-                                                        .primaryAppColor,
-                                                  ),
-                                                  onPressed: _toggleInfoPanel,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: SingleChildScrollView(
-                                              physics: BouncingScrollPhysics(),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  _buildStep(
-                                                    number: '1',
-                                                    title: 'Open Figma Plugin',
-                                                    description:
-                                                        'Open the Snapdrop Figma Plugin from the Figma community.',
-                                                  ),
-                                                  const SizedBox(height: 12),
-                                                  _buildStep(
-                                                    number: '2',
-                                                    title: 'Scan QR Code',
-                                                    description:
-                                                        'Point your camera at the QR code displayed in the app.',
-                                                  ),
-                                                  const SizedBox(height: 12),
-                                                  _buildStep(
-                                                    number: '3',
-                                                    title: 'Image Sync',
-                                                    description:
-                                                        'Your images will be transferred instantly to Figma.',
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildStep({
-    required String number,
-    required String title,
-    required String description,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Step Number
-          CircleAvatar(
-            backgroundColor: ThemeConstant.primaryAppColor,
-            radius: 14,
-            child: Text(
-              number,
-              style: ThemeConstant.smallTextSize.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-
-          // Step Description
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: ThemeConstant.smallTextSize.copyWith(
-                        color: Colors.black, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 4),
-                Text(description,
-                    style: ThemeConstant.smallTextSizeLight.copyWith(
-                      color: Colors.black.withValues(alpha: 0.9),
-                    )),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
