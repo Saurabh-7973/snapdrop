@@ -448,7 +448,7 @@ class _QRScannerState extends State<QRScanner>
           ready
               ? AppLocalizations.of(context)!
                   .qr_screen_button_scanning_completed
-              : AppLocalizations.of(context)!.qr_screen_button_scanning,
+              : AppLocalizations.of(context)!.home_screen_button, // "Connect" (mockup)
           style: TextStyle(
             fontFamily: 'Inter',
             fontWeight: FontWeight.w700,
