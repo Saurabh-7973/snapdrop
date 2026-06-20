@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,9 +28,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -40,26 +49,12 @@ class DefaultFirebaseOptions {
     }
   }
 
-  // Firebase apiKeys are public client identifiers (they ship in google-services.json /
-  // every Firebase app); access is restricted by app signing SHA + Firebase security
-  // rules, not by key secrecy. Hardcoded here per FlutterFire's own generated default —
-  // replaces the previous .env/dotenv indirection that crashed when .env wasn't bundled.
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCgxNnuaJg409evjzct-f6Vpx091Ftr4qs',
-    appId: '1:62956973537:web:4d99fd567d8ee6c12ef6a0',
-    messagingSenderId: '62956973537',
-    projectId: 'snapdrop-e786e',
-    authDomain: 'snapdrop-e786e.firebaseapp.com',
-    storageBucket: 'snapdrop-e786e.appspot.com',
-    measurementId: 'G-S08SZ2HBJ4',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBuUx4ccbaw3Chp03JKTquk--CNPtCamB4',
-    appId: '1:62956973537:android:0aad956b137b85632ef6a0',
+    appId: '1:62956973537:android:1ef1c3da152991e12ef6a0',
     messagingSenderId: '62956973537',
     projectId: 'snapdrop-e786e',
-    storageBucket: 'snapdrop-e786e.appspot.com',
+    storageBucket: 'snapdrop-e786e.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -67,26 +62,7 @@ class DefaultFirebaseOptions {
     appId: '1:62956973537:ios:3318cca4e8de70602ef6a0',
     messagingSenderId: '62956973537',
     projectId: 'snapdrop-e786e',
-    storageBucket: 'snapdrop-e786e.appspot.com',
+    storageBucket: 'snapdrop-e786e.firebasestorage.app',
     iosBundleId: 'com.example.snapdrop',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBm6zqCp5FgOLRjwYJQ-3NXnrliyKiylcw',
-    appId: '1:62956973537:ios:3318cca4e8de70602ef6a0',
-    messagingSenderId: '62956973537',
-    projectId: 'snapdrop-e786e',
-    storageBucket: 'snapdrop-e786e.appspot.com',
-    iosBundleId: 'com.example.snapdrop',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCgxNnuaJg409evjzct-f6Vpx091Ftr4qs',
-    appId: '1:62956973537:web:83cf764f2e7008ca2ef6a0',
-    messagingSenderId: '62956973537',
-    projectId: 'snapdrop-e786e',
-    authDomain: 'snapdrop-e786e.firebaseapp.com',
-    storageBucket: 'snapdrop-e786e.appspot.com',
-    measurementId: 'G-RZZ2P9ZHX7',
   );
 }
