@@ -37,7 +37,7 @@ class QRScanner extends StatefulWidget {
 }
 
 class _QRScannerState extends State<QRScanner>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   bool scannerVisible = false;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
@@ -55,6 +55,7 @@ class _QRScannerState extends State<QRScanner>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _sweepController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2600),
@@ -72,8 +73,21 @@ class _QRScannerState extends State<QRScanner>
     });
   }
 
+  // §7: release the camera on background, re-acquire on resume (free CPU/battery,
+  // avoid a slow re-init while backgrounded).
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (_qrViewController == null) return;
+    if (state == AppLifecycleState.resumed) {
+      if (scannerVisible && result == null) _qrViewController?.resumeCamera();
+    } else {
+      _qrViewController?.pauseCamera();
+    }
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timeoutTimer?.cancel();
     _sweepController.dispose();
     // QRViewController self-disposes when QRView unmounts (its dispose() is

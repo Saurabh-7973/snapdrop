@@ -40,18 +40,24 @@ void main() async {
     systemStatusBarContrastEnforced: false,
   ));
 
+  // Critical for first paint + crash/analytics continuity — keep synchronous.
   await FirebaseInitalizationClass.initalizeFireBase();
   FirebaseInitalizationClass.initalizeFireBaseAnalytics();
-  FirebaseInitalizationClass.initalizePerformance();
   FirebaseInitalizationClass.enableDataCollection();
   FirebaseInitalizationClass.catchFatalErrors();
   FirebaseInitalizationClass.catchAsynchronusErrors();
-  FirebaseInitalizationClass.remoteConfigInitialization();
-  FirebaseInitalizationClass.remoteConfigGetDefaultValues();
-  FirebaseInitalizationClass.remoteConfigUpdateValuesRealtime();
-  FirebaseInitalizationClass.remoteConfigFetchAppVersion();
 
   runApp(MyApp());
+
+  // Non-critical — deferred until after the first frame so startup paints fast
+  // (perf instrumentation + remote-config fetch don't gate the UI).
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    FirebaseInitalizationClass.initalizePerformance();
+    FirebaseInitalizationClass.remoteConfigInitialization();
+    FirebaseInitalizationClass.remoteConfigGetDefaultValues();
+    FirebaseInitalizationClass.remoteConfigUpdateValuesRealtime();
+    FirebaseInitalizationClass.remoteConfigFetchAppVersion();
+  });
 }
 
 class MyApp extends StatefulWidget {
