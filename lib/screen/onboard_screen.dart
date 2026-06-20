@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../floating_squares.dart';
 import '../main.dart';
+import '../services/selected_language.dart';
 import '../utils/firebase_initalization_class.dart';
 import '../widgets/app_background.dart';
 import '../widgets/app_bar_widget.dart';
@@ -22,13 +23,15 @@ class OnboardScreen extends StatefulWidget {
 }
 
 class _OnboardScreenState extends State<OnboardScreen> {
+  // Must match the app's supportedLocales (main.appLocales): en/es/zh/hi/ar/pt.
+  // (Previously listed fr, which isn't supported, and omitted pt.)
   final List<Map<String, String>> _languages = [
     {"code": "en", "name": "English", "flag": "🇬🇧"},
     {"code": "es", "name": "Español", "flag": "🇪🇸"},
     {"code": "zh", "name": "中文", "flag": "🇨🇳"},
     {"code": "hi", "name": "हिन्दी", "flag": "🇮🇳"},
-    {"code": "fr", "name": "Français", "flag": "🇫🇷"},
     {"code": "ar", "name": "العربية", "flag": "🇸🇦"},
+    {"code": "pt", "name": "Português", "flag": "🇵🇹"},
   ];
 
   String _selectedLanguage = "en";
@@ -47,10 +50,17 @@ class _OnboardScreenState extends State<OnboardScreen> {
     });
   }
 
-  /// ✅ Change language and update UI instantly
+  /// ✅ Change language and update UI instantly + persist across launches.
   void _changeLanguage(String langCode) async {
-    MyApp.setLocale(context, Locale(langCode)); // Change app language
+    MyApp.setLocale(context, Locale(langCode)); // instant rebuild
     final prefs = await SharedPreferences.getInstance();
+    // Persist in the SAME form main._loadLocale restores ('selectedLanguageIndex',
+    // an index into appLocales). The string key alone was never read back.
+    final idx = appLocales.indexWhere((l) => l.languageCode == langCode);
+    if (idx >= 0) {
+      SelectedLanguage.selectedLanguageIndex = idx;
+      await prefs.setInt('selectedLanguageIndex', idx);
+    }
     await prefs.setString('selectedLanguage', langCode);
     setState(() {
       _selectedLanguage = langCode;
