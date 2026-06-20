@@ -136,6 +136,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get no_internet_connection => 'No internet connection';
 
   @override
+  String get connection_lost => 'Connection lost';
+
+  @override
+  String get connection_lost_body =>
+      'The session dropped. Reconnect to keep sending.';
+
+  @override
+  String get reconnect_button => 'Reconnect';
+
+  @override
   String get qr_screen_info_button => '打开 Figma -> 设计文件 -> 插件 -> Snapdrop';
 
   @override

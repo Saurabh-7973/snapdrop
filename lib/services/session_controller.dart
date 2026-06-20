@@ -54,6 +54,7 @@ class SessionController extends ChangeNotifier {
     _socket?.dispose();
     _socket = SocketService(url: qrCode);
     _socket!.connectToSocketServer();
+    _socket!.onDropped = onSocketDropped;
     _connectedAt = DateTime.now();
     _set(SessionStatus.connected);
   }
@@ -92,6 +93,7 @@ class SessionController extends ChangeNotifier {
     _socket?.dispose();
     _socket = SocketService(url: url);
     _socket!.connectToSocketServer();
+    _socket!.onDropped = onSocketDropped;
     _set(SessionStatus.connected);
   }
 }

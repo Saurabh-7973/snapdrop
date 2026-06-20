@@ -46,6 +46,11 @@ class SocketService implements SocketTransport {
   /// Raw pairing URL/QR payload this service was created from (read-only).
   String get url => _url;
 
+  /// Invoked when the socket drops (disconnect / connect_error) so the session
+  /// can react (silent reconnect -> lost). Additive — not part of the wire
+  /// protocol; only listens to socket.io lifecycle events.
+  void Function()? onDropped;
+
   // Single broadcast controller for image-received acks (was created per call).
   final StreamController<bool> _imageReceivedController =
       StreamController<bool>.broadcast();
@@ -56,9 +61,14 @@ class SocketService implements SocketTransport {
     _onConnectChecker();
     _testMessage();
     _onConnectErrorChecker();
+    _onDisconnectChecker();
     _fetchUserId();
     _onImageReceived();
     _joinFigmaRoom();
+  }
+
+  void _onDisconnectChecker() {
+    socket!.onDisconnect((_) => onDropped?.call());
   }
 
   void _socketConnection() {
@@ -77,7 +87,7 @@ class SocketService implements SocketTransport {
   }
 
   void _onConnectErrorChecker() {
-    socket!.on('connect_error', (error) {});
+    socket!.on('connect_error', (error) => onDropped?.call());
   }
 
   void _joinFigmaRoom() {

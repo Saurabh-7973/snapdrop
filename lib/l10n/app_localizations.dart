@@ -352,6 +352,24 @@ abstract class AppLocalizations {
   /// **'No internet connection'**
   String get no_internet_connection;
 
+  /// No description provided for @connection_lost.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection lost'**
+  String get connection_lost;
+
+  /// No description provided for @connection_lost_body.
+  ///
+  /// In en, this message translates to:
+  /// **'The session dropped. Reconnect to keep sending.'**
+  String get connection_lost_body;
+
+  /// No description provided for @reconnect_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect'**
+  String get reconnect_button;
+
   /// No description provided for @qr_screen_info_button.
   ///
   /// In en, this message translates to:

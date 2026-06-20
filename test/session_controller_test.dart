@@ -47,6 +47,17 @@ void main() {
       expect(s.roomId, isNull);
     });
 
+    test('socket drop -> one silent reconnect, second drop -> lost', () {
+      final s = SessionController();
+      s.pair('x=ROOM3');
+      s.onSocketDropped(); // first drop: silent reconnect
+      expect(s.status, SessionStatus.connected);
+      s.onSocketDropped(); // second drop: give up
+      expect(s.status, SessionStatus.lost);
+      expect(s.isConnected, false);
+      s.disconnect();
+    });
+
     test('notifies listeners on transition', () {
       final s = SessionController();
       var n = 0;
