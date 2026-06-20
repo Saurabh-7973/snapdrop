@@ -67,6 +67,10 @@ void main() {
         find.byType(OnboardScreen), matchesGoldenFile('../../qa/app/onboarding.png'));
   });
 
+  // NOTE: QR / transfer / select-images screens aren't goldened here — the QR
+  // camera is a platform view (throws in goldens) and the others need live
+  // photo_manager/socket data. Those are verified via on-device screencap.
+
   // ---- Dialog states (294x624 frames) ----
   Future<void> shootDialog(
     WidgetTester tester,
