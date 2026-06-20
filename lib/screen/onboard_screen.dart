@@ -205,7 +205,6 @@ class _OnboardScreenState extends State<OnboardScreen> {
   }
 
   void _showLanguageModal() {
-    var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     showModalBottomSheet(
       context: context,
@@ -229,32 +228,27 @@ class _OnboardScreenState extends State<OnboardScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  /// 🌍 **Header with Divider**
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Column(
-                      children: [
-                        const Text(
-                          "🌍 Select Language",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Container(
-                          width: 50,
-                          height: 3,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.3),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ],
+                  /// Grab handle + title
+                  Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(top: 4, bottom: 18),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(3),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const Text(
+                    "Select Language",
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      color: Colors.white,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.1,
+                    ),
+                  ),
+                  const SizedBox(height: 18),
 
                   /// 🌟 **Language List**
                   Column(
@@ -314,35 +308,31 @@ class _OnboardScreenState extends State<OnboardScreen> {
                   /// ❌ **Cancel Button (Stylish)**
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      height: screenHeight / 16,
-                      width: screenWidth / 3,
+                    child: Container(
+                      height: 48,
+                      width: screenWidth / 2.4,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 15,
-                            spreadRadius: -5,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            width: 1.3),
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           "Cancel",
-                          style:
-                              ThemeConstant.smallTextSizeDarkFontWidth.copyWith(
-                            color: Colors.white,
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            color: Color(0xFFD6DCD8),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                 ],
               ),
             ),

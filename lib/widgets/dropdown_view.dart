@@ -215,39 +215,41 @@ class _DropDownViewState extends State<DropDownView> {
                                   return DropdownMenuItem<AssetPathEntity>(
                                     value: album,
                                     child: Container(
-                                      padding: const EdgeInsets.only(
-                                          top: 12,
-                                          bottom: 12,
-                                          left: 16,
-                                          right: 16),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12, horizontal: 14),
                                       decoration: BoxDecoration(
                                         color: isSelected
-                                            ? ThemeConstant.primaryAppColor
+                                            ? ThemeConstant.accentGreen
+                                                .withValues(alpha: 0.15)
                                             : Colors.transparent,
-                                        borderRadius: BorderRadius.circular(4),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Align(
-                                            alignment: Alignment.centerLeft,
+                                          Flexible(
                                             child: Text(
                                               albumLabel(album),
-                                              style: ThemeConstant
-                                                  .smallTextSizeLight
-                                                  .copyWith(
+                                              style: TextStyle(
+                                                fontFamily: 'Inter',
+                                                fontSize: 14.5,
+                                                fontWeight: isSelected
+                                                    ? FontWeight.w600
+                                                    : FontWeight.w500,
                                                 color: isSelected
                                                     ? Colors.white
-                                                    : Colors.grey,
+                                                    : ThemeConstant.muted,
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
                                           if (isSelected)
                                             const Icon(
-                                              Icons.check,
-                                              color: Colors.white,
+                                              Icons.check_rounded,
+                                              color: ThemeConstant.accentGreen,
                                               size: 18,
                                             ),
                                         ],
@@ -265,10 +267,10 @@ class _DropDownViewState extends State<DropDownView> {
                                             vertical: 12),
                                         child: Text(
                                           'No albums with that name found',
-                                          style: ThemeConstant
-                                              .smallTextSizeLight
-                                              .copyWith(
-                                            color: Colors.grey,
+                                          style: const TextStyle(
+                                            fontFamily: 'Inter',
+                                            color: ThemeConstant.muted,
+                                            fontSize: 14,
                                           ),
                                         ),
                                       ),
@@ -320,36 +322,46 @@ class _DropDownViewState extends State<DropDownView> {
                             searchController: searchController,
                             searchInnerWidgetHeight: 50,
                             searchInnerWidget: Padding(
-                              padding: const EdgeInsets.all(8),
+                              padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
                               child: TextFormField(
                                 controller: searchController,
                                 focusNode: searchFocusNode,
-                                cursorColor: ThemeConstant.primaryAppColor,
-                                style:
-                                    ThemeConstant.smallTextSizeLight.copyWith(
-                                  color: ThemeConstant.primaryAppColor,
+                                cursorColor: ThemeConstant.accentGreen,
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  color: Colors.white,
+                                  fontSize: 14.5,
                                 ),
                                 decoration: InputDecoration(
                                   isDense: true,
+                                  filled: true,
+                                  fillColor:
+                                      Colors.white.withValues(alpha: 0.05),
+                                  prefixIcon: Icon(Icons.search_rounded,
+                                      color: ThemeConstant.muted, size: 19),
+                                  prefixIconConstraints: const BoxConstraints(
+                                      minWidth: 38, minHeight: 0),
                                   contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
+                                    horizontal: 12,
                                     vertical: 12,
                                   ),
-                                  hintText: 'Search Album...',
-                                  hintStyle:
-                                      ThemeConstant.smallTextSizeLight.copyWith(
-                                    color: ThemeConstant.primaryAppColor,
+                                  hintText: 'Search album',
+                                  hintStyle: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    color: ThemeConstant.muted,
+                                    fontSize: 14.5,
                                   ),
                                   enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                      color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.12),
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                      color: ThemeConstant.primaryAppColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(
+                                      color: ThemeConstant.accentGreen,
                                     ),
                                   ),
                                 ),
