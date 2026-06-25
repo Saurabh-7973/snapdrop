@@ -150,6 +150,9 @@ class _QRScannerState extends State<QRScanner>
             ? _actionButton(context)
             : Showcase(
                 targetPadding: const EdgeInsets.all(4),
+                // The Connect button is a stadium pill — match the highlight
+                // shape to it instead of a default rounded rectangle.
+                targetShapeBorder: const StadiumBorder(),
                 key: GlobalShowcaseKeys.showcaseFive,
                 tooltipBackgroundColor: const Color(0xff161616),
                 textColor: ThemeConstant.whiteColor,
@@ -197,6 +200,9 @@ class _QRScannerState extends State<QRScanner>
   void _onQRViewController(QRViewController qrViewController) {
     _qrViewController = qrViewController;
     qrViewController.scannedDataStream.listen((scanData) {
+      // Duplicate-frame guard: the stream fires per camera frame; ignore once
+      // a code is in hand so we pause + pair exactly once.
+      if (result != null) return;
       setState(() {
         result = scanData;
         isTimeout = false;
@@ -296,7 +302,13 @@ class _QRScannerState extends State<QRScanner>
           Positioned.fill(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(22),
-              child: QRView(key: qrKey, onQRViewCreated: _onQRViewController),
+              child: QRView(
+                key: qrKey,
+                onQRViewCreated: _onQRViewController,
+                // Lock onto QR only — don't waste decode cycles on other
+                // symbologies, so the scan reads faster.
+                formatsAllowed: const [BarcodeFormat.qrcode],
+              ),
             ),
           ),
           // subtle scan sweep

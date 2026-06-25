@@ -64,7 +64,8 @@ class _DropDownViewState extends State<DropDownView> {
             (_) => ShowCaseWidget.of(context).startShowCase([
                   GlobalShowcaseKeys.showcaseOne,
                   GlobalShowcaseKeys.showcaseTwo,
-                  GlobalShowcaseKeys.showcaseThree
+                  // showcaseThree removed: no widget targets that key, so it was
+                  // a dangling third step in the first-run coach-mark sequence.
                 ]));
       }
     });
@@ -133,6 +134,8 @@ class _DropDownViewState extends State<DropDownView> {
                     child: Showcase(
                       targetPadding: const EdgeInsets.symmetric(
                           horizontal: 0, vertical: 0),
+                      // Match the dropdown button's own corner radius (8).
+                      targetBorderRadius: BorderRadius.circular(8),
                       key: GlobalShowcaseKeys.showcaseOne,
                       tooltipBackgroundColor: const Color(0xff161616),
                       textColor: ThemeConstant.whiteColor,
@@ -415,6 +418,9 @@ class _DropDownViewState extends State<DropDownView> {
                                         targetPadding:
                                             const EdgeInsets.symmetric(
                                                 horizontal: 0, vertical: 0),
+                                        // Match the grid tile's corner radius (11).
+                                        targetBorderRadius:
+                                            BorderRadius.circular(11),
                                         key: GlobalShowcaseKeys.showcaseTwo,
                                         tooltipBackgroundColor:
                                             const Color(0xff161616),
