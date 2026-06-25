@@ -139,7 +139,7 @@ class _DropDownViewState extends State<DropDownView> {
                       title: AppLocalizations.of(context)!.showcase_one_title,
                       description:
                           AppLocalizations.of(context)!.showcase_one_subtitle,
-                      onBarrierClick: () => debugPrint('menu clicked'),
+                      onBarrierClick: () {},
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton2<AssetPathEntity>(
                           key: ValueKey(filteredAlbumList.length),
@@ -424,8 +424,7 @@ class _DropDownViewState extends State<DropDownView> {
                                         description:
                                             AppLocalizations.of(context)!
                                                 .showcase_two_subtitle,
-                                        onBarrierClick: () =>
-                                            debugPrint('image clicked'),
+                                        onBarrierClick: () {},
                                         child: Stack(
                                           children: [
                                             Positioned.fill(

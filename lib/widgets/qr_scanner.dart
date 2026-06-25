@@ -155,7 +155,7 @@ class _QRScannerState extends State<QRScanner>
                 textColor: ThemeConstant.whiteColor,
                 title: "Connect Button",
                 description: 'Indicates successful QR code scan',
-                onBarrierClick: () => debugPrint('qr connect clicked'),
+                onBarrierClick: () {},
                 child: _actionButton(context)),
         const SizedBox(height: 26),
         if (connectionStatus) _confirmRow(context),
