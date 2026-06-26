@@ -7,12 +7,13 @@ class FileImageServices {
   // the JSON wrapper + socket.io framing. Tune here if the relay config changes.
   static const double maxImageSizeMb = 9.0;
 
-  // Resolution ceiling for sending. 4096px long-edge keeps full headroom for
-  // print/extreme-zoom work (well above any screen/Figma display need). Images
-  // already within this send as untouched originals; only larger ones downscale
-  // (JPEG q95) to cut transfer weight. Lower to 2560 if pure screen design and
-  // you want max speed.
-  static const int maxSendEdgePx = 4096;
+  // Resolution ceiling for sending. 3072px long-edge is the product balance:
+  // above any 2x-retina screen/Figma placement (and most zoom) so quality reads
+  // as lossless, while still downscaling the 4000px+ phone photos that dominate
+  // transfer weight (~1.5-2x faster). Images within this send as untouched
+  // originals; larger ones downscale at JPEG q95. 2560 = faster, 4096 = max
+  // quality / ~no speedup.
+  static const int maxSendEdgePx = 3072;
 
   // Resolving AssetEntity.file (and reading its length) is comparatively heavy
   // and was being recomputed on every grid rebuild for each selected tile.
