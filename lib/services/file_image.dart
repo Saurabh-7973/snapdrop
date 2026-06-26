@@ -7,12 +7,12 @@ class FileImageServices {
   // the JSON wrapper + socket.io framing. Tune here if the relay config changes.
   static const double maxImageSizeMb = 9.0;
 
-  // Resolution ceiling for sending. Figma is screen-first: a full-frame image on
-  // a 1440px artboard at 2x retina ≈ 2880px, so 2560px long-edge is visually
-  // lossless for screen/design placement. Images already within this are sent as
-  // untouched originals; only larger ones are downscaled (JPEG q95) to cut the
-  // transfer weight where it actually is. Bump to 4096 for print/extreme zoom.
-  static const int maxSendEdgePx = 2560;
+  // Resolution ceiling for sending. 4096px long-edge keeps full headroom for
+  // print/extreme-zoom work (well above any screen/Figma display need). Images
+  // already within this send as untouched originals; only larger ones downscale
+  // (JPEG q95) to cut transfer weight. Lower to 2560 if pure screen design and
+  // you want max speed.
+  static const int maxSendEdgePx = 4096;
 
   // Resolving AssetEntity.file (and reading its length) is comparatively heavy
   // and was being recomputed on every grid rebuild for each selected tile.
