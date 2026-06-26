@@ -46,7 +46,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboard_hero_text_2 => 'diretamente para o Figma';
 
   @override
-  String get onboard_subline => 'Phone to canvas, in seconds.';
+  String get onboard_subline => 'Do telefone para o canvas, em segundos.';
 
   @override
   String get onboard_step_1 => 'Selecionar Imagens';
@@ -93,23 +93,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String get home_screen_button => 'Conectar';
 
   @override
-  String get send_button => 'Send';
+  String get send_button => 'Enviar';
 
   @override
-  String get connection_connected => 'Connected';
+  String get connection_connected => 'Conectado';
 
   @override
-  String get connection_not_connected => 'Not connected — scan to connect';
+  String get connection_not_connected => 'Sem conexão — escaneie para conectar';
 
   @override
-  String get home_album_view_all => 'View all';
+  String get home_album_view_all => 'Ver tudo';
 
   @override
-  String get empty_state_title => 'No images here yet';
+  String get empty_state_title => 'Ainda não há imagens aqui';
 
   @override
   String get empty_state_body =>
-      'Photos in this album will appear here. Try another album above.';
+      'As fotos deste álbum aparecerão aqui. Tente outro álbum acima.';
 
   @override
   String get showcase_four_title => 'QR Scanner';
@@ -127,27 +127,27 @@ class AppLocalizationsPt extends AppLocalizations {
   String get qr_screen_herotext_3 => 'Escanear Código QR para Conectar';
 
   @override
-  String get qr_timed_out_label => 'Scan timed out';
+  String get qr_timed_out_label => 'Tempo de leitura esgotado';
 
   @override
   String get qr_timed_out_message =>
-      'No QR code scanned — it may have expired.';
+      'Nenhum código QR lido — ele pode ter expirado.';
 
   @override
-  String get qr_restart_scan => 'Restart Scan';
+  String get qr_restart_scan => 'Reiniciar leitura';
 
   @override
-  String get no_internet_connection => 'No internet connection';
+  String get no_internet_connection => 'Sem conexão com a internet';
 
   @override
-  String get connection_lost => 'Connection lost';
+  String get connection_lost => 'Conexão perdida';
 
   @override
   String get connection_lost_body =>
-      'The session dropped. Reconnect to keep sending.';
+      'A sessão caiu. Reconecte para continuar enviando.';
 
   @override
-  String get reconnect_button => 'Reconnect';
+  String get reconnect_button => 'Reconectar';
 
   @override
   String get qr_screen_info_button =>
@@ -178,13 +178,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get send_screen_hero_text_2 => 'Transferidas';
 
   @override
-  String get send_screen_transferring => 'Transferring';
+  String get send_screen_transferring => 'Transferindo';
 
   @override
-  String get send_screen_complete_1 => 'Transfer';
+  String get send_screen_complete_1 => 'Transferência';
 
   @override
-  String get send_screen_complete_2 => 'Complete';
+  String get send_screen_complete_2 => 'Concluída';
 
   @override
   String get send_screen_connected_to => 'CONECTADO A';
@@ -214,40 +214,40 @@ class AppLocalizationsPt extends AppLocalizations {
       'Limite de tamanho do arquivo excedido';
 
   @override
-  String get permission_dialog_title => 'Allow photo access';
+  String get permission_dialog_title => 'Permitir acesso às fotos';
 
   @override
   String get permission_dialog_body =>
-      'Snapdrop needs your photos to send them to Figma. Nothing leaves your phone until you pick and send.';
+      'O Snapdrop precisa das suas fotos para enviá-las ao Figma. Nada sai do seu telefone até você selecionar e enviar.';
 
   @override
-  String get permission_dialog_allow => 'Allow';
+  String get permission_dialog_allow => 'Permitir';
 
   @override
-  String get permission_dialog_exit => 'Exit';
+  String get permission_dialog_exit => 'Sair';
 
   @override
-  String get exit_dialog_title => 'Leave Snapdrop?';
+  String get exit_dialog_title => 'Sair do Snapdrop?';
 
   @override
-  String get exit_dialog_body => 'Your current selection won\'t be saved.';
+  String get exit_dialog_body => 'Sua seleção atual não será salva.';
 
   @override
-  String get exit_dialog_exit => 'Exit';
+  String get exit_dialog_exit => 'Sair';
 
   @override
-  String get exit_dialog_cancel => 'Cancel';
+  String get exit_dialog_cancel => 'Cancelar';
 
   @override
-  String get share_dialog_title => 'Enjoying Snapdrop?';
+  String get share_dialog_title => 'Gostando do Snapdrop?';
 
   @override
   String get share_dialog_body =>
-      'If it saved you time, passing it to another designer helps more than you\'d think.';
+      'Se ele economizou seu tempo, passá-lo a outro designer ajuda mais do que você imagina.';
 
   @override
-  String get share_dialog_share => 'Share';
+  String get share_dialog_share => 'Compartilhar';
 
   @override
-  String get share_dialog_maybe_later => 'Maybe later';
+  String get share_dialog_maybe_later => 'Talvez depois';
 }

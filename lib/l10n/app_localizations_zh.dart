@@ -44,7 +44,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboard_hero_text_2 => '到 Figma';
 
   @override
-  String get onboard_subline => 'Phone to canvas, in seconds.';
+  String get onboard_subline => '从手机到画布，只需几秒。';
 
   @override
   String get onboard_step_1 => '选择图片';
@@ -89,23 +89,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get home_screen_button => '连接';
 
   @override
-  String get send_button => 'Send';
+  String get send_button => '发送';
 
   @override
-  String get connection_connected => 'Connected';
+  String get connection_connected => '已连接';
 
   @override
-  String get connection_not_connected => 'Not connected — scan to connect';
+  String get connection_not_connected => '未连接 — 扫码即可连接';
 
   @override
-  String get home_album_view_all => 'View all';
+  String get home_album_view_all => '查看全部';
 
   @override
-  String get empty_state_title => 'No images here yet';
+  String get empty_state_title => '这里还没有图片';
 
   @override
-  String get empty_state_body =>
-      'Photos in this album will appear here. Try another album above.';
+  String get empty_state_body => '此相册的照片会显示在这里。请在上方尝试其他相册。';
 
   @override
   String get showcase_four_title => 'QR 扫描器';
@@ -123,27 +122,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get qr_screen_herotext_3 => '扫描 QR 码进行连接';
 
   @override
-  String get qr_timed_out_label => 'Scan timed out';
+  String get qr_timed_out_label => '扫描超时';
 
   @override
-  String get qr_timed_out_message =>
-      'No QR code scanned — it may have expired.';
+  String get qr_timed_out_message => '未扫描到二维码 — 它可能已过期。';
 
   @override
-  String get qr_restart_scan => 'Restart Scan';
+  String get qr_restart_scan => '重新扫描';
 
   @override
-  String get no_internet_connection => 'No internet connection';
+  String get no_internet_connection => '无网络连接';
 
   @override
-  String get connection_lost => 'Connection lost';
+  String get connection_lost => '连接已断开';
 
   @override
-  String get connection_lost_body =>
-      'The session dropped. Reconnect to keep sending.';
+  String get connection_lost_body => '会话已中断。请重新连接以继续发送。';
 
   @override
-  String get reconnect_button => 'Reconnect';
+  String get reconnect_button => '重新连接';
 
   @override
   String get qr_screen_info_button => '打开 Figma -> 设计文件 -> 插件 -> Snapdrop';
@@ -173,13 +170,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get send_screen_hero_text_2 => '图片';
 
   @override
-  String get send_screen_transferring => 'Transferring';
+  String get send_screen_transferring => '正在传输';
 
   @override
-  String get send_screen_complete_1 => 'Transfer';
+  String get send_screen_complete_1 => '传输';
 
   @override
-  String get send_screen_complete_2 => 'Complete';
+  String get send_screen_complete_2 => '完成';
 
   @override
   String get send_screen_connected_to => '连接到';
@@ -206,40 +203,39 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app_conditions_size_limit => '文件大小超出限制';
 
   @override
-  String get permission_dialog_title => 'Allow photo access';
+  String get permission_dialog_title => '允许访问照片';
 
   @override
   String get permission_dialog_body =>
-      'Snapdrop needs your photos to send them to Figma. Nothing leaves your phone until you pick and send.';
+      'Snapdrop 需要访问你的照片才能发送到 Figma。在你选择并发送之前，任何内容都不会离开你的手机。';
 
   @override
-  String get permission_dialog_allow => 'Allow';
+  String get permission_dialog_allow => '允许';
 
   @override
-  String get permission_dialog_exit => 'Exit';
+  String get permission_dialog_exit => '退出';
 
   @override
-  String get exit_dialog_title => 'Leave Snapdrop?';
+  String get exit_dialog_title => '退出 Snapdrop？';
 
   @override
-  String get exit_dialog_body => 'Your current selection won\'t be saved.';
+  String get exit_dialog_body => '你当前的选择将不会被保存。';
 
   @override
-  String get exit_dialog_exit => 'Exit';
+  String get exit_dialog_exit => '退出';
 
   @override
-  String get exit_dialog_cancel => 'Cancel';
+  String get exit_dialog_cancel => '取消';
 
   @override
-  String get share_dialog_title => 'Enjoying Snapdrop?';
+  String get share_dialog_title => '喜欢 Snapdrop 吗？';
 
   @override
-  String get share_dialog_body =>
-      'If it saved you time, passing it to another designer helps more than you\'d think.';
+  String get share_dialog_body => '如果它帮你节省了时间，把它分享给另一位设计师，作用比你想象的更大。';
 
   @override
-  String get share_dialog_share => 'Share';
+  String get share_dialog_share => '分享';
 
   @override
-  String get share_dialog_maybe_later => 'Maybe later';
+  String get share_dialog_maybe_later => '以后再说';
 }
