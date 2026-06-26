@@ -446,12 +446,18 @@ class _DropDownViewState extends State<DropDownView> {
                                                 await CheckInternetConnectivity
                                                     .hasNetwork();
                                             if (isConnected) {
+                                              // The relay caps each image (one
+                                              // emit) at 10 MB — the limit is
+                                              // per image, not total. Block only
+                                              // if the largest exceeds the cap.
                                               final size =
                                                   await FileImageServices()
-                                                      .getTotalImageSize(
+                                                      .getMaxImageSize(
                                                           selectedAssetList);
                                               if (!context.mounted) return;
-                                              if (size < 5.0) {
+                                              if (size <
+                                                  FileImageServices
+                                                      .maxImageSizeMb) {
                                                 // Live session -> Send straight
                                                 // over the same socket (no QR).
                                                 // Else -> Connect (scan first).
@@ -496,7 +502,7 @@ class _DropDownViewState extends State<DropDownView> {
                                                     .showSnackBar(
                                                   SnackBar(
                                                     content: Text(
-                                                      "Size limit exceeded. (${size.toStringAsFixed(2)} MB > 5 MB)",
+                                                      "Each image must be under ${FileImageServices.maxImageSizeMb.toStringAsFixed(0)} MB (largest is ${size.toStringAsFixed(2)} MB).",
                                                     ),
                                                     behavior: SnackBarBehavior
                                                         .floating,
