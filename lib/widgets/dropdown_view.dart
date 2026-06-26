@@ -796,6 +796,15 @@ class _PhotoTile extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
+            // Flat placeholder behind. StackFit.expand forces both this and the
+            // image to fill the whole tile, so the thumbnail (BoxFit.cover)
+            // covers the 2:3 cell instead of sitting at its natural size.
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                color: ThemeConstant.surface,
+                borderRadius: BorderRadius.all(Radius.circular(11)),
+              ),
+            ),
             ClipRRect(
               borderRadius: BorderRadius.circular(11),
               child: AssetEntityImage(
@@ -805,15 +814,14 @@ class _PhotoTile extends StatelessWidget {
                 thumbnailFormat: ThumbnailFormat.jpeg,
                 fit: BoxFit.cover,
                 frameBuilder: (context, child, frame, wasSync) {
-                  // Calm cross-fade from a flat surface tile to the image — no
-                  // per-tile shimmer (that was the flicker).
-                  return AnimatedSwitcher(
+                  // Fade in over the placeholder without changing layout — the
+                  // image keeps the tile's full constraints (no switcher).
+                  if (wasSync) return child;
+                  return AnimatedOpacity(
+                    opacity: frame == null ? 0 : 1,
                     duration: const Duration(milliseconds: 200),
-                    child: (frame == null && !wasSync)
-                        ? const ColoredBox(
-                            key: ValueKey('ph'), color: ThemeConstant.surface)
-                        : KeyedSubtree(
-                            key: const ValueKey('img'), child: child),
+                    curve: Curves.easeOut,
+                    child: child,
                   );
                 },
               ),
