@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Snapdrop/services/file_image.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:Snapdrop/constant/global_showcase_key.dart';
@@ -280,40 +281,56 @@ class _SendButtonState extends State<SendButton> {
     final assets = widget.selectedAssetList;
     if (assets == null) return;
     for (int i = 0; i < assets.length; i++) {
-      final idx = i + 1;
-      assets[i].originFile.then((value) {
-        // Guard: originFile can be null (asset file unavailable) -> was a crash.
-        if (value == null) {
-          FirebaseInitalizationClass.recordNonFatal(
-              'originFile returned null', StackTrace.current,
-              reason: 'transfer: asset file unavailable');
-          return;
-        }
-        String imageName = getImageName(value.path);
-        String imageExtension = getImageExtension(value.path);
-
-        widget.socketService!.fileToBuffer(value.path).then((unitFile) {
-          if (unitFile == null) {
-            FirebaseInitalizationClass.recordNonFatal(
-                'fileToBuffer returned null', StackTrace.current,
-                reason: 'transfer: unreadable file ${value.path}');
-          }
-          final bytes = unitFile?.lengthInBytes ?? 0;
-          final mb = bytes / (1024 * 1024);
-          _sentCount += 1;
-          _sentMb += mb;
-          debugPrint('[TRANSFER] send #$idx/${assets.length} "$imageName" '
-              '${mb.toStringAsFixed(2)} MB ($bytes B) | cumulative '
-              '$_sentCount imgs, ${_sentMb.toStringAsFixed(2)} MB');
-          String? userId = widget.socketService!.userId;
-          widget.socketService!.sendImages(
-              name: imageName,
-              type: imageExtension,
-              file: unitFile,
-              userId: userId);
-        });
-      });
+      // Fire concurrently (not awaited) to keep the socket buffer fed.
+      _sendOneAsset(assets[i], i + 1, assets.length);
     }
+  }
+
+  /// Sends one asset. Images within the resolution ceiling go as untouched
+  /// originals (lossless); larger ones are downscaled to maxSendEdgePx at JPEG
+  /// q95 — visually lossless for Figma but far lighter on the wire.
+  Future<void> _sendOneAsset(AssetEntity asset, int idx, int total) async {
+    final int maxEdge =
+        asset.width >= asset.height ? asset.width : asset.height;
+    final int cap = FileImageServices.maxSendEdgePx;
+    final bool scaled = maxEdge > cap;
+
+    String imageName = asset.title ?? 'image_$idx';
+    String imageExtension;
+    Uint8List? unitFile;
+
+    if (scaled) {
+      unitFile = await asset.thumbnailDataWithSize(
+          ThumbnailSize.square(cap),
+          quality: 95);
+      imageExtension = 'jpg';
+    } else {
+      unitFile = await asset.originBytes;
+      imageExtension = getImageExtension(imageName);
+      if (imageExtension.isEmpty) imageExtension = 'jpg';
+    }
+
+    if (unitFile == null) {
+      FirebaseInitalizationClass.recordNonFatal(
+          'send bytes null', StackTrace.current,
+          reason: 'transfer: bytes unavailable for ${asset.id}');
+      return;
+    }
+
+    final bytes = unitFile.lengthInBytes;
+    final mb = bytes / (1024 * 1024);
+    _sentCount += 1;
+    _sentMb += mb;
+    debugPrint('[TRANSFER] send #$idx/$total "$imageName" '
+        '${mb.toStringAsFixed(2)} MB ($bytes B) '
+        '${scaled ? "[capped ${cap}px ${asset.width}x${asset.height}]" : "[original]"} '
+        '| cumulative $_sentCount imgs, ${_sentMb.toStringAsFixed(2)} MB');
+
+    widget.socketService!.sendImages(
+        name: imageName,
+        type: imageExtension,
+        file: unitFile,
+        userId: widget.socketService!.userId);
   }
 
   sendFilesToServerIntent() {
