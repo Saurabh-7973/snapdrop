@@ -50,6 +50,11 @@ class _SendButtonState extends State<SendButton> {
   List<Map<String, dynamic>>? listOfMaps;
 
   bool transferCompleted = false;
+  // [TRANSFER] debug counters — watch logcat to see how many images / MB the
+  // relay actually accepts (sent vs acked) before it drops oversized payloads.
+  int _ackCount = 0;
+  int _sentCount = 0;
+  double _sentMb = 0;
   StreamSubscription<bool>? _ackSub;
   Trace? _transferTrace;
 
@@ -105,6 +110,9 @@ class _SendButtonState extends State<SendButton> {
         //Asking for review
         reviewCounter = prefs.getInt('reviewCounter');
         if (value == true) {
+          _ackCount += 1;
+          debugPrint(
+              '[TRANSFER] ack #$_ackCount/$imageCount received (intent)');
           if (mounted) {
             setState(() {
               transferCompleted = true;
@@ -157,6 +165,8 @@ class _SendButtonState extends State<SendButton> {
       _ackSub =
           widget.socketService!.imageReceivedStream().listen((value) async {
         if (value == true) {
+          _ackCount += 1;
+          debugPrint('[TRANSFER] ack #$_ackCount/$imageCount received');
           if (mounted) {
             setState(() {
               transferCompleted = true;
@@ -270,6 +280,7 @@ class _SendButtonState extends State<SendButton> {
     final assets = widget.selectedAssetList;
     if (assets == null) return;
     for (int i = 0; i < assets.length; i++) {
+      final idx = i + 1;
       assets[i].originFile.then((value) {
         // Guard: originFile can be null (asset file unavailable) -> was a crash.
         if (value == null) {
@@ -287,6 +298,13 @@ class _SendButtonState extends State<SendButton> {
                 'fileToBuffer returned null', StackTrace.current,
                 reason: 'transfer: unreadable file ${value.path}');
           }
+          final bytes = unitFile?.lengthInBytes ?? 0;
+          final mb = bytes / (1024 * 1024);
+          _sentCount += 1;
+          _sentMb += mb;
+          debugPrint('[TRANSFER] send #$idx/${assets.length} "$imageName" '
+              '${mb.toStringAsFixed(2)} MB ($bytes B) | cumulative '
+              '$_sentCount imgs, ${_sentMb.toStringAsFixed(2)} MB');
           String? userId = widget.socketService!.userId;
           widget.socketService!.sendImages(
               name: imageName,
@@ -302,6 +320,7 @@ class _SendButtonState extends State<SendButton> {
     final media = widget.listOfMedia;
     if (media == null) return;
     for (int i = 0; i < media.length; i++) {
+      final idx = i + 1;
       String imageName = getImageName("${media[i].path}}");
       String imageExtension = getImageExtension(media[i].path);
 
@@ -311,6 +330,13 @@ class _SendButtonState extends State<SendButton> {
               'fileToBuffer returned null', StackTrace.current,
               reason: 'transfer(intent): unreadable file ${media[i].path}');
         }
+        final bytes = unitFile?.lengthInBytes ?? 0;
+        final mb = bytes / (1024 * 1024);
+        _sentCount += 1;
+        _sentMb += mb;
+        debugPrint('[TRANSFER] send #$idx/${media.length} "$imageName" '
+            '${mb.toStringAsFixed(2)} MB ($bytes B) | cumulative '
+            '$_sentCount imgs, ${_sentMb.toStringAsFixed(2)} MB');
         String? userId = widget.socketService!.userId;
         widget.socketService!.sendImages(
             name: imageName,
