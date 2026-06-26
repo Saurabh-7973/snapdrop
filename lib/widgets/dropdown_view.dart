@@ -5,6 +5,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -44,7 +45,14 @@ class _DropDownViewState extends State<DropDownView> {
   List<AssetPathEntity> albumList = [];
   List<AssetEntity> assetList = [];
   AssetPathEntity? selectedAlbum;
-  List<AssetEntity> selectedAssetList = [];
+  // Selection held as an id-set in a ValueNotifier so a tap rebuilds only the
+  // tiles whose membership flips (+ the send bar) — not the whole grid.
+  final ValueNotifier<Set<String>> _selectedIds = ValueNotifier<Set<String>>({});
+  final Map<String, AssetEntity> _assetById = {};
+  // Paged album loading.
+  int _page = 0;
+  bool _loadingMore = false;
+  bool _hasMore = true;
   bool hasAll = false;
   bool hasNoData = false;
   bool hasDataLoaded = false;
@@ -57,6 +65,7 @@ class _DropDownViewState extends State<DropDownView> {
   void initState() {
     initialMethod(hasAll);
     super.initState();
+    widget.scrollController.addListener(_onScroll);
 
     FirstTimeLogin.checkFirstTimeLogin().then((value) {
       if (value == true) {
@@ -101,8 +110,10 @@ class _DropDownViewState extends State<DropDownView> {
 
   @override
   void dispose() {
+    widget.scrollController.removeListener(_onScroll);
     widget.scrollController.dispose();
     searchFocusNode.dispose();
+    _selectedIds.dispose();
     super.dispose();
   }
 
@@ -292,16 +303,7 @@ class _DropDownViewState extends State<DropDownView> {
                             }
                             FocusScope.of(context).unfocus();
                             if (selectedAlbum != null) {
-                              widget._mediaProviderServices
-                                  .loadAsset(selectedAlbum!)
-                                  .then((value) {
-                                if (mounted) {
-                                  setState(() {
-                                    assetList = value;
-                                    hasDataLoaded = true;
-                                  });
-                                }
-                              });
+                              _resetAndLoad(selectedAlbum!);
                             }
                           },
                           selectedItemBuilder: (BuildContext context) {
@@ -395,363 +397,31 @@ class _DropDownViewState extends State<DropDownView> {
                                   crossAxisSpacing: 8,
                                   childAspectRatio: (2 / 3)),
                           itemBuilder: (context, index) {
-                            return GestureDetector(
-                                onTap: () {
-                                  if (selectedAssetList
-                                      .contains(assetList[index])) {
-                                    if (mounted) {
-                                      setState(() {
-                                        selectedAssetList
-                                            .remove(assetList[index]);
-                                      });
-                                    }
-                                  } else {
-                                    if (mounted) {
-                                      setState(() {
-                                        selectedAssetList.add(assetList[index]);
-                                      });
-                                    }
-                                  }
-                                },
-                                child: index == 0
-                                    ? Showcase(
-                                        targetPadding:
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 0, vertical: 0),
-                                        // Match the grid tile's corner radius (11).
-                                        targetBorderRadius:
-                                            BorderRadius.circular(11),
-                                        key: GlobalShowcaseKeys.showcaseTwo,
-                                        tooltipBackgroundColor:
-                                            const Color(0xff161616),
-                                        textColor: ThemeConstant.whiteColor,
-                                        title: AppLocalizations.of(context)!
-                                            .showcase_two_title,
-                                        description:
-                                            AppLocalizations.of(context)!
-                                                .showcase_two_subtitle,
-                                        onBarrierClick: () {},
-                                        child: Stack(
-                                          children: [
-                                            Positioned.fill(
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(11),
-                                                child: AssetEntityImage(
-                                                  assetList[index],
-                                                  thumbnailSize:
-                                                      const ThumbnailSize
-                                                          .square(250),
-                                                  fit: BoxFit.cover,
-                                                  frameBuilder: (context,
-                                                      child,
-                                                      frame,
-                                                      wasSynchronouslyLoaded) {
-                                                    return AnimatedOpacity(
-                                                      opacity:
-                                                          frame == null ? 0 : 1,
-                                                      duration: const Duration(
-                                                          milliseconds: 500),
-                                                      child: child,
-                                                    );
-                                                  },
-                                                  loadingBuilder: (context,
-                                                      child, loadingProgress) {
-                                                    if (loadingProgress ==
-                                                        null) {
-                                                      return child;
-                                                    }
-                                                    return Shimmer.fromColors(
-                                                      baseColor:
-                                                          Colors.grey[800]!,
-                                                      highlightColor:
-                                                          Colors.grey[600]!,
-                                                      child: Container(
-                                                        color: Colors.grey[850],
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                            if (selectedAssetList
-                                                .contains(assetList[index]))
-                                              AnimatedContainer(
-                                                duration: const Duration(
-                                                    milliseconds: 300),
-                                                height: double.infinity,
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(11),
-                                                  color: Colors.black
-                                                      .withValues(alpha: 0.6),
-                                                ),
-                                              ),
-                                            AnimatedSwitcher(
-                                              duration: const Duration(
-                                                  milliseconds: 300),
-                                              child: selectedAssetList.contains(
-                                                      assetList[index])
-                                                  ? Align(
-                                                      alignment:
-                                                          Alignment.topRight,
-                                                      child: Padding(
-                                                        padding:
-                                                            EdgeInsets.all(6.0),
-                                                        child: Container(
-                                                            width: 22,
-                                                            height: 22,
-                                                            decoration:
-                                                                const BoxDecoration(
-                                                                    shape: BoxShape
-                                                                        .circle,
-                                                                    color: Colors
-                                                                        .white),
-                                                            child: const Icon(
-                                                                Icons.check,
-                                                                size: 15,
-                                                                color:
-                                                                    ThemeConstant
-                                                                        .base)),
-                                                      ),
-                                                    )
-                                                  : Align(
-                                                      alignment:
-                                                          Alignment.topRight,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child:
-                                                            AnimatedContainer(
-                                                          duration:
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                      300),
-                                                          height: 25,
-                                                          width: 25,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            shape:
-                                                                BoxShape.circle,
-                                                            color: Colors.black
-                                                                .withValues(
-                                                                    alpha: 0.4),
-                                                            border: Border.all(
-                                                              color:
-                                                                  Colors.white,
-                                                              width: 2,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                            ),
-                                            if (selectedAssetList
-                                                .contains(assetList[index]))
-                                              FutureBuilder(
-                                                  future: FileImageServices()
-                                                      .getImageSize(
-                                                          assetList[index]),
-                                                  builder: (context, snapshot) {
-                                                    if (!snapshot.hasData) {
-                                                      return const SizedBox
-                                                          .shrink();
-                                                    }
-                                                    return Align(
-                                                        alignment: Alignment
-                                                            .bottomLeft,
-                                                        child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    left: 8,
-                                                                    bottom: 7),
-                                                            child: Text(
-                                                                "${snapshot.data} MB",
-                                                                style: const TextStyle(
-                                                                    fontFamily:
-                                                                        'Inter',
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize: 10.5,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    shadows: [
-                                                                      Shadow(
-                                                                          blurRadius:
-                                                                              3,
-                                                                          color: Color(
-                                                                              0xB3000000),
-                                                                          offset: Offset(
-                                                                              0,
-                                                                              1))
-                                                                    ]))));
-                                                  }),
-                                          ],
-                                        ),
-                                      )
-                                    : Stack(
-                                        children: [
-                                          Positioned.fill(
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(11),
-                                              child: AssetEntityImage(
-                                                assetList[index],
-                                                thumbnailSize:
-                                                    const ThumbnailSize.square(
-                                                        250),
-                                                fit: BoxFit.cover,
-                                                frameBuilder: (context,
-                                                    child,
-                                                    frame,
-                                                    wasSynchronouslyLoaded) {
-                                                  return AnimatedOpacity(
-                                                    opacity:
-                                                        frame == null ? 0 : 1,
-                                                    duration: const Duration(
-                                                        milliseconds: 500),
-                                                    child: child,
-                                                  );
-                                                },
-                                                loadingBuilder: (context, child,
-                                                    loadingProgress) {
-                                                  if (loadingProgress == null) {
-                                                    return child;
-                                                  }
-                                                  return Shimmer.fromColors(
-                                                    baseColor:
-                                                        Colors.grey[800]!,
-                                                    highlightColor:
-                                                        Colors.grey[600]!,
-                                                    child: Container(
-                                                      color: Colors.grey[850],
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                          if (selectedAssetList
-                                              .contains(assetList[index]))
-                                            AnimatedContainer(
-                                              duration: const Duration(
-                                                  milliseconds: 300),
-                                              height: double.infinity,
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(11),
-                                                color: Colors.black
-                                                    .withValues(alpha: 0.5),
-                                              ),
-                                            ),
-                                          AnimatedSwitcher(
-                                            duration: const Duration(
-                                                milliseconds: 300),
-                                            child: selectedAssetList
-                                                    .contains(assetList[index])
-                                                ? Align(
-                                                    alignment:
-                                                        Alignment.topRight,
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsets.all(6.0),
-                                                      child: Container(
-                                                          width: 22,
-                                                          height: 22,
-                                                          decoration:
-                                                              const BoxDecoration(
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                  color: Colors
-                                                                      .white),
-                                                          child: const Icon(
-                                                              Icons.check,
-                                                              size: 15,
-                                                              color:
-                                                                  ThemeConstant
-                                                                      .base)),
-                                                    ),
-                                                  )
-                                                : Align(
-                                                    alignment:
-                                                        Alignment.topRight,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: AnimatedContainer(
-                                                        duration:
-                                                            const Duration(
-                                                                milliseconds:
-                                                                    300),
-                                                        height: 25,
-                                                        width: 25,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          shape:
-                                                              BoxShape.circle,
-                                                          color: Colors.black
-                                                              .withValues(
-                                                                  alpha: 0.4),
-                                                          border: Border.all(
-                                                            color: Colors.white,
-                                                            width: 2,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                          ),
-                                          if (selectedAssetList
-                                              .contains(assetList[index]))
-                                            FutureBuilder(
-                                                future: FileImageServices()
-                                                    .getImageSize(
-                                                        assetList[index]),
-                                                builder: (context, snapshot) {
-                                                  if (!snapshot.hasData) {
-                                                    return const SizedBox
-                                                        .shrink();
-                                                  }
-                                                  return Align(
-                                                      alignment:
-                                                          Alignment.bottomLeft,
-                                                      child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  left: 8,
-                                                                  bottom: 7),
-                                                          child: Text(
-                                                              "${snapshot.data} MB",
-                                                              style: const TextStyle(
-                                                                  fontFamily:
-                                                                      'Inter',
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      10.5,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  shadows: [
-                                                                    Shadow(
-                                                                        blurRadius:
-                                                                            3,
-                                                                        color: Color(
-                                                                            0xB3000000),
-                                                                        offset: Offset(
-                                                                            0,
-                                                                            1))
-                                                                  ]))));
-                                                }),
-                                        ],
-                                      ));
+                            final asset = assetList[index];
+                            final tile = _PhotoTile(
+                              asset: asset,
+                              selection: _selectedIds,
+                              onTap: () => _toggle(asset),
+                            );
+                            if (index != 0) return tile;
+                            return Showcase(
+                              key: GlobalShowcaseKeys.showcaseTwo,
+                              targetBorderRadius: BorderRadius.circular(11),
+                              tooltipBackgroundColor: const Color(0xff161616),
+                              textColor: ThemeConstant.whiteColor,
+                              title:
+                                  AppLocalizations.of(context)!.showcase_two_title,
+                              description: AppLocalizations.of(context)!
+                                  .showcase_two_subtitle,
+                              onBarrierClick: () {},
+                              child: tile,
+                            );
                           }),
-                      if (selectedAssetList.isNotEmpty)
+                      ValueListenableBuilder<Set<String>>(
+                        valueListenable: _selectedIds,
+                        builder: (context, sel, _) => sel.isEmpty
+                            ? const SizedBox.shrink()
+                            :
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: AnimatedContainer(
@@ -920,57 +590,10 @@ class _DropDownViewState extends State<DropDownView> {
                             ),
                           ),
                         ),
+                      ),
                     ]),
                   )
-                : Expanded(
-                    child: GridView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: 9, // Keeping 9 shimmer items
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 8,
-                        crossAxisSpacing: 8,
-                        childAspectRatio: (2 / 3),
-                      ),
-                      itemBuilder: (context, index) {
-                        return TweenAnimationBuilder<double>(
-                          tween: Tween<double>(begin: 0.8, end: 1.0),
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.easeInOut,
-                          builder: (context, scale, child) {
-                            double opacity = scale.clamp(0.0, 1.0);
-                            return FadeTransition(
-                              opacity: AlwaysStoppedAnimation(opacity),
-                              child: Transform.scale(
-                                scale: scale,
-                                child: Shimmer.fromColors(
-                                  baseColor: ThemeConstant.primaryThemeColor
-                                      .withValues(alpha: 0.6),
-                                  highlightColor: ThemeConstant.greenAccentColor
-                                      .withValues(alpha: 0.6),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: ThemeConstant.primaryThemeColor,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black
-                                              .withValues(alpha: 0.1),
-                                          blurRadius: 10,
-                                          spreadRadius: 2,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  )
+                : const _SkeletonGrid()
 
         // : const Expanded(
         //     child: Center(
@@ -1051,15 +674,7 @@ class _DropDownViewState extends State<DropDownView> {
               });
               filterAlbums();
             }
-            widget._mediaProviderServices
-                .loadAsset(selectedAlbum!)
-                .then((listOfAsset) {
-              if (mounted) {
-                setState(() {
-                  assetList = listOfAsset;
-                });
-              }
-            });
+            _resetAndLoad(selectedAlbum!);
           } else {
             if (mounted) {
               setState(() {
@@ -1072,6 +687,61 @@ class _DropDownViewState extends State<DropDownView> {
       } else {
         _showMyDialog();
       }
+    });
+  }
+
+  List<AssetEntity> get selectedAssetList => _selectedIds.value
+      .map((id) => _assetById[id])
+      .whereType<AssetEntity>()
+      .toList();
+
+  void _toggle(AssetEntity asset) {
+    final ids = Set<String>.from(_selectedIds.value);
+    if (ids.contains(asset.id)) {
+      ids.remove(asset.id);
+    } else {
+      ids.add(asset.id);
+      _assetById[asset.id] = asset;
+    }
+    _selectedIds.value = ids;
+  }
+
+  void _onScroll() {
+    final c = widget.scrollController;
+    if (!c.hasClients || _loadingMore || !_hasMore) return;
+    if (c.position.pixels >= c.position.maxScrollExtent - 600) {
+      _loadNextPage();
+    }
+  }
+
+  Future<void> _loadNextPage() async {
+    if (selectedAlbum == null || _loadingMore || !_hasMore) return;
+    _loadingMore = true;
+    final next = await widget._mediaProviderServices
+        .loadAssetPage(selectedAlbum!, _page);
+    if (!mounted) {
+      _loadingMore = false;
+      return;
+    }
+    setState(() {
+      assetList = [...assetList, ...next];
+      _page += 1;
+      _hasMore = next.length >= MediaProviderServices.pageSize;
+      _loadingMore = false;
+    });
+  }
+
+  Future<void> _resetAndLoad(AssetPathEntity album) async {
+    _page = 0;
+    _hasMore = true;
+    final first =
+        await widget._mediaProviderServices.loadAssetPage(album, _page);
+    if (!mounted) return;
+    setState(() {
+      assetList = first;
+      _page = 1;
+      _hasMore = first.length >= MediaProviderServices.pageSize;
+      hasDataLoaded = true;
     });
   }
 
@@ -1099,6 +769,166 @@ class _DropDownViewState extends State<DropDownView> {
       primaryLabel: AppLocalizations.of(context)!.exit_dialog_cancel,
       secondaryLabel: AppLocalizations.of(context)!.exit_dialog_exit,
       onSecondary: () => exit(0),
+    );
+  }
+}
+
+
+/// A single photo-grid cell. The thumbnail (AssetEntityImage) sits OUTSIDE the
+/// selection ValueListenableBuilder, so toggling selection rebuilds only the
+/// lightweight overlay — never re-decodes the image. RepaintBoundary keeps a
+/// tile's raster from invalidating its neighbours.
+class _PhotoTile extends StatelessWidget {
+  final AssetEntity asset;
+  final ValueListenable<Set<String>> selection;
+  final VoidCallback onTap;
+  const _PhotoTile({
+    required this.asset,
+    required this.selection,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(11),
+              child: AssetEntityImage(
+                asset,
+                isOriginal: false,
+                thumbnailSize: const ThumbnailSize.square(250),
+                thumbnailFormat: ThumbnailFormat.jpeg,
+                fit: BoxFit.cover,
+                frameBuilder: (context, child, frame, wasSync) {
+                  // Calm cross-fade from a flat surface tile to the image — no
+                  // per-tile shimmer (that was the flicker).
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: (frame == null && !wasSync)
+                        ? const ColoredBox(
+                            key: ValueKey('ph'), color: ThemeConstant.surface)
+                        : KeyedSubtree(
+                            key: const ValueKey('img'), child: child),
+                  );
+                },
+              ),
+            ),
+            ValueListenableBuilder<Set<String>>(
+              valueListenable: selection,
+              builder: (context, ids, _) {
+                final selected = ids.contains(asset.id);
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    if (selected)
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(11),
+                          color: Colors.black.withValues(alpha: 0.55),
+                        ),
+                      ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(7),
+                        child: selected
+                            ? Container(
+                                width: 22,
+                                height: 22,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                                child: const Icon(Icons.check,
+                                    size: 15, color: ThemeConstant.base),
+                              )
+                            : Container(
+                                width: 22,
+                                height: 22,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.black.withValues(alpha: 0.4),
+                                  border:
+                                      Border.all(color: Colors.white, width: 2),
+                                ),
+                              ),
+                      ),
+                    ),
+                    if (selected)
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8, bottom: 7),
+                          child: FutureBuilder<String>(
+                            future: FileImageServices().getImageSize(asset),
+                            builder: (context, snap) {
+                              if (!snap.hasData) return const SizedBox.shrink();
+                              return Text(
+                                "${snap.data} MB",
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  color: Colors.white,
+                                  fontSize: 10.5,
+                                  fontWeight: FontWeight.w500,
+                                  shadows: [
+                                    Shadow(
+                                        blurRadius: 3,
+                                        color: Color(0xB3000000),
+                                        offset: Offset(0, 1))
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// First-load placeholder: surface tiles under one slow, coherent shimmer sweep
+/// (not independent per-tile shimmers) — same radius/spacing/aspect as the real
+/// grid so the swap is seamless.
+class _SkeletonGrid extends StatelessWidget {
+  const _SkeletonGrid();
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Shimmer.fromColors(
+        baseColor: ThemeConstant.surface,
+        highlightColor: Colors.white.withValues(alpha: 0.06),
+        period: const Duration(milliseconds: 1400),
+        child: GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          itemCount: 12,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 2 / 3,
+          ),
+          itemBuilder: (context, index) => DecoratedBox(
+            decoration: BoxDecoration(
+              color: ThemeConstant.surface,
+              borderRadius: BorderRadius.circular(11),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
