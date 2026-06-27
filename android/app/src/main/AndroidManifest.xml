@@ -1,4 +1,13 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Firebase/Play-services merges in advertising-ID permissions; we don't
+         use ad IDs, so strip both (the GMS one + the Android 13+ AdServices one)
+         to keep the data-safety form honest. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_AD_ID"
+        tools:node="remove" />
 
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <!-- maxSdkVersion 32: on Android 13+ READ_MEDIA_IMAGES replaces this -->
