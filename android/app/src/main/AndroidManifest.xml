@@ -9,6 +9,17 @@
     <uses-permission android:name="android.permission.ACCESS_ADSERVICES_AD_ID"
         tools:node="remove" />
 
+    <!-- qr_code_scanner_plus (+ a wifi plugin) merge these as required="true",
+         which makes Google Play mark many devices "not compatible" and blocks
+         install. We use these at runtime, not as install gates, so override each
+         to required="false" (app manifest wins the merge over library manifests). -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.front" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+    <uses-feature android:name="android.hardware.screen.landscape" android:required="false" />
+    <uses-feature android:name="android.hardware.wifi" android:required="false" />
+
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <!-- maxSdkVersion 32: on Android 13+ READ_MEDIA_IMAGES replaces this -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
