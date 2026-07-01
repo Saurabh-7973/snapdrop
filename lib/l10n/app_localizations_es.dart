@@ -109,7 +109,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get qr_help_step2 =>
-      'Ejecuta el plugin de Snapdrop — Menú > Plugins, o busca «Snapdrop».';
+      'Ejecuta el plugin de Snapdrop — Menu > Plugins, o busca «Snapdrop».';
 
   @override
   String get qr_help_step3 =>

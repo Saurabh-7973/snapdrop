@@ -28,7 +28,7 @@
   "scan_help_link": "¿Dónde está el código QR?",
   "qr_help_title": "¿Dónde está el código QR?",
   "qr_help_step1": "Abre Figma en tu computadora de escritorio.",
-  "qr_help_step2": "Ejecuta el plugin de Snapdrop — Menú > Plugins, o busca «Snapdrop».",
+  "qr_help_step2": "Ejecuta el plugin de Snapdrop — Menu > Plugins, o busca «Snapdrop».",
   "qr_help_step3": "Aparece un código QR. Apunta tu teléfono hacia él.",
   "qr_help_note": "Debe ser Figma de escritorio. El código lo genera el plugin, no esta app.",
   "qr_help_dismiss": "Entendido",

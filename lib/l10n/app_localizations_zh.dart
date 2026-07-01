@@ -50,7 +50,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboard_step_1 => '选择图片';
 
   @override
-  String get onboard_step_2 => '在 Figma 插件中扫描 QR 码';
+  String get onboard_step_2 => '在 Figma 插件中扫描二维码';
 
   @override
   String get onboard_step_3 => '分享';
@@ -161,19 +161,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get empty_state_body => '此相册的照片会显示在这里。请在上方尝试其他相册。';
 
   @override
-  String get showcase_four_title => 'QR 扫描器';
+  String get showcase_four_title => '二维码扫描器';
 
   @override
-  String get showcase_four_subtitle => '点击扫描 QR 码';
+  String get showcase_four_subtitle => '点击扫描二维码';
 
   @override
-  String get qr_screen_herotext_1 => '扫描 QR 码';
+  String get qr_screen_herotext_1 => '扫描二维码';
 
   @override
   String get qr_screen_herotext_2 => '继续';
 
   @override
-  String get qr_screen_herotext_3 => '扫描 QR 码进行连接';
+  String get qr_screen_herotext_3 => '扫描二维码进行连接';
 
   @override
   String get qr_timed_out_label => '扫描超时';

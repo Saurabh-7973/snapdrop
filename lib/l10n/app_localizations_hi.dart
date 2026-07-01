@@ -24,7 +24,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get app_share_text_1 =>
-      '🚀 स्नैपड्रॉप की खोज करें - अपने फिगमा डिजाइन्स में तस्वीरें सीधे ट्रांसफर करने का सबसे आसान तरीका! 🎨\n\n';
+      '🚀 Snapdrop की खोज करें - अपने Figma डिज़ाइन्स में तस्वीरें सीधे ट्रांसफर करने का सबसे आसान तरीका! 🎨\n\n';
 
   @override
   String get app_share_text_2 =>

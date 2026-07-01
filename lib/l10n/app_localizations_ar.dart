@@ -23,7 +23,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get app_share_text_1 =>
-      '🚀 اكتشف سناب دروب - أسهل طريقة لنقل الصور مباشرة إلى تصاميمك في فيجما! 🎨\n\n';
+      '🚀 اكتشف Snapdrop - أسهل طريقة لنقل الصور مباشرة إلى تصاميمك في Figma! 🎨\n\n';
 
   @override
   String get app_share_text_2 =>
@@ -51,7 +51,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboard_step_1 => 'اختر الصور';
 
   @override
-  String get onboard_step_2 => 'امسح رمز QR في مكون Figma الإضافي';
+  String get onboard_step_2 => 'امسح رمز QR في إضافة Figma';
 
   @override
   String get onboard_step_3 => 'شارك';
@@ -207,7 +207,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get qr_screen_info_button =>
-      'افتح Figma -> ملف التصميم -> المكون الإضافي -> Snapdrop';
+      'افتح Figma -> ملف التصميم -> الإضافة -> Snapdrop';
 
   @override
   String get qr_screen_button_scanning => 'جاري المسح...';

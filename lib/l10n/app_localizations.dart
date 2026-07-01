@@ -361,7 +361,7 @@ abstract class AppLocalizations {
   /// No description provided for @home_screen_herotext_3.
   ///
   /// In en, this message translates to:
-  /// **'Upto 10 images'**
+  /// **'Up to 10 images'**
   String get home_screen_herotext_3;
 
   /// No description provided for @home_screen_button.
@@ -421,7 +421,7 @@ abstract class AppLocalizations {
   /// No description provided for @qr_screen_herotext_1.
   ///
   /// In en, this message translates to:
-  /// **'Select a plugin'**
+  /// **'Scan QR Code'**
   String get qr_screen_herotext_1;
 
   /// No description provided for @qr_screen_herotext_2.
@@ -589,13 +589,13 @@ abstract class AppLocalizations {
   /// No description provided for @app_conditions_image_selection_limit.
   ///
   /// In en, this message translates to:
-  /// **'Can Only select upto 10 Images!'**
+  /// **'Can only select up to 10 images!'**
   String get app_conditions_image_selection_limit;
 
   /// No description provided for @app_conditions_size_limit.
   ///
   /// In en, this message translates to:
-  /// **'File Size Limit Exceded'**
+  /// **'File Size Limit Exceeded'**
   String get app_conditions_size_limit;
 
   /// No description provided for @permission_dialog_title.

@@ -147,7 +147,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_screen_herotext_2 => 'to continue';
 
   @override
-  String get home_screen_herotext_3 => 'Upto 10 images';
+  String get home_screen_herotext_3 => 'Up to 10 images';
 
   @override
   String get home_screen_button => 'Connect';
@@ -178,7 +178,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showcase_four_subtitle => 'Click to Scan QR Code';
 
   @override
-  String get qr_screen_herotext_1 => 'Select a plugin';
+  String get qr_screen_herotext_1 => 'Scan QR Code';
 
   @override
   String get qr_screen_herotext_2 => 'to continue';
@@ -267,10 +267,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get app_conditions_image_selection_limit =>
-      'Can Only select upto 10 Images!';
+      'Can only select up to 10 images!';
 
   @override
-  String get app_conditions_size_limit => 'File Size Limit Exceded';
+  String get app_conditions_size_limit => 'File Size Limit Exceeded';
 
   @override
   String get permission_dialog_title => 'Allow photo access';
