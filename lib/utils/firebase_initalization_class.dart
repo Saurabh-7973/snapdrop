@@ -56,36 +56,50 @@ class FirebaseInitalizationClass {
     }
   }
 
-  static void remoteConfigInitialization() async {
-    remoteConfig = FirebaseRemoteConfig.instance;
-    await remoteConfig!.setConfigSettings(
-      RemoteConfigSettings(
-        fetchTimeout: const Duration(minutes: 1),
-        minimumFetchInterval: const Duration(hours: 1),
-      ),
-    );
+  /// Full Remote Config setup, run once after first frame. Every step here is
+  /// best-effort: a fetch on a slow/offline device throws
+  /// PlatformException(firebase_remote_config, "Unable to connect to the
+  /// server…") and, because these used to be `void async`, that error escaped
+  /// uncaught to PlatformDispatcher.onError and was logged as a FATAL crash
+  /// (crash-on-startup reports on budget devices). Remote Config is optional —
+  /// never let it take down the app. Failures are recorded as non-fatals.
+  static Future<void> setupRemoteConfig() async {
+    try {
+      remoteConfig = FirebaseRemoteConfig.instance;
+      await remoteConfig!.setConfigSettings(
+        RemoteConfigSettings(
+          fetchTimeout: const Duration(minutes: 1),
+          minimumFetchInterval: const Duration(hours: 1),
+        ),
+      );
+      await remoteConfig!.setDefaults(const {
+        "app_version": 1.0,
+      });
+      // Defaults are already applied above, so a failed fetch is harmless.
+      final activated = await remoteConfig!.fetchAndActivate();
+      log(activated.toString());
+      remoteConfigFetchAppVersion();
+      remoteConfigUpdateValuesRealtime();
+    } catch (e, s) {
+      // Offline / slow network is expected — degrade gracefully to defaults.
+      recordNonFatal(e, s, reason: 'remoteConfig setup failed');
+    }
   }
 
-  static void remoteConfigSetDefaultValues() async {
-    await remoteConfig!.setDefaults(const {
-      "app_version": 1.0,
-    });
-  }
-
-  static void remoteConfigGetDefaultValues() async {
-    await remoteConfig!.fetchAndActivate().then((value) {
-      log(value.toString());
-    });
-  }
-
-  static void remoteConfigUpdateValuesRealtime() async {
-    remoteConfig!.onConfigUpdated.listen((event) async {
-      await remoteConfig!.activate();
+  static void remoteConfigUpdateValuesRealtime() {
+    remoteConfig?.onConfigUpdated.listen((event) async {
+      try {
+        await remoteConfig!.activate();
+      } catch (e, s) {
+        recordNonFatal(e, s, reason: 'remoteConfig realtime activate failed');
+      }
     });
   }
 
   static void remoteConfigFetchAppVersion() {
-    CheckAppVersion.minimumAppVersion = remoteConfig!.getString('app_version');
+    final rc = remoteConfig;
+    if (rc == null) return;
+    CheckAppVersion.minimumAppVersion = rc.getString('app_version');
     CheckAppVersion.checkAppVersion();
   }
 

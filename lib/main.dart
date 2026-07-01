@@ -57,10 +57,9 @@ void main() async {
   // (perf instrumentation + remote-config fetch don't gate the UI).
   WidgetsBinding.instance.addPostFrameCallback((_) {
     FirebaseInitalizationClass.initalizePerformance();
-    FirebaseInitalizationClass.remoteConfigInitialization();
-    FirebaseInitalizationClass.remoteConfigGetDefaultValues();
-    FirebaseInitalizationClass.remoteConfigUpdateValuesRealtime();
-    FirebaseInitalizationClass.remoteConfigFetchAppVersion();
+    // Self-contained + fully guarded: ordered internally and can never throw
+    // out (network failures degrade to defaults, logged as non-fatal).
+    FirebaseInitalizationClass.setupRemoteConfig();
   });
 }
 
