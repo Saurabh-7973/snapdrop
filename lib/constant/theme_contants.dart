@@ -10,6 +10,8 @@ class ThemeConstant {
   static const Color muted = Color(0xFF9BA39E); // labels/secondary
   static const Color accentGreen = Color(0xFF3BA873); // links/dots
   static const Color softGreen = Color(0xFF8FD9B0); // icons
+  static const Color accentOnDark =
+      Color(0xFF7CD3A6); // legible accent on dark: step numbers, scan corners
   static const Color buttonInk = Color(0xFF0E1A12); // dark ink on white pills
   static const Color toastSurface = Color(0xFF222E27); // on-brand toast
 

@@ -59,6 +59,60 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboard_button_text => '开始';
 
   @override
+  String get onboarding_title => '将照片直接发送到 Figma';
+
+  @override
+  String get onboarding_subtitle => 'Snapdrop 通过桌面插件把手机中的图片发送到你的 Figma 画布。';
+
+  @override
+  String get onboarding_step1_title => '在电脑的 Figma 中打开 Snapdrop';
+
+  @override
+  String get onboarding_step1_desc => '桌面插件会在你的屏幕上显示一个二维码。';
+
+  @override
+  String get onboarding_step2_title => '选择照片，然后扫描该二维码';
+
+  @override
+  String get onboarding_step2_desc => '将手机对准二维码即可连接。';
+
+  @override
+  String get onboarding_step3_title => '照片进入 Figma';
+
+  @override
+  String get onboarding_step3_desc => '它们会出现在你的画布上，随时可用。';
+
+  @override
+  String get onboarding_note => '二维码来自桌面版 Figma 插件——不是此应用，也不是 Figma 手机版。';
+
+  @override
+  String get onboarding_cta => '开始使用';
+
+  @override
+  String get scan_subtitle => '对准你的 Figma 插件中的二维码';
+
+  @override
+  String get scan_help_link => '二维码在哪里？';
+
+  @override
+  String get qr_help_title => '二维码在哪里？';
+
+  @override
+  String get qr_help_step1 => '在你的桌面电脑上打开 Figma。';
+
+  @override
+  String get qr_help_step2 => '运行 Snapdrop 插件——Menu > Plugins，或搜索 “Snapdrop”。';
+
+  @override
+  String get qr_help_step3 => '出现二维码后，用手机对准它。';
+
+  @override
+  String get qr_help_note => '必须是桌面版 Figma。二维码由插件生成，而非此应用。';
+
+  @override
+  String get qr_help_dismiss => '知道了';
+
+  @override
   String get showcase_one_title => '下拉按钮';
 
   @override

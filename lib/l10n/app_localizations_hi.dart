@@ -61,6 +61,68 @@ class AppLocalizationsHi extends AppLocalizations {
   String get onboard_button_text => 'शुरू करें';
 
   @override
+  String get onboarding_title => 'फ़ोटो सीधे Figma में भेजें';
+
+  @override
+  String get onboarding_subtitle =>
+      'Snapdrop आपके फ़ोन की तस्वीरें डेस्कटॉप प्लगइन के ज़रिए आपके Figma कैनवास में भेजता है।';
+
+  @override
+  String get onboarding_step1_title =>
+      'अपने कंप्यूटर पर Figma में Snapdrop खोलें';
+
+  @override
+  String get onboarding_step1_desc =>
+      'डेस्कटॉप प्लगइन आपकी स्क्रीन पर एक QR कोड दिखाता है।';
+
+  @override
+  String get onboarding_step2_title => 'अपनी फ़ोटो चुनें, फिर वह QR स्कैन करें';
+
+  @override
+  String get onboarding_step2_desc =>
+      'कनेक्ट करने के लिए अपना फ़ोन कोड की ओर करें।';
+
+  @override
+  String get onboarding_step3_title => 'आपकी फ़ोटो Figma में आ जाती हैं';
+
+  @override
+  String get onboarding_step3_desc =>
+      'वे आपके कैनवास पर, उपयोग के लिए तैयार दिखती हैं।';
+
+  @override
+  String get onboarding_note =>
+      'QR कोड डेस्कटॉप Figma प्लगइन से आता है — इस ऐप से नहीं, और Figma मोबाइल से नहीं।';
+
+  @override
+  String get onboarding_cta => 'शुरू करें';
+
+  @override
+  String get scan_subtitle => 'अपने Figma प्लगइन के कोड की ओर करें';
+
+  @override
+  String get scan_help_link => 'QR कोड कहाँ है?';
+
+  @override
+  String get qr_help_title => 'QR कोड कहाँ है?';
+
+  @override
+  String get qr_help_step1 => 'अपने डेस्कटॉप कंप्यूटर पर Figma खोलें।';
+
+  @override
+  String get qr_help_step2 =>
+      'Snapdrop प्लगइन चलाएँ — Menu > Plugins, या \"Snapdrop\" खोजें।';
+
+  @override
+  String get qr_help_step3 => 'एक QR कोड दिखता है। अपना फ़ोन उसकी ओर करें।';
+
+  @override
+  String get qr_help_note =>
+      'यह डेस्कटॉप Figma होना चाहिए। कोड प्लगइन बनाता है, यह ऐप नहीं।';
+
+  @override
+  String get qr_help_dismiss => 'समझ गए';
+
+  @override
   String get showcase_one_title => 'ड्रॉपडाउन बटन';
 
   @override

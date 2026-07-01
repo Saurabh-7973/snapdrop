@@ -10,7 +10,7 @@ import '../services/selected_language.dart';
 import '../utils/firebase_initalization_class.dart';
 import '../widgets/app_background.dart';
 import '../widgets/app_bar_widget.dart';
-import '../widgets/intro_widget.dart';
+import '../widgets/step_badge.dart';
 import '../l10n/app_localizations.dart';
 
 import 'home_screen.dart';
@@ -83,38 +83,50 @@ class _OnboardScreenState extends State<OnboardScreen> {
                 child: Column(
                   children: [
                     const AppBarWidget(),
-                    const SizedBox(height: 30), // mockup head margin-top
-                    Text(
-                      '${AppLocalizations.of(context)!.onboard_hero_text_1}\n${AppLocalizations.of(context)!.onboard_hero_text_2}',
-                      textAlign: TextAlign.center,
-                      style: ThemeConstant.titleLarge
-                          .copyWith(fontSize: 31, height: 1.12),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 26),
+                            Text(
+                              AppLocalizations.of(context)!.onboarding_title,
+                              textAlign: TextAlign.center,
+                              style: ThemeConstant.titleLarge
+                                  .copyWith(fontSize: 27, height: 1.16),
+                            ),
+                            const SizedBox(height: 11),
+                            Text(
+                              AppLocalizations.of(context)!.onboarding_subtitle,
+                              textAlign: TextAlign.center,
+                              style: ThemeConstant.subtitleMuted
+                                  .copyWith(fontSize: 14.5, height: 1.5),
+                            ),
+                            const SizedBox(height: 30),
+                            _stepCard(
+                              1,
+                              AppLocalizations.of(context)!.onboarding_step1_title,
+                              AppLocalizations.of(context)!.onboarding_step1_desc,
+                            ),
+                            const SizedBox(height: 11),
+                            _stepCard(
+                              2,
+                              AppLocalizations.of(context)!.onboarding_step2_title,
+                              AppLocalizations.of(context)!.onboarding_step2_desc,
+                            ),
+                            const SizedBox(height: 11),
+                            _stepCard(
+                              3,
+                              AppLocalizations.of(context)!.onboarding_step3_title,
+                              AppLocalizations.of(context)!.onboarding_step3_desc,
+                            ),
+                            const SizedBox(height: 16),
+                            _note(AppLocalizations.of(context)!.onboarding_note),
+                          ],
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      AppLocalizations.of(context)!.onboard_subline,
-                      textAlign: TextAlign.center,
-                      style: ThemeConstant.subtitleMuted,
-                    ),
-                    const SizedBox(height: 40),
-                    IntroWidget(
-                      icon: Icons.image_outlined,
-                      text: AppLocalizations.of(context)!.onboard_step_1,
-                    ),
-                    const SizedBox(height: 22),
-                    IntroWidget(
-                      icon: Icons.qr_code_scanner_rounded,
-                      text: AppLocalizations.of(context)!.onboard_step_2,
-                    ),
-                    const SizedBox(height: 22),
-                    IntroWidget(
-                      icon: Icons.brush_rounded,
-                      text: AppLocalizations.of(context)!.onboard_step_3,
-                    ),
-                    const Spacer(),
-                    _languageChip(),
-                    const SizedBox(height: 18),
-                    _getStartedButton(context),
+                    const SizedBox(height: 16),
+                    _footer(context),
                     const SizedBox(height: 4),
                   ],
                 ),
@@ -126,13 +138,107 @@ class _OnboardScreenState extends State<OnboardScreen> {
     );
   }
 
+  /// One numbered onboarding step: badge + title + description in a hairline
+  /// card. Mirrors under RTL (Row uses start/end, text aligned to start).
+  Widget _stepCard(int number, String title, String desc) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.035),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          StepBadge(number),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    color: Colors.white,
+                    fontSize: 14.5,
+                    height: 1.3,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  desc,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    color: Color(0xFF93A79C),
+                    fontSize: 12.5,
+                    height: 1.45,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Clarifying note under the steps (info icon + text). Leading icon sits on
+  /// the reading-start edge in both LTR and RTL.
+  Widget _note(String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 1),
+            child: Icon(Icons.info_outline_rounded,
+                size: 14, color: Colors.white.withValues(alpha: 0.5)),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              textAlign: TextAlign.start,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                color: Color(0xFF93A79C),
+                fontSize: 11.5,
+                height: 1.45,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Footer row: language chip + Get Started pill (fills remaining width).
+  Widget _footer(BuildContext context) {
+    return Row(
+      children: [
+        _languageChip(),
+        const SizedBox(width: 12),
+        Expanded(child: _getStartedButton(context)),
+      ],
+    );
+  }
+
   Widget _languageChip() {
     final name = _languages
         .firstWhere((lang) => lang["code"] == _selectedLanguage)["name"]!;
     return GestureDetector(
       onTap: _showLanguageModal,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 16),
+        height: 52,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.04),
           borderRadius: BorderRadius.circular(999),
@@ -187,27 +293,42 @@ class _OnboardScreenState extends State<OnboardScreen> {
         ));
       },
       child: Container(
-        width: 260,
+        width: double.infinity,
         height: 52,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(999),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.28),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+            ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              AppLocalizations.of(context)!.onboard_button_text,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                color: ThemeConstant.buttonInk,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
+            Flexible(
+              child: Text(
+                AppLocalizations.of(context)!.onboarding_cta,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  color: ThemeConstant.buttonInk,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             const SizedBox(width: 9),
-            const Icon(Icons.arrow_forward_rounded,
-                color: ThemeConstant.buttonInk, size: 18),
+            // Direction-aware: arrow points in the reading direction (flips RTL).
+            Transform.flip(
+              flipX: Directionality.of(context) == TextDirection.rtl,
+              child: const Icon(Icons.arrow_forward_rounded,
+                  color: ThemeConstant.buttonInk, size: 18),
+            ),
           ],
         ),
       ),

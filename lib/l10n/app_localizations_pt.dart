@@ -61,6 +61,69 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboard_button_text => 'Começar';
 
   @override
+  String get onboarding_title => 'Envie fotos direto para o Figma';
+
+  @override
+  String get onboarding_subtitle =>
+      'O Snapdrop envia as imagens do seu telefone para a tela do Figma — através do plugin de desktop.';
+
+  @override
+  String get onboarding_step1_title =>
+      'Abra o Snapdrop no Figma no seu computador';
+
+  @override
+  String get onboarding_step1_desc =>
+      'O plugin de desktop mostra um código QR na sua tela.';
+
+  @override
+  String get onboarding_step2_title => 'Escolha suas fotos e escaneie esse QR';
+
+  @override
+  String get onboarding_step2_desc =>
+      'Aponte seu telefone para o código para conectar.';
+
+  @override
+  String get onboarding_step3_title => 'Suas fotos chegam ao Figma';
+
+  @override
+  String get onboarding_step3_desc =>
+      'Elas aparecem na sua tela, prontas para usar.';
+
+  @override
+  String get onboarding_note =>
+      'O código QR vem do plugin de desktop do Figma — não deste app, nem do Figma mobile.';
+
+  @override
+  String get onboarding_cta => 'Começar';
+
+  @override
+  String get scan_subtitle => 'Aponte para o código do seu plugin do Figma';
+
+  @override
+  String get scan_help_link => 'Onde está o código QR?';
+
+  @override
+  String get qr_help_title => 'Onde está o código QR?';
+
+  @override
+  String get qr_help_step1 => 'Abra o Figma no seu computador desktop.';
+
+  @override
+  String get qr_help_step2 =>
+      'Execute o plugin Snapdrop — Menu > Plugins, ou pesquise \"Snapdrop\".';
+
+  @override
+  String get qr_help_step3 =>
+      'Um código QR aparece. Aponte seu telefone para ele.';
+
+  @override
+  String get qr_help_note =>
+      'Precisa ser o Figma de desktop. O código é gerado pelo plugin, não por este app.';
+
+  @override
+  String get qr_help_dismiss => 'Entendi';
+
+  @override
   String get showcase_one_title => 'Botão Dropdown';
 
   @override

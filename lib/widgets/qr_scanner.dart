@@ -20,6 +20,7 @@ import '../l10n/app_localizations.dart';
 import 'app_button.dart';
 import 'app_toast.dart';
 import 'figma_logo.dart';
+import 'qr_help_sheet.dart';
 
 class QRScanner extends StatefulWidget {
   final List<AssetEntity>? selectedAssetList;
@@ -137,6 +138,10 @@ class _QRScannerState extends State<QRScanner>
                 onTargetClick: () => activateQrScanner(),
                 onToolTipClick: () => activateQrScanner(),
                 child: qrContainer()),
+        if (!isTimeout) ...[
+          const SizedBox(height: 18),
+          _whereIsQrButton(context),
+        ],
         if (isTimeout) ...[
           const SizedBox(height: 18),
           Text(
@@ -163,6 +168,42 @@ class _QRScannerState extends State<QRScanner>
         const SizedBox(height: 26),
         if (connectionStatus) _confirmRow(context),
       ],
+    );
+  }
+
+  /// "Where's the QR code?" — ghost pill under the viewfinder that opens the
+  /// help sheet explaining the QR comes from the desktop Figma plugin.
+  Widget _whereIsQrButton(BuildContext context) {
+    return Material(
+      color: Colors.white.withValues(alpha: 0.03),
+      shape: StadiumBorder(
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.14), width: 1),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => showQrHelpSheet(context),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 48),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.help_outline_rounded,
+                  size: 16, color: Colors.white.withValues(alpha: 0.85)),
+              const SizedBox(width: 7),
+              Text(
+                AppLocalizations.of(context)!.scan_help_link,
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  color: ThemeConstant.muted,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

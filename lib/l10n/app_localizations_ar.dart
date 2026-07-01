@@ -60,6 +60,64 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboard_button_text => 'ابدأ';
 
   @override
+  String get onboarding_title => 'أرسل الصور مباشرة إلى Figma';
+
+  @override
+  String get onboarding_subtitle =>
+      'يرسل Snapdrop الصور من هاتفك إلى لوحة Figma — عبر إضافة سطح المكتب.';
+
+  @override
+  String get onboarding_step1_title => 'افتح Snapdrop في Figma على حاسوبك';
+
+  @override
+  String get onboarding_step1_desc => 'تعرض إضافة سطح المكتب رمز QR على شاشتك.';
+
+  @override
+  String get onboarding_step2_title => 'اختر صورك ثم امسح رمز QR';
+
+  @override
+  String get onboarding_step2_desc => 'وجّه هاتفك نحو الرمز للاتصال.';
+
+  @override
+  String get onboarding_step3_title => 'تصل صورك إلى Figma';
+
+  @override
+  String get onboarding_step3_desc => 'تظهر على لوحتك جاهزة للاستخدام.';
+
+  @override
+  String get onboarding_note =>
+      'يأتي رمز QR من إضافة Figma لسطح المكتب — وليس من هذا التطبيق ولا من Figma للهاتف.';
+
+  @override
+  String get onboarding_cta => 'ابدأ';
+
+  @override
+  String get scan_subtitle => 'وجّه نحو الرمز من إضافة Figma';
+
+  @override
+  String get scan_help_link => 'أين رمز QR؟';
+
+  @override
+  String get qr_help_title => 'أين رمز QR؟';
+
+  @override
+  String get qr_help_step1 => 'افتح Figma على حاسوب سطح المكتب.';
+
+  @override
+  String get qr_help_step2 =>
+      'شغّل إضافة Snapdrop — Menu > Plugins، أو ابحث عن \"Snapdrop\".';
+
+  @override
+  String get qr_help_step3 => 'يظهر رمز QR. وجّه هاتفك نحوه.';
+
+  @override
+  String get qr_help_note =>
+      'يجب أن يكون Figma لسطح المكتب. يتم إنشاء الرمز بواسطة الإضافة، وليس هذا التطبيق.';
+
+  @override
+  String get qr_help_dismiss => 'حسنًا';
+
+  @override
   String get showcase_one_title => 'زر القائمة المنسدلة';
 
   @override

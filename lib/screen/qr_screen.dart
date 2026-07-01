@@ -77,6 +77,12 @@ class _QRScreenState extends State<QRScreen> {
                         textAlign: TextAlign.center,
                         style: ThemeConstant.titleLarge.copyWith(height: 1.12),
                       ),
+                      const SizedBox(height: 9),
+                      Text(
+                        AppLocalizations.of(context)!.scan_subtitle,
+                        textAlign: TextAlign.center,
+                        style: ThemeConstant.subtitleMuted.copyWith(fontSize: 14),
+                      ),
                       Expanded(
                         child: SingleChildScrollView(
                           child: Padding(
