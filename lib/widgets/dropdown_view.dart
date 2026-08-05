@@ -56,6 +56,11 @@ class _DropDownViewState extends State<DropDownView> {
   bool hasAll = false;
   bool hasNoData = false;
   bool hasDataLoaded = false;
+  // Assets (not just albums) have come back for the selected album.
+  bool _assetsLoaded = false;
+
+  /// Vertical room reserved under the grid for the send bar + its scrim.
+  static const double _sendBarSpace = 108;
 
   TextEditingController searchController = TextEditingController();
   List<AssetPathEntity> filteredAlbumList = [];
@@ -119,8 +124,6 @@ class _DropDownViewState extends State<DropDownView> {
 
   @override
   Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
-
     return Column(
       children: [
         albumList.isEmpty == true
@@ -215,9 +218,13 @@ class _DropDownViewState extends State<DropDownView> {
                             ),
                           ),
                           buttonStyleData: ButtonStyleData(
-                            width: MediaQuery.of(context).size.width / 1.075,
+                            // Fill the padded column exactly. A fixed
+                            // screenWidth/1.075 was wider than the content
+                            // column, so the album name and "View all" sat off
+                            // the grid's left/right edges.
+                            width: double.infinity,
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 10),
+                                horizontal: 0, vertical: 10),
                             decoration: BoxDecoration(
                               color: Colors.transparent,
                               borderRadius: BorderRadius.circular(8),
@@ -282,7 +289,8 @@ class _DropDownViewState extends State<DropDownView> {
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 12),
                                         child: Text(
-                                          'No albums with that name found',
+                                          AppLocalizations.of(context)!
+                                              .album_search_empty,
                                           style: const TextStyle(
                                             fontFamily: 'Inter',
                                             color: ThemeConstant.muted,
@@ -298,7 +306,10 @@ class _DropDownViewState extends State<DropDownView> {
                             if (mounted) {
                               setState(() {
                                 selectedAlbum = album;
-                                hasDataLoaded = false;
+                                // Back to the skeleton until the new album's
+                                // assets arrive — never to the empty state.
+                                _assetsLoaded = false;
+                                assetList = [];
                               });
                             }
                             FocusScope.of(context).unfocus();
@@ -352,7 +363,8 @@ class _DropDownViewState extends State<DropDownView> {
                                     horizontal: 12,
                                     vertical: 12,
                                   ),
-                                  hintText: 'Search album',
+                                  hintText: AppLocalizations.of(context)!
+                                      .album_search_hint,
                                   hintStyle: const TextStyle(
                                     fontFamily: 'Inter',
                                     color: ThemeConstant.muted,
@@ -382,14 +394,24 @@ class _DropDownViewState extends State<DropDownView> {
         SizedBox(
           height: 10,
         ),
-        (hasNoData == true || (hasDataLoaded == true && assetList.isEmpty))
+        // Empty state only once the album's assets have actually been queried.
+        // Keying it off hasDataLoaded (set as soon as the ALBUM list arrived)
+        // flashed "No images here yet" for a frame on every launch and every
+        // album switch — the confusing empty state testers hit.
+        (hasNoData == true || (_assetsLoaded && assetList.isEmpty))
             ? _emptyState(context)
-            : hasDataLoaded == true
+            : _assetsLoaded
                 ? Expanded(
                     child: Stack(children: [
                       GridView.builder(
                           controller: widget.scrollController,
                           itemCount: assetList.length,
+                          // Last row must clear the send bar + the gesture nav
+                          // area; without it the grid ran under both and the
+                          // bottom row was sliced mid-tile.
+                          padding: EdgeInsets.only(
+                              bottom: _sendBarSpace +
+                                  MediaQuery.of(context).padding.bottom),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
@@ -417,185 +439,37 @@ class _DropDownViewState extends State<DropDownView> {
                               child: tile,
                             );
                           }),
-                      ValueListenableBuilder<Set<String>>(
-                        valueListenable: _selectedIds,
-                        builder: (context, sel, _) => sel.isEmpty
-                            ? const SizedBox.shrink()
-                            :
-                        Align(
+                      // Bottom scrim: the grid scrolls under it instead of being
+                      // chopped flat at the screen edge (the "tearing" report),
+                      // and it gives the send bar something to sit on.
+                      IgnorePointer(
+                        child: Align(
                           alignment: Alignment.bottomCenter,
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            height: 120,
-                            width: screenWidth,
-                            color: Colors.transparent,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                AnimatedScale(
-                                  scale:
-                                      selectedAssetList.isNotEmpty ? 1.0 : 0.0,
-                                  duration: const Duration(milliseconds: 500),
-                                  curve: Curves.easeOutBack,
-                                  child: GestureDetector(
-                                    onTap: selectedAssetList.isNotEmpty
-                                        ? () async {
-                                            HapticFeedback.lightImpact();
-                                            final isConnected =
-                                                await CheckInternetConnectivity
-                                                    .hasNetwork();
-                                            if (isConnected) {
-                                              // The relay caps each image (one
-                                              // emit) at 10 MB — the limit is
-                                              // per image, not total. Block only
-                                              // if the largest exceeds the cap.
-                                              final size =
-                                                  await FileImageServices()
-                                                      .getMaxImageSize(
-                                                          selectedAssetList);
-                                              if (!context.mounted) return;
-                                              if (size <
-                                                  FileImageServices
-                                                      .maxImageSizeMb) {
-                                                // Live session -> Send straight
-                                                // over the same socket (no QR).
-                                                // Else -> Connect (scan first).
-                                                if (sessionController
-                                                    .isConnected) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          SendFile(
-                                                        selectedAssetList:
-                                                            selectedAssetList,
-                                                        isIntentSharing: false,
-                                                        imageCount:
-                                                            selectedAssetList
-                                                                .length,
-                                                        roomId: sessionController
-                                                                .roomId ??
-                                                            '',
-                                                        socketService:
-                                                            sessionController
-                                                                .socket,
-                                                      ),
-                                                    ),
-                                                  );
-                                                } else {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          QRScreen(
-                                                        selectedAssetList:
-                                                            selectedAssetList,
-                                                        isIntentSharing: widget
-                                                            .isIntentSharing,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }
-                                              } else {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                      "Each image must be under ${FileImageServices.maxImageSizeMb.toStringAsFixed(0)} MB (largest is ${size.toStringAsFixed(2)} MB).",
-                                                    ),
-                                                    behavior: SnackBarBehavior
-                                                        .floating,
-                                                    backgroundColor:
-                                                        Colors.redAccent,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                    ),
-                                                  ),
-                                                );
-                                              }
-                                            }
-                                          }
-                                        : null,
-                                    child: AnimatedContainer(
-                                      duration:
-                                          const Duration(milliseconds: 300),
-                                      width: screenWidth / 2.6,
-                                      height: 52,
-                                      margin: const EdgeInsets.symmetric(
-                                        vertical: 8,
-                                        horizontal: 8,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(30),
-                                        boxShadow: [
-                                          if (selectedAssetList.isNotEmpty)
-                                            BoxShadow(
-                                              color: Colors.black
-                                                  .withValues(alpha: 0.15),
-                                              blurRadius: 20,
-                                              spreadRadius: 2,
-                                              offset: const Offset(0, 10),
-                                            ),
-                                        ],
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Colors.white,
-                                            Colors.grey.shade200,
-                                          ],
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: AnimatedSwitcher(
-                                          duration:
-                                              const Duration(milliseconds: 300),
-                                          transitionBuilder: (Widget child,
-                                              Animation<double> animation) {
-                                            return ScaleTransition(
-                                                scale: animation, child: child);
-                                          },
-                                          child: selectedAssetList.isNotEmpty
-                                              ? Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      sessionController
-                                                              .isConnected
-                                                          ? AppLocalizations.of(
-                                                                  context)!
-                                                              .send_button
-                                                          : AppLocalizations.of(
-                                                                  context)!
-                                                              .home_screen_button,
-                                                      style: ThemeConstant
-                                                          .smallTextSizeDarkFontWidth,
-                                                    ),
-                                                    const SizedBox(width: 10),
-                                                    const Icon(
-                                                      Icons
-                                                          .arrow_forward_rounded,
-                                                      color: Colors.black,
-                                                      size: 22,
-                                                    ),
-                                                  ],
-                                                )
-                                              : const SizedBox(),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                          child: Container(
+                            width: double.infinity,
+                            height: _sendBarSpace +
+                                MediaQuery.of(context).padding.bottom,
+                            // Black, not base green: AppBackground's layer 4
+                            // fades to black down here, so a green scrim would
+                            // read as a band instead of a continuation.
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black.withValues(alpha: 0),
+                                  Colors.black.withValues(alpha: 0.72),
+                                  Colors.black.withValues(alpha: 0.9),
+                                ],
+                                stops: const [0, 0.5, 1],
+                              ),
                             ),
                           ),
                         ),
+                      ),
+                      ValueListenableBuilder<Set<String>>(
+                        valueListenable: _selectedIds,
+                        builder: (context, sel, _) => _sendBar(context, sel),
                       ),
                     ]),
                   )
@@ -611,10 +485,158 @@ class _DropDownViewState extends State<DropDownView> {
     );
   }
 
+  /// Docked action bar over the grid: selection count on the left, Connect/Send
+  /// on the right, full content width. It used to be a half-width pill floating
+  /// in a transparent 120dp band — a big target, but detached from the grid and
+  /// easy to miss on first use (tester report). Now it reads as one bar sitting
+  /// directly under the photos, and it says how many are selected.
+  Widget _sendBar(BuildContext context, Set<String> selection) {
+    final l = AppLocalizations.of(context)!;
+    final count = selection.length;
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: EdgeInsets.only(
+            bottom: 16 + MediaQuery.of(context).padding.bottom),
+        child: AnimatedSlide(
+          duration: const Duration(milliseconds: 260),
+          curve: Curves.easeOutCubic,
+          offset: count == 0 ? const Offset(0, 1.4) : Offset.zero,
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 200),
+            opacity: count == 0 ? 0 : 1,
+            child: Material(
+              color: Colors.white,
+              shape: const StadiumBorder(),
+              clipBehavior: Clip.antiAlias,
+              elevation: 10,
+              shadowColor: Colors.black.withValues(alpha: 0.45),
+              child: InkWell(
+                onTap: count == 0 ? null : () => _continue(context),
+                child: SizedBox(
+                  height: 54,
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 9, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: ThemeConstant.base.withValues(alpha: 0.09),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          '$count',
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            color: ThemeConstant.buttonInk,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Flexible(
+                        child: Text(
+                          sessionController.isConnected
+                              ? l.send_button
+                              : l.home_screen_button,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: ThemeConstant.smallTextSizeDarkFontWidth,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      // Points the reading way, so it mirrors under RTL.
+                      Transform.flip(
+                        flipX: Directionality.of(context) == TextDirection.rtl,
+                        child: const Icon(Icons.arrow_forward_rounded,
+                            color: ThemeConstant.buttonInk, size: 21),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Connect (or Send, on a live session) — same checks as before: network,
+  /// then the per-image relay ceiling.
+  Future<void> _continue(BuildContext context) async {
+    final selected = selectedAssetList;
+    if (selected.isEmpty) return;
+    HapticFeedback.lightImpact();
+
+    final l = AppLocalizations.of(context)!;
+    final hasNetwork = await CheckInternetConnectivity.hasNetwork();
+    if (!context.mounted) return;
+    if (!hasNetwork) {
+      _snack(context, l.app_conditions_internet_connection);
+      return;
+    }
+
+    // The relay caps each image (one emit) at 10 MB — the limit is per image,
+    // not total. Block only if the largest exceeds the cap.
+    final size = await FileImageServices().getMaxImageSize(selected);
+    if (!context.mounted) return;
+    if (size >= FileImageServices.maxImageSizeMb) {
+      _snack(
+        context,
+        l.size_limit_message(
+          FileImageServices.maxImageSizeMb.toStringAsFixed(0),
+          size.toStringAsFixed(2),
+        ),
+      );
+      return;
+    }
+
+    // Live session -> send straight over the same socket (no QR).
+    // Otherwise -> Connect (scan first).
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => sessionController.isConnected
+            ? SendFile(
+                selectedAssetList: selected,
+                isIntentSharing: false,
+                imageCount: selected.length,
+                roomId: sessionController.roomId ?? '',
+                socketService: sessionController.socket,
+              )
+            : QRScreen(
+                selectedAssetList: selected,
+                isIntentSharing: widget.isIntentSharing,
+              ),
+      ),
+    );
+  }
+
+  void _snack(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.redAccent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
   /// Quiet empty/void block (snapdrop_empty_inlanguage.html) — replaces the
   /// loud void.json Lottie. Header + album switcher stay; only the grid area
   /// becomes this calm block. No Connect button here.
   Widget _emptyState(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    // Two different situations, two different explanations: the phone has no
+    // photos at all vs. the album you're looking at is empty (switch above).
+    final bool noPhotosAtAll = hasNoData;
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(bottom: 60),
@@ -637,7 +659,7 @@ class _DropDownViewState extends State<DropDownView> {
             ),
             const SizedBox(height: 18),
             Text(
-              AppLocalizations.of(context)!.empty_state_title,
+              noPhotosAtAll ? l.empty_state_none_title : l.empty_state_title,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontFamily: 'Inter',
@@ -648,11 +670,55 @@ class _DropDownViewState extends State<DropDownView> {
             ),
             const SizedBox(height: 7),
             SizedBox(
-              width: 220,
+              width: 240,
               child: Text(
-                AppLocalizations.of(context)!.empty_state_body,
+                noPhotosAtAll ? l.empty_state_none_body : l.empty_state_body,
                 textAlign: TextAlign.center,
                 style: ThemeConstant.subtitleMuted.copyWith(fontSize: 14),
+              ),
+            ),
+            const SizedBox(height: 20),
+            // A way out of the dead end: re-read the gallery (covers the case
+            // where photos were granted or added after this screen loaded).
+            SizedBox(
+              height: 46,
+              child: Material(
+                color: Colors.white.withValues(alpha: 0.04),
+                shape: StadiumBorder(
+                  side: BorderSide(
+                      color: Colors.white.withValues(alpha: 0.16), width: 1),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      hasNoData = false;
+                      _assetsLoaded = false;
+                    });
+                    initialMethod(hasAll);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.refresh_rounded,
+                            size: 16,
+                            color: Colors.white.withValues(alpha: 0.85)),
+                        const SizedBox(width: 8),
+                        Text(
+                          l.empty_state_refresh,
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            color: ThemeConstant.muted,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
@@ -748,6 +814,7 @@ class _DropDownViewState extends State<DropDownView> {
       _page = 1;
       _hasMore = first.length >= MediaProviderServices.pageSize;
       hasDataLoaded = true;
+      _assetsLoaded = true;
     });
   }
 

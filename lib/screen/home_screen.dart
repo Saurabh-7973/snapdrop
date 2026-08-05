@@ -9,6 +9,7 @@ import '../services/socket_service.dart';
 import '../widgets/app_background.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/dropdown_view.dart';
+import '../widgets/help_sheet.dart';
 import 'qr_screen.dart';
 import '../l10n/app_localizations.dart';
 
@@ -130,7 +131,13 @@ class _HomeBodyState extends State<_HomeBody> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const AppBarWidget(),
+                    // Persistent help: onboarding runs once, this is the way
+                    // back to "what is this app / where's the QR".
+                    AppBarWidget(
+                      actionIcon: Icons.help_outline_rounded,
+                      actionTooltip: AppLocalizations.of(context)!.help_button,
+                      onAction: () => showHelpSheet(context),
+                    ),
                     const SizedBox(height: 14),
                     Text(
                       '${AppLocalizations.of(context)!.home_screen_herotext_1}\n${AppLocalizations.of(context)!.home_screen_herotext_2}',

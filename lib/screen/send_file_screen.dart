@@ -66,7 +66,9 @@ class _SendFileState extends State<SendFile> {
             const Positioned.fill(child: FloatingSquares()),
             SafeArea(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 6, 20, 12),
+                // Same 22dp content gutter as Home/QR — this screen was 20 and
+                // read as a slight sideways shift when moving between screens.
+                padding: const EdgeInsets.fromLTRB(22, 6, 22, 12),
                 child: Column(
                   children: [
                     const AppBarWidget(),
