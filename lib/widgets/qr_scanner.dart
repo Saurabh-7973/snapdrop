@@ -40,7 +40,12 @@ class QRScanner extends StatefulWidget {
 class _QRScannerState extends State<QRScanner>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   bool scannerVisible = false;
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  // A fresh key per scan attempt. QRView is a platform view: re-mounting it
+  // under the SAME GlobalKey after a timeout re-attached the old, already-torn-
+  // down camera surface, so the viewport came back stale (tester report:
+  // "the refresh box section doesn't refresh"). A new key forces a new surface.
+  int _scanAttempt = 0;
+  GlobalKey qrKey = GlobalKey(debugLabel: 'QR-0');
   Barcode? result;
   QRViewController? _qrViewController;
   List<Uint8List>? bufferList = [];
@@ -50,6 +55,9 @@ class _QRScannerState extends State<QRScanner>
   SocketService? socketService;
   Timer? _timeoutTimer;
   bool isTimeout = false;
+  // Timed-out because the code we read wasn't a Snapdrop pairing QR (vs. no code
+  // at all) — same dead-scanner state, different explanation to the user.
+  bool invalidCode = false;
 
   late final AnimationController _sweepController;
 
@@ -98,19 +106,41 @@ class _QRScannerState extends State<QRScanner>
   }
 
   activateQrScanner() {
+    _timeoutTimer?.cancel();
+
+    // A restart must clear the previous attempt completely:
+    //  * `result` — the duplicate-frame guard in _onQRViewController bails on a
+    //    non-null result, so a stale one (left behind by an invalid-QR failure)
+    //    made every later scan a no-op;
+    //  * the controller reference — its QRView is gone, the handle is dead;
+    //  * the QRView key — see the field comment (stale camera surface).
+    final bool remount = !scannerVisible || isTimeout || result != null;
+    if (remount) {
+      _qrViewController = null;
+      _scanAttempt++;
+      qrKey = GlobalKey(debugLabel: 'QR-$_scanAttempt');
+    } else {
+      _qrViewController?.resumeCamera();
+    }
+
     setState(() {
       scannerVisible = true;
       isTimeout = false;
+      invalidCode = false;
+      result = null;
+      connectionStatus = false;
     });
 
     // Reset Timer
-    _timeoutTimer?.cancel();
     _timeoutTimer = Timer(const Duration(seconds: 20), () {
+      if (!mounted) return;
       if (result == null) {
         _qrViewController?.pauseCamera();
         setState(() {
           isTimeout = true;
           scannerVisible = false;
+          // Drop the handle with the view — the next attempt builds a new one.
+          _qrViewController = null;
         });
       }
     });
@@ -138,18 +168,20 @@ class _QRScannerState extends State<QRScanner>
                 onTargetClick: () => activateQrScanner(),
                 onToolTipClick: () => activateQrScanner(),
                 child: qrContainer()),
-        if (!isTimeout) ...[
-          const SizedBox(height: 18),
-          _whereIsQrButton(context),
-        ],
         if (isTimeout) ...[
           const SizedBox(height: 18),
           Text(
-            AppLocalizations.of(context)!.qr_timed_out_message,
+            invalidCode
+                ? AppLocalizations.of(context)!.qr_invalid_message
+                : AppLocalizations.of(context)!.qr_timed_out_message,
             textAlign: TextAlign.center,
             style: ThemeConstant.subtitleMuted.copyWith(fontSize: 14),
           ),
         ],
+        // Kept in both states: a timed-out scan is exactly when someone needs to
+        // be told where the QR comes from.
+        const SizedBox(height: 18),
+        _whereIsQrButton(context),
         const SizedBox(height: 22),
         widget.isIntentSharing == true
             ? _actionButton(context)
@@ -211,7 +243,9 @@ class _QRScannerState extends State<QRScanner>
   Widget _scanLabel(BuildContext context) {
     if (isTimeout) {
       return Text(
-        AppLocalizations.of(context)!.qr_timed_out_label,
+        invalidCode
+            ? AppLocalizations.of(context)!.qr_invalid_label
+            : AppLocalizations.of(context)!.qr_timed_out_label,
         style: const TextStyle(
           fontFamily: 'Inter',
           color: Color(0xFF7C827F),
@@ -268,6 +302,7 @@ class _QRScannerState extends State<QRScanner>
       _qrViewController?.pauseCamera();
       setState(() {
         isTimeout = true;
+        invalidCode = true;
         scannerVisible = false;
         connectionStatus = false;
       });
