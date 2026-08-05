@@ -15,40 +15,59 @@ class FirebaseInitalizationClass {
   static FirebaseRemoteConfig? remoteConfig;
   static FirebasePerformance? performance;
 
+  /// True once [initalizeFireBase] has completed. Every Firebase call below is
+  /// gated on it: on a device where initialization fails (missing/outdated Play
+  /// Services, a broken google-services payload) `FirebaseX.instance` throws,
+  /// and before this gate that threw out of `main()` — the app died on launch
+  /// with no UI at all (tester report: "crashes on startup").
+  static bool ready = false;
+
   static Future<void> initalizeFireBase() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      ready = true;
+    } catch (e, s) {
+      ready = false;
+      // Nothing to report it to — Crashlytics needs the very app that failed.
+      log('Firebase init failed: $e\n$s');
+    }
   }
 
   static void initalizeFireBaseAnalytics() {
-    analytics = FirebaseAnalytics.instance;
-    observer = FirebaseAnalyticsObserver(analytics: analytics!);
+    if (!ready) return;
+    try {
+      analytics = FirebaseAnalytics.instance;
+      observer = FirebaseAnalyticsObserver(analytics: analytics!);
+    } catch (e, s) {
+      log('Analytics init failed: $e\n$s');
+    }
   }
 
   static void eventTracker(String name, Map<String, Object>? parameters) {
     if (!kDebugMode) {
-      analytics!.logEvent(name: name, parameters: parameters);
+      analytics?.logEvent(name: name, parameters: parameters);
     }
   }
 
   static void enableDataCollection() {
-    analytics!.setAnalyticsCollectionEnabled(true);
+    analytics?.setAnalyticsCollectionEnabled(true);
   }
 
   static void disableDataCollection() {
-    analytics!.setAnalyticsCollectionEnabled(false);
+    analytics?.setAnalyticsCollectionEnabled(false);
   }
 
   static void catchFatalErrors() {
-    if (!kDebugMode) {
+    if (!kDebugMode && ready) {
       FlutterError.onError =
           FirebaseCrashlytics.instance.recordFlutterFatalError;
     }
   }
 
   static void catchAsynchronusErrors() {
-    if (!kDebugMode) {
+    if (!kDebugMode && ready) {
       PlatformDispatcher.instance.onError = (error, stack) {
         FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
         return true;
@@ -64,6 +83,7 @@ class FirebaseInitalizationClass {
   /// (crash-on-startup reports on budget devices). Remote Config is optional —
   /// never let it take down the app. Failures are recorded as non-fatals.
   static Future<void> setupRemoteConfig() async {
+    if (!ready) return;
     try {
       remoteConfig = FirebaseRemoteConfig.instance;
       await remoteConfig!.setConfigSettings(
@@ -106,7 +126,12 @@ class FirebaseInitalizationClass {
   // ---- Performance monitoring (P1-8) ----
   // Collects in the field once google-services.json is in place (see REVIVAL_LOG).
   static void initalizePerformance() {
-    performance = FirebasePerformance.instance;
+    if (!ready) return;
+    try {
+      performance = FirebasePerformance.instance;
+    } catch (e, s) {
+      log('Performance init failed: $e\n$s');
+    }
   }
 
   /// Custom trace, e.g. `time_to_pair`, `transfer_duration`. Returns null if
@@ -118,7 +143,7 @@ class FirebaseInitalizationClass {
   /// permission paths. No-op in debug to match the existing crash-handler gating.
   static void recordNonFatal(Object error, StackTrace? stack,
       {String? reason}) {
-    if (!kDebugMode) {
+    if (!kDebugMode && ready) {
       FirebaseCrashlytics.instance
           .recordError(error, stack, reason: reason, fatal: false);
     }
@@ -127,14 +152,14 @@ class FirebaseInitalizationClass {
   /// Attach context that rides along with the next crash/non-fatal report
   /// (current screen, transfer state, image count, payload size, paired/not).
   static void setCustomKey(String key, Object value) {
-    if (!kDebugMode) {
+    if (!kDebugMode && ready) {
       FirebaseCrashlytics.instance.setCustomKey(key, value);
     }
   }
 
   /// Breadcrumb along the flow (shows up in the crash timeline).
   static void breadcrumb(String message) {
-    if (!kDebugMode) {
+    if (!kDebugMode && ready) {
       FirebaseCrashlytics.instance.log(message);
     }
   }
