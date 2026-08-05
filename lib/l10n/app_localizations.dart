@@ -8,6 +8,7 @@ import 'package:intl/intl.dart' as intl;
 import 'app_localizations_ar.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
 import 'app_localizations_hi.dart';
 import 'app_localizations_pt.dart';
 import 'app_localizations_zh.dart';
@@ -101,6 +102,7 @@ abstract class AppLocalizations {
     Locale('ar'),
     Locale('en'),
     Locale('es'),
+    Locale('fr'),
     Locale('hi'),
     Locale('pt'),
     Locale('zh')
@@ -406,6 +408,54 @@ abstract class AppLocalizations {
   /// **'Photos in this album will appear here. Try another album above.'**
   String get empty_state_body;
 
+  /// No description provided for @empty_state_none_title.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos found'**
+  String get empty_state_none_title;
+
+  /// No description provided for @empty_state_none_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photos to your gallery — or allow photo access — then refresh.'**
+  String get empty_state_none_body;
+
+  /// No description provided for @empty_state_refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get empty_state_refresh;
+
+  /// No description provided for @album_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search album'**
+  String get album_search_hint;
+
+  /// No description provided for @album_search_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No albums with that name found'**
+  String get album_search_empty;
+
+  /// No description provided for @language_sheet_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Select language'**
+  String get language_sheet_title;
+
+  /// No description provided for @help_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get help_button;
+
+  /// No description provided for @size_limit_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Each image must be under {limit} MB (largest is {size} MB).'**
+  String size_limit_message(String limit, String size);
+
   /// No description provided for @showcase_four_title.
   ///
   /// In en, this message translates to:
@@ -447,6 +497,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No QR code scanned — it may have expired.'**
   String get qr_timed_out_message;
+
+  /// No description provided for @qr_invalid_label.
+  ///
+  /// In en, this message translates to:
+  /// **'That code didn\'t work'**
+  String get qr_invalid_label;
+
+  /// No description provided for @qr_invalid_message.
+  ///
+  /// In en, this message translates to:
+  /// **'That isn\'t a Snapdrop code. Scan the QR shown by the Figma desktop plugin.'**
+  String get qr_invalid_message;
 
   /// No description provided for @qr_restart_scan.
   ///
@@ -685,6 +747,7 @@ class _AppLocalizationsDelegate
         'ar',
         'en',
         'es',
+        'fr',
         'hi',
         'pt',
         'zh'
@@ -703,6 +766,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsEn();
     case 'es':
       return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
     case 'hi':
       return AppLocalizationsHi();
     case 'pt':

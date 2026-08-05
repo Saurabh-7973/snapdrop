@@ -172,6 +172,33 @@ class AppLocalizationsEn extends AppLocalizations {
       'Photos in this album will appear here. Try another album above.';
 
   @override
+  String get empty_state_none_title => 'No photos found';
+
+  @override
+  String get empty_state_none_body =>
+      'Add photos to your gallery — or allow photo access — then refresh.';
+
+  @override
+  String get empty_state_refresh => 'Refresh';
+
+  @override
+  String get album_search_hint => 'Search album';
+
+  @override
+  String get album_search_empty => 'No albums with that name found';
+
+  @override
+  String get language_sheet_title => 'Select language';
+
+  @override
+  String get help_button => 'Help';
+
+  @override
+  String size_limit_message(String limit, String size) {
+    return 'Each image must be under $limit MB (largest is $size MB).';
+  }
+
+  @override
   String get showcase_four_title => 'QR Scanner';
 
   @override
@@ -192,6 +219,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get qr_timed_out_message =>
       'No QR code scanned — it may have expired.';
+
+  @override
+  String get qr_invalid_label => 'That code didn\'t work';
+
+  @override
+  String get qr_invalid_message =>
+      'That isn\'t a Snapdrop code. Scan the QR shown by the Figma desktop plugin.';
 
   @override
   String get qr_restart_scan => 'Restart Scan';

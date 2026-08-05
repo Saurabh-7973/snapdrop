@@ -161,6 +161,32 @@ class AppLocalizationsZh extends AppLocalizations {
   String get empty_state_body => '此相册的照片会显示在这里。请在上方尝试其他相册。';
 
   @override
+  String get empty_state_none_title => '未找到照片';
+
+  @override
+  String get empty_state_none_body => '请向相册添加照片，或允许访问照片，然后刷新。';
+
+  @override
+  String get empty_state_refresh => '刷新';
+
+  @override
+  String get album_search_hint => '搜索相册';
+
+  @override
+  String get album_search_empty => '未找到该名称的相册';
+
+  @override
+  String get language_sheet_title => '选择语言';
+
+  @override
+  String get help_button => '帮助';
+
+  @override
+  String size_limit_message(String limit, String size) {
+    return '每张图片必须小于 $limit MB（最大的为 $size MB）。';
+  }
+
+  @override
   String get showcase_four_title => '二维码扫描器';
 
   @override
@@ -180,6 +206,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get qr_timed_out_message => '未扫描到二维码 — 它可能已过期。';
+
+  @override
+  String get qr_invalid_label => '该二维码无法使用';
+
+  @override
+  String get qr_invalid_message => '这不是 Snapdrop 的二维码。请扫描桌面版 Figma 插件中显示的二维码。';
 
   @override
   String get qr_restart_scan => '重新扫描';

@@ -49,6 +49,20 @@
     "home_album_view_all": "View all",
     "empty_state_title": "No images here yet",
     "empty_state_body": "Photos in this album will appear here. Try another album above.",
+    "empty_state_none_title": "No photos found",
+    "empty_state_none_body": "Add photos to your gallery — or allow photo access — then refresh.",
+    "empty_state_refresh": "Refresh",
+    "album_search_hint": "Search album",
+    "album_search_empty": "No albums with that name found",
+    "language_sheet_title": "Select language",
+    "help_button": "Help",
+    "size_limit_message": "Each image must be under {limit} MB (largest is {size} MB).",
+    "@size_limit_message": {
+        "placeholders": {
+            "limit": { "type": "String" },
+            "size": { "type": "String" }
+        }
+    },
     "showcase_four_title": "QR Scanner",
     "showcase_four_subtitle": "Click to Scan QR Code",
     "qr_screen_herotext_1": "Scan QR Code",
@@ -56,6 +70,8 @@
     "qr_screen_herotext_3": "Scan QR Code to connect",
     "qr_timed_out_label": "Scan timed out",
     "qr_timed_out_message": "No QR code scanned — it may have expired.",
+    "qr_invalid_label": "That code didn't work",
+    "qr_invalid_message": "That isn't a Snapdrop code. Scan the QR shown by the Figma desktop plugin.",
     "qr_restart_scan": "Restart Scan",
     "no_internet_connection": "No internet connection",
     "connection_lost": "Connection lost",

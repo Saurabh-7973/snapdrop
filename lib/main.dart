@@ -21,6 +21,7 @@ final List<Locale> appLocales = [
   const Locale('hi'),
   const Locale('ar'),
   const Locale('pt'),
+  const Locale('fr'),
 ];
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -161,7 +162,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
-      locale: _locale ?? appLocales[SelectedLanguage.selectedLanguageIndex],
+      // Null until the user has picked a language: leaving it null lets Flutter
+      // resolve the device locale against supportedLocales (English only if the
+      // phone speaks nothing we ship). Pinning appLocales[0] here forced every
+      // fresh install to English regardless of system language.
+      locale: _locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -169,8 +174,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: appLocales,
+      // Analytics may be absent if Firebase failed to initialize on this device
+      // — force-unwrapping it here crashed the first build (startup crash).
       navigatorObservers: <NavigatorObserver>[
-        FirebaseInitalizationClass.observer!,
+        if (FirebaseInitalizationClass.observer != null)
+          FirebaseInitalizationClass.observer!,
       ],
       debugShowCheckedModeBanner: false,
       home: FutureBuilder<List<SharedMediaFile>>(
@@ -240,7 +248,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void _loadLocale() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     int? selectedIndex = prefs.getInt('selectedLanguageIndex');
-    if (selectedIndex != null) {
+    if (selectedIndex != null &&
+        selectedIndex >= 0 &&
+        selectedIndex < appLocales.length) {
       SelectedLanguage.selectedLanguageIndex = selectedIndex;
       setLocale(appLocales[selectedIndex]);
     }

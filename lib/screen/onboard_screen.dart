@@ -23,11 +23,11 @@ class OnboardScreen extends StatefulWidget {
 }
 
 class _OnboardScreenState extends State<OnboardScreen> {
-  // Must match the app's supportedLocales (main.appLocales): en/es/zh/hi/ar/pt.
-  // (Previously listed fr, which isn't supported, and omitted pt.)
+  // Must match the app's supportedLocales (main.appLocales).
   final List<Map<String, String>> _languages = [
     {"code": "en", "name": "English", "flag": "🇬🇧"},
     {"code": "es", "name": "Español", "flag": "🇪🇸"},
+    {"code": "fr", "name": "Français", "flag": "🇫🇷"},
     {"code": "zh", "name": "中文", "flag": "🇨🇳"},
     {"code": "hi", "name": "हिन्दी", "flag": "🇮🇳"},
     {"code": "ar", "name": "العربية", "flag": "🇸🇦"},
@@ -42,11 +42,16 @@ class _OnboardScreenState extends State<OnboardScreen> {
     _loadSavedLanguage();
   }
 
-  /// ✅ Load saved language from SharedPreferences
+  /// ✅ Load saved language, or fall back to whatever the app actually resolved
+  /// from the device locale — the chip must name the language on screen.
   void _loadSavedLanguage() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    final systemCode = Localizations.localeOf(context).languageCode;
+    final supported = _languages.any((l) => l["code"] == systemCode);
     setState(() {
-      _selectedLanguage = prefs.getString('selectedLanguage') ?? "en";
+      _selectedLanguage = prefs.getString('selectedLanguage') ??
+          (supported ? systemCode : "en");
     });
   }
 
@@ -369,9 +374,9 @@ class _OnboardScreenState extends State<OnboardScreen> {
                       borderRadius: BorderRadius.circular(3),
                     ),
                   ),
-                  const Text(
-                    "Select Language",
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.language_sheet_title,
+                    style: const TextStyle(
                       fontFamily: 'Inter',
                       color: Colors.white,
                       fontSize: 17,
@@ -449,10 +454,10 @@ class _OnboardScreenState extends State<OnboardScreen> {
                             color: Colors.white.withValues(alpha: 0.2),
                             width: 1.3),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
-                          "Cancel",
-                          style: TextStyle(
+                          AppLocalizations.of(context)!.exit_dialog_cancel,
+                          style: const TextStyle(
                             fontFamily: 'Inter',
                             color: Color(0xFFD6DCD8),
                             fontSize: 15,

@@ -175,6 +175,33 @@ class AppLocalizationsHi extends AppLocalizations {
       'इस एल्बम की फ़ोटो यहाँ दिखेंगी। ऊपर कोई दूसरा एल्बम आज़माएँ।';
 
   @override
+  String get empty_state_none_title => 'कोई फ़ोटो नहीं मिली';
+
+  @override
+  String get empty_state_none_body =>
+      'अपनी गैलरी में फ़ोटो जोड़ें — या फ़ोटो एक्सेस की अनुमति दें — फिर रिफ़्रेश करें।';
+
+  @override
+  String get empty_state_refresh => 'रिफ़्रेश करें';
+
+  @override
+  String get album_search_hint => 'एल्बम खोजें';
+
+  @override
+  String get album_search_empty => 'इस नाम का कोई एल्बम नहीं मिला';
+
+  @override
+  String get language_sheet_title => 'भाषा चुनें';
+
+  @override
+  String get help_button => 'मदद';
+
+  @override
+  String size_limit_message(String limit, String size) {
+    return 'हर इमेज $limit MB से कम होनी चाहिए (सबसे बड़ी $size MB है)।';
+  }
+
+  @override
   String get showcase_four_title => 'QR स्कैनर';
 
   @override
@@ -195,6 +222,13 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get qr_timed_out_message =>
       'कोई QR कोड स्कैन नहीं हुआ — शायद यह समाप्त हो गया।';
+
+  @override
+  String get qr_invalid_label => 'यह कोड काम नहीं आया';
+
+  @override
+  String get qr_invalid_message =>
+      'यह Snapdrop का कोड नहीं है। डेस्कटॉप Figma प्लगइन में दिख रहा QR स्कैन करें।';
 
   @override
   String get qr_restart_scan => 'फिर से स्कैन करें';

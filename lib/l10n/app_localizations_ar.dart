@@ -168,6 +168,33 @@ class AppLocalizationsAr extends AppLocalizations {
       'ستظهر صور هذا الألبوم هنا. جرّب ألبومًا آخر بالأعلى.';
 
   @override
+  String get empty_state_none_title => 'لم يتم العثور على صور';
+
+  @override
+  String get empty_state_none_body =>
+      'أضف صورًا إلى معرض الصور — أو اسمح بالوصول إلى الصور — ثم حدّث.';
+
+  @override
+  String get empty_state_refresh => 'تحديث';
+
+  @override
+  String get album_search_hint => 'البحث عن ألبوم';
+
+  @override
+  String get album_search_empty => 'لا يوجد ألبوم بهذا الاسم';
+
+  @override
+  String get language_sheet_title => 'اختر اللغة';
+
+  @override
+  String get help_button => 'مساعدة';
+
+  @override
+  String size_limit_message(String limit, String size) {
+    return 'يجب أن تكون كل صورة أقل من $limit ميغابايت (أكبرها $size ميغابايت).';
+  }
+
+  @override
   String get showcase_four_title => 'ماسح QR';
 
   @override
@@ -188,6 +215,13 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get qr_timed_out_message =>
       'لم يتم مسح أي رمز QR — ربما انتهت صلاحيته.';
+
+  @override
+  String get qr_invalid_label => 'لم يعمل هذا الرمز';
+
+  @override
+  String get qr_invalid_message =>
+      'هذا ليس رمز Snapdrop. امسح رمز QR الظاهر في إضافة Figma على سطح المكتب.';
 
   @override
   String get qr_restart_scan => 'إعادة المسح';
