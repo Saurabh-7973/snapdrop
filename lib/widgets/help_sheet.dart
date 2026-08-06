@@ -8,18 +8,32 @@ import 'step_badge.dart';
 /// "How Snapdrop works" — the same three steps as onboarding, reachable at any
 /// time from the "?" in the header. Onboarding is shown once on first launch;
 /// testers who skipped or forgot it had no way back to the explanation.
-Future<void> showHelpSheet(BuildContext context) {
-  return showModalBottomSheet<void>(
+Future<void> showHelpSheet(BuildContext context) async {
+  final result = await showModalBottomSheet<Object?>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     barrierColor: const Color(0xFF040A07).withValues(alpha: 0.62),
-    builder: (_) => const HelpSheet(),
+    // Chaining is driven from HERE, not from inside the sheet: the sheet's own
+    // context is defunct the moment it pops, so opening the QR sheet with it
+    // would look up a Navigator on a dead element.
+    builder: (sheetContext) => HelpSheet(
+      onShowQrHelp: () => Navigator.of(sheetContext).pop(_chainQrHelp),
+    ),
   );
+  if (result == _chainQrHelp && context.mounted) {
+    await showQrHelpSheet(context);
+  }
 }
 
+/// Sentinel: "the user asked for the QR sheet next".
+const Object _chainQrHelp = Object();
+
 class HelpSheet extends StatelessWidget {
-  const HelpSheet({super.key});
+  /// Opens the "Where's the QR code?" sheet after this one closes.
+  final VoidCallback onShowQrHelp;
+
+  const HelpSheet({super.key, required this.onShowQrHelp});
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +99,7 @@ class HelpSheet extends StatelessWidget {
               _ghostButton(
                 label: l.scan_help_link,
                 icon: Icons.qr_code_rounded,
-                onTap: () {
-                  Navigator.of(context).pop();
-                  showQrHelpSheet(context);
-                },
+                onTap: onShowQrHelp,
               ),
               const SizedBox(height: 10),
               _ghostButton(

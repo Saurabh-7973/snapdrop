@@ -55,7 +55,6 @@ class _DropDownViewState extends State<DropDownView> {
   bool _hasMore = true;
   bool hasAll = false;
   bool hasNoData = false;
-  bool hasDataLoaded = false;
   // Assets (not just albums) have come back for the selected album.
   bool _assetsLoaded = false;
 
@@ -742,7 +741,6 @@ class _DropDownViewState extends State<DropDownView> {
               setState(() {
                 albumList = listOfAlbum;
                 selectedAlbum = listOfAlbum[0];
-                hasDataLoaded = true;
               });
               filterAlbums();
             }
@@ -813,7 +811,6 @@ class _DropDownViewState extends State<DropDownView> {
       assetList = first;
       _page = 1;
       _hasMore = first.length >= MediaProviderServices.pageSize;
-      hasDataLoaded = true;
       _assetsLoaded = true;
     });
   }
