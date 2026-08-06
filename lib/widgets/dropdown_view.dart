@@ -946,19 +946,25 @@ class _PhotoTile extends StatelessWidget {
                             future: FileImageServices().getImageSize(asset),
                             builder: (context, snap) {
                               if (!snap.hasData) return const SizedBox.shrink();
-                              return Text(
-                                "${snap.data} MB",
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  color: Colors.white,
-                                  fontSize: 10.5,
-                                  fontWeight: FontWeight.w500,
-                                  shadows: [
-                                    Shadow(
-                                        blurRadius: 3,
-                                        color: Color(0xB3000000),
-                                        offset: Offset(0, 1))
-                                  ],
+                              // Force LTR for the measurement: in an RTL locale
+                              // the bidi algorithm renders "0.32 MB" as
+                              // "MB 0.32".
+                              return Directionality(
+                                textDirection: TextDirection.ltr,
+                                child: Text(
+                                  "${snap.data} MB",
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    color: Colors.white,
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.w500,
+                                    shadows: [
+                                      Shadow(
+                                          blurRadius: 3,
+                                          color: Color(0xB3000000),
+                                          offset: Offset(0, 1))
+                                    ],
+                                  ),
                                 ),
                               );
                             },
