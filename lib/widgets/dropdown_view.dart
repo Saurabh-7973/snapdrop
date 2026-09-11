@@ -747,14 +747,24 @@ class _DropDownViewState extends State<DropDownView> {
             listOfAlbum.sort((a, b) => albumLabel(a)
                 .toLowerCase()
                 .compareTo(albumLabel(b).toLowerCase()));
-            if (mounted) {
-              setState(() {
-                albumList = listOfAlbum;
-                selectedAlbum = listOfAlbum[0];
-              });
-              filterAlbums();
-            }
-            _resetAndLoad(selectedAlbum!);
+
+            // CRASHLYTICS, and this is the big one: `selectedAlbum` is assigned
+            // ONLY inside the `mounted` guard, and `_resetAndLoad(selectedAlbum!)`
+            // sat OUTSIDE it. Anyone who left this screen while the album list
+            // was still loading came back to a null and a force-unwrap — "Null
+            // check operator used on a null value", in a closure inside a
+            // closure off a Future, in the first seconds of the session.
+            //
+            // Read the local list rather than the field: the field is state
+            // that may not have been written, the local is the value we
+            // actually have.
+            if (!mounted) return;
+            setState(() {
+              albumList = listOfAlbum;
+              selectedAlbum = listOfAlbum.first;
+            });
+            filterAlbums();
+            _resetAndLoad(listOfAlbum.first);
           } else {
             if (mounted) {
               setState(() {

@@ -81,7 +81,15 @@ class _SendFileState extends State<SendFile> {
                     ),
                     const SizedBox(height: 22),
                     RoomDisplayer(
-                      senderId: widget.socketService!.userId!,
+                      // CRASHLYTICS: this was `widget.socketService!.userId!`,
+                      // two force-unwraps in a build method. `userId` is not
+                      // assigned until the server answers with `your_id`, so
+                      // every build that ran before that reply — which on a
+                      // slow network is the first one, every time — threw
+                      // "Null check operator used on a null value" from
+                      // inside the widget tree. An id we do not have yet is a
+                      // dash, not a crash.
+                      senderId: widget.socketService?.userId ?? '—',
                       receiverId: widget.roomId,
                       senderMessage: l.send_screen_your_id,
                       receiverMessage: l.send_screen_connected_to,
@@ -95,7 +103,12 @@ class _SendFileState extends State<SendFile> {
                               connectDisplayer: false,
                             )
                           : SelectedImagesViewer(
-                              selectedAssetList: widget.selectedAssetList!,
+                              // Nullable by declaration, and the QR scanner
+                              // passes it straight through — including when
+                              // nothing was selected. Empty renders an empty
+                              // strip; the force-unwrap rendered a crash.
+                              selectedAssetList:
+                                  widget.selectedAssetList ?? const [],
                             ),
                     ),
                     const SizedBox(height: 12),
@@ -110,7 +123,8 @@ class _SendFileState extends State<SendFile> {
                             blurValue: 1,
                             builder: (context) => SendButton(
                               socketService: widget.socketService,
-                              selectedAssetList: widget.selectedAssetList!,
+                              selectedAssetList:
+                                  widget.selectedAssetList ?? const [],
                               isIntentSharing: widget.isIntentSharing,
                               onTransferCompleted: _onCompleted,
                             ),

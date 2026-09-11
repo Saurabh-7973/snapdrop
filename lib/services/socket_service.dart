@@ -67,47 +67,54 @@ class SocketService implements SocketTransport {
     _joinFigmaRoom();
   }
 
+  // Every socket call below reads `socket?.` rather than `socket!.`.
+  //
+  // The call order in connectToSocketServer() means the handle is normally
+  // assigned before any of these run, so the force-unwraps were "safe" by
+  // sequence alone — until a failed connect, a disposed service, or a
+  // reconnect changed the sequence. A dropped socket should mean a dropped
+  // message, never a null-check crash.
   void _onDisconnectChecker() {
-    socket!.onDisconnect((_) => onDropped?.call());
+    socket?.onDisconnect((_) => onDropped?.call());
   }
 
   void _socketConnection() {
     socket = io.io('https://getsnapdrop.in/',
         OptionBuilder().setTransports(['websocket']).setTimeout(10000).build());
 
-    socket!.connect();
+    socket?.connect();
   }
 
   void _testMessage() {
-    socket!.emit('test', 'sad');
+    socket?.emit('test', 'sad');
   }
 
   void _onConnectChecker() {
-    socket!.onConnect((data) {});
+    socket?.onConnect((data) {});
   }
 
   void _onConnectErrorChecker() {
-    socket!.on('connect_error', (error) => onDropped?.call());
+    socket?.on('connect_error', (error) => onDropped?.call());
   }
 
   void _joinFigmaRoom() {
     _roomId = _url.toString().split('=')[1];
 
-    socket!.emit("join_figma_room", {
+    socket?.emit("join_figma_room", {
       'my_id': _userId,
       'room': _roomId,
     });
   }
 
   void _fetchUserId() {
-    socket!.on('your_id', (data) {
+    socket?.on('your_id', (data) {
       _userId = data['id'];
     });
   }
 
   // Register the ack handler exactly once; feed the single broadcast stream.
   void _onImageReceived() {
-    socket!.on('image_received_to_figma', (data) {
+    socket?.on('image_received_to_figma', (data) {
       if (!_imageReceivedController.isClosed) {
         _imageReceivedController.add(true);
       }
@@ -120,7 +127,7 @@ class SocketService implements SocketTransport {
     String? imageName = name;
     String? imageType = type;
 
-    socket!.emit("image", {
+    socket?.emit("image", {
       'room': _roomId,
       'files': [
         {
