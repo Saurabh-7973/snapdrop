@@ -108,3 +108,36 @@ phone it was.
 
 **Pending from the same session:** a Firebase issue observed on device, to be
 recorded here once the detail is shared.
+
+---
+
+## Appendix B — the first hardware walk, as recorded
+
+11 Sep 2026, debug build on a Nothing Phone (A015), Android 16. Driven over
+`adb`, with each screen photographed before commenting so the tag was checked
+against what was actually on screen.
+
+| Screen | Tag | Layer | Predicted |
+|---|---|---|---|
+| Onboarding | `ONBOARD` | 4 | yes |
+| Home (image grid) | `DROPDOWN` | 4 | **yes — and it is the defect** |
+| QR scanner | `QR` | 4 | yes |
+| Send file | not reached | | expected `UNKNOWN`, still unverified |
+
+**Home reports DROPDOWN.** `HomeScreen` renders `DropDownView` inline as its
+body, the resolver keeps the deepest matching widget, and the deeper one wins.
+Predicted from the source before the phone was touched, then confirmed on it.
+
+**Three comments were sent for real**, so the screenshot, the pin and the device
+context travelled together, not just the tag.
+
+**The bubble drag works on hardware.** It started in the bottom-right corner
+sitting on top of the onboarding "Get Started" button — the collision this was
+supposed to fix — moved to the left edge, snapped, and kept that position across
+a navigation. First time that had run on a device.
+
+**A real crash was found by walking, not by testing**, and is fixed: see
+Appendix A.
+
+**Not covered, and honest about it:** the send-file screen, every error and
+empty state, and any screen reached from a share intent.
