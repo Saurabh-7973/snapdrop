@@ -88,9 +88,9 @@ class _QRScannerState extends State<QRScanner>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (_qrViewController == null) return;
     if (state == AppLifecycleState.resumed) {
-      if (scannerVisible && result == null) _qrViewController?.resumeCamera();
+      if (scannerVisible && result == null) _camera((c) => c.resumeCamera());
     } else {
-      _qrViewController?.pauseCamera();
+      _camera((c) => c.pauseCamera());
     }
   }
 
@@ -120,7 +120,7 @@ class _QRScannerState extends State<QRScanner>
       _scanAttempt++;
       qrKey = GlobalKey(debugLabel: 'QR-$_scanAttempt');
     } else {
-      _qrViewController?.resumeCamera();
+      _camera((c) => c.resumeCamera());
     }
 
     setState(() {
@@ -135,7 +135,7 @@ class _QRScannerState extends State<QRScanner>
     _timeoutTimer = Timer(const Duration(seconds: 20), () {
       if (!mounted) return;
       if (result == null) {
-        _qrViewController?.pauseCamera();
+        _camera((c) => c.pauseCamera());
         setState(() {
           isTimeout = true;
           scannerVisible = false;
@@ -272,6 +272,29 @@ class _QRScannerState extends State<QRScanner>
     );
   }
 
+  /// CRASHLYTICS: `CameraException(404, No barcode view found)`.
+  ///
+  /// resumeCamera/pauseCamera return futures that reject when the native view
+  /// behind the controller is gone — the QRView unmounted, the route was
+  /// popped, the scan timed out and dropped the handle. Called bare, that
+  /// rejection has no handler and is reported as a FATAL crash, on a control
+  /// call whose failure means nothing to the user.
+  ///
+  /// Every camera call goes through here.
+  void _camera(Future<void>? Function(QRViewController c) op) {
+    final c = _qrViewController;
+    if (c == null) return;
+    try {
+      op(c)?.catchError((Object e, StackTrace s) {
+        FirebaseInitalizationClass.recordNonFatal(e, s,
+            reason: 'qr camera control failed');
+      });
+    } catch (e, s) {
+      FirebaseInitalizationClass.recordNonFatal(e, s,
+          reason: 'qr camera control threw synchronously');
+    }
+  }
+
   void _onQRViewController(QRViewController qrViewController) {
     _qrViewController = qrViewController;
     qrViewController.scannedDataStream.listen((scanData) {
@@ -284,7 +307,7 @@ class _QRScannerState extends State<QRScanner>
       });
 
       _timeoutTimer?.cancel(); // Cancel the timeout when QR is scanned
-      qrViewController.pauseCamera();
+      _camera((c) => c.pauseCamera());
       connectSocket();
     });
   }

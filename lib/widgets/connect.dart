@@ -289,13 +289,29 @@ class _SendButtonState extends State<SendButton> {
     String imageExtension;
     Uint8List? unitFile;
 
+    // CRASHLYTICS: `Thumbnail request error … MediaMetadataRetriever failed`.
+    // One unreadable asset in a multi-file send used to abort the whole
+    // transfer with a fatal. Skip the file instead — the caller already
+    // handles a null payload.
     if (scaled) {
-      unitFile = await asset.thumbnailDataWithSize(
-          ThumbnailSize.square(cap),
-          quality: 95);
+      try {
+        unitFile = await asset.thumbnailDataWithSize(
+            ThumbnailSize.square(cap),
+            quality: 95);
+      } catch (e, s) {
+        FirebaseInitalizationClass.recordNonFatal(e, s,
+            reason: 'thumbnail read failed for ${asset.id}');
+        unitFile = null;
+      }
       imageExtension = 'jpg';
     } else {
-      unitFile = await asset.originBytes;
+      try {
+        unitFile = await asset.originBytes;
+      } catch (e, s) {
+        FirebaseInitalizationClass.recordNonFatal(e, s,
+            reason: 'originBytes read failed for ${asset.id}');
+        unitFile = null;
+      }
       imageExtension = getImageExtension(imageName);
       if (imageExtension.isEmpty) imageExtension = 'jpg';
     }

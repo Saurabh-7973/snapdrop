@@ -22,6 +22,7 @@ import '../services/permission_provider.dart';
 import '../services/socket_service.dart';
 import '../l10n/app_localizations.dart';
 import 'app_dialog.dart';
+import '../utils/firebase_initalization_class.dart';
 
 // P2: holds services + a ScrollController as widget fields and mutates
 // isIntentSharing in initState — should move into State. Deferred (behavior-sensitive).
@@ -727,9 +728,18 @@ class _DropDownViewState extends State<DropDownView> {
   }
 
   initialMethod(bool hasAll) {
+    // CRASHLYTICS: this chain had no error handler at all. A rejected
+    // permission future, or any failure inside loadAlbums, escaped to
+    // PlatformDispatcher.onError and was logged FATAL — during the first
+    // seconds of the session, which is exactly where the crash-free-users
+    // number was being lost.
     widget._permissionProviderServices
         .requestMediaAccessPermission()
-        .then((permission) async {
+        .catchError((Object e, StackTrace s) {
+      FirebaseInitalizationClass.recordNonFatal(e, s,
+          reason: 'media permission chain failed');
+      return false;
+    }).then((permission) async {
       if (permission == true) {
         widget._mediaProviderServices.loadAlbums(hasAll).then((listOfAlbum) {
           if (listOfAlbum.isNotEmpty) {
@@ -883,6 +893,13 @@ class _PhotoTile extends StatelessWidget {
                 thumbnailSize: const ThumbnailSize.square(250),
                 thumbnailFormat: ThumbnailFormat.jpeg,
                 fit: BoxFit.cover,
+                // CRASHLYTICS: `PlatformException(Thumbnail request error …
+                // MediaMetadataRetriever failed to retrieve a frame …)`.
+                // A single unreadable file in the camera roll — a corrupt
+                // download, a video the decoder refuses — used to take the
+                // whole grid down. One tile failing is a blank tile, not a
+                // crash.
+                errorBuilder: (context, error, stack) => const SizedBox.shrink(),
                 frameBuilder: (context, child, frame, wasSync) {
                   // Fade in over the placeholder without changing layout — the
                   // image keeps the tile's full constraints (no switcher).
