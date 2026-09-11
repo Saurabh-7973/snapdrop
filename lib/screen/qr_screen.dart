@@ -96,8 +96,17 @@ class _QRScreenState extends State<QRScreen> {
                                     blurValue: 1,
                                     builder: (context) => QRScanner(
                                       isIntentSharing: widget.isIntentSharing,
+                                      // NOT `!`. The connection-status row on
+                                      // Home pushes `QRScreen(isIntentSharing:
+                                      // false)` with no list, so this was a
+                                      // guaranteed crash on a completely
+                                      // ordinary path — tap "scan to connect"
+                                      // before picking any photos. QRScanner
+                                      // already declares this parameter
+                                      // nullable, so the force-unwrap bought
+                                      // nothing and cost the whole screen.
                                       selectedAssetList:
-                                          widget.selectedAssetList!,
+                                          widget.selectedAssetList,
                                     ),
                                   ),
                           ),

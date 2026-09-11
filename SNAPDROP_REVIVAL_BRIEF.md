@@ -1,4 +1,4 @@
-# Snapdrop (AirDrop for Figma) — Revival & Republish Brief
+ # Snapdrop (AirDrop for Figma) — Revival & Republish Brief
 **For:** Claude Code · **Goal:** republish on a new Google Play account under a new package ID · **Prime directive:** preserve all business logic.
 
 ---

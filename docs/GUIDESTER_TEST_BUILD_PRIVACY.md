@@ -86,3 +86,25 @@ sent. If someone asks for full erasure, ask whether they reinstalled.
 - [ ] Screens walked on hardware and the resolver's answers recorded
 - [ ] Key rotated — **after** the hardware walk, immediately before the build
 - [ ] A build with no dart-define confirmed inert: no bubble, nothing sent
+
+---
+
+## Appendix — what the first walk found
+
+Recorded 11 Sep 2026, from the first hardware pass with the overlay wired.
+
+**A real crash, found by walking rather than by testing.** Tapping "Not
+connected — scan to connect" on Home, before picking any photos, renders the QR
+screen as a red error box: *Null check operator used on a null value*. The
+connection row pushes `QRScreen(isIntentSharing: false)` with no asset list, and
+the screen force-unwrapped it. `QRScanner` already declares that parameter
+nullable, so the `!` bought nothing and cost the whole screen. A second instance
+of the same null sat one step further along, in the branch that runs after a
+successful scan. Both fixed.
+
+This is the argument for the product, in one screenshot: the report carries the
+screen, the device, the build and the exception, and nobody had to ask which
+phone it was.
+
+**Pending from the same session:** a Firebase issue observed on device, to be
+recorded here once the detail is shared.

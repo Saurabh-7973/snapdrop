@@ -346,7 +346,10 @@ class _QRScannerState extends State<QRScanner>
           return SendFile(
             selectedAssetList: widget.selectedAssetList,
             isIntentSharing: widget.isIntentSharing,
-            imageCount: widget.selectedAssetList!.length,
+            // Same null as qr_screen.dart, one step further along: reaching
+            // this line means a scan succeeded, and a scan can succeed with
+            // nothing selected.
+            imageCount: widget.selectedAssetList?.length ?? 0,
             roomId: '${result!.code}'.toString().split('=')[1],
             socketService: socketService,
           );

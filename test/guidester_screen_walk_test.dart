@@ -51,7 +51,7 @@ Future<ScreenResolution> walk(WidgetTester tester, Widget screen) async {
         )
         .first,
   );
-  return ScreenResolver.resolveDetailed(ctx, searchRoot: ctx as Element);
+  return ScreenResolver.resolveDetailed(ctx, searchRoot: ctx);
 }
 
 void main() {
