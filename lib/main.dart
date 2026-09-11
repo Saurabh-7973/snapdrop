@@ -13,6 +13,7 @@ import 'screen/onboard_screen.dart';
 import 'screen/qr_screen.dart';
 import 'utils/firebase_initalization_class.dart';
 import 'package:flutter_upgrade_version/flutter_upgrade_version.dart';
+import 'package:guidester/guidester.dart';
 
 final List<Locale> appLocales = [
   const Locale('en'),
@@ -51,6 +52,11 @@ void main() async {
   FirebaseInitalizationClass.enableDataCollection();
   FirebaseInitalizationClass.catchFatalErrors();
   FirebaseInitalizationClass.catchAsynchronusErrors();
+
+  // Tester feedback. The api key is the switch: a release build passes no
+  // --dart-define=GUIDESTER_KEY, the key is empty, and the overlay returns its
+  // child on the first line of build(). Nothing else in this app changes.
+  Guidester.init(apiKey: const String.fromEnvironment('GUIDESTER_KEY'));
 
   runApp(MyApp());
 
@@ -162,6 +168,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
+      // The overlay wraps the app's own content and nothing else. It never
+      // pushes a route and never replaces the tree, so the Navigator above it
+      // is untouched.
+      builder: (context, child) => GuidesterOverlay(child: child!),
       // Null until the user has picked a language: leaving it null lets Flutter
       // resolve the device locale against supportedLocales (English only if the
       // phone speaks nothing we ship). Pinning appLocales[0] here forced every

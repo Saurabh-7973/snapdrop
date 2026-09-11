@@ -12,6 +12,12 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Tester feedback overlay. Inert unless the build passes
+  # --dart-define=GUIDESTER_KEY, so a release build compiles it in and never
+  # runs it. Test builds only.
+  guidester:
+    path: ../../dev/guidester/packages/guidester
+
   photo_manager: ^3.6.4
   socket_io_client: ^3.0.2
   flutter_launcher_icons: ^0.14.3
