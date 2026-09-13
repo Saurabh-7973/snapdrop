@@ -80,3 +80,6 @@ google-services.json
 
 # pixel-diff QA artifacts (regenerable via tools/)
 qa/
+
+# The Guidester key for test builds. Never committed.
+tool/.guidester_key
