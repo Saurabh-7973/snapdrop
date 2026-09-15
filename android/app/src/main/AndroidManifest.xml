@@ -74,6 +74,14 @@
             </intent-filter>
 
         </activity>
+        <!-- zxing-android-embedded merges in its own scanner activity, locked to
+             sensorLandscape. qr_code_scanner_plus drives BarcodeView directly and
+             never starts it, so it is dead weight that only earns a large-screen
+             orientation warning from Play. -->
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            tools:node="remove" />
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
