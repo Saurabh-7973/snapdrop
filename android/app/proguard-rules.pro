@@ -24,6 +24,13 @@
 -keep class com.fluttercandies.photo_manager.** { *; }
 -dontwarn com.fluttercandies.photo_manager.**
 
+# ---- qr_code_scanner_plus (ships no consumer rules) + its zxing deps ----
+-keep class net.touchcapture.qr.flutterqrplus.** { *; }
+-keep class com.journeyapps.barcodescanner.** { *; }
+-keep class com.google.zxing.** { *; }
+-dontwarn com.journeyapps.barcodescanner.**
+-dontwarn com.google.zxing.**
+
 # ---- General: keep annotations + native methods ----
 -keepattributes *Annotation*
 -keepclasseswithmembernames class * {
