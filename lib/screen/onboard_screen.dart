@@ -328,12 +328,10 @@ class _OnboardScreenState extends State<OnboardScreen> {
               ),
             ),
             const SizedBox(width: 9),
-            // Direction-aware: arrow points in the reading direction (flips RTL).
-            Transform.flip(
-              flipX: Directionality.of(context) == TextDirection.rtl,
-              child: const Icon(Icons.arrow_forward_rounded,
-                  color: ThemeConstant.buttonInk, size: 18),
-            ),
+            // Points in the reading direction: the icon's matchTextDirection
+            // mirrors it under RTL, so no manual flip.
+            const Icon(Icons.arrow_forward_rounded,
+                color: ThemeConstant.buttonInk, size: 18),
           ],
         ),
       ),

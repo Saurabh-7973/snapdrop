@@ -548,12 +548,10 @@ class _DropDownViewState extends State<DropDownView> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      // Points the reading way, so it mirrors under RTL.
-                      Transform.flip(
-                        flipX: Directionality.of(context) == TextDirection.rtl,
-                        child: const Icon(Icons.arrow_forward_rounded,
-                            color: ThemeConstant.buttonInk, size: 21),
-                      ),
+                      // Points the reading way: matchTextDirection on the icon
+                      // mirrors it under RTL, so no manual flip.
+                      const Icon(Icons.arrow_forward_rounded,
+                          color: ThemeConstant.buttonInk, size: 21),
                     ],
                   ),
                 ),

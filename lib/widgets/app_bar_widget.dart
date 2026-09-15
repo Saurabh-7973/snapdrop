@@ -37,10 +37,10 @@ class AppBarWidget extends StatelessWidget {
               Align(
                 alignment: AlignmentDirectional.centerStart,
                 child: _tapTarget(
-                  // Points back along the reading direction under RTL too.
+                  // matchTextDirection on this icon already mirrors it under
+                  // RTL; flipping it again would point it the wrong way.
                   icon: Icons.arrow_back_ios_new_rounded,
                   onTap: onBack,
-                  flip: Directionality.of(context) == TextDirection.rtl,
                 ),
               ),
             if (actionIcon != null)
@@ -60,17 +60,13 @@ class AppBarWidget extends StatelessWidget {
   Widget _tapTarget({
     required IconData icon,
     VoidCallback? onTap,
-    bool flip = false,
   }) {
     return InkWell(
       onTap: onTap,
       customBorder: const CircleBorder(),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        child: Transform.flip(
-          flipX: flip,
-          child: Icon(icon, color: Colors.white, size: 22),
-        ),
+        child: Icon(icon, color: Colors.white, size: 22),
       ),
     );
   }
