@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SelectedImagesViewer extends StatelessWidget {
-  final List<AssetEntity> selectedAssetList;
+  final List<XFile> selectedAssetList;
 
   const SelectedImagesViewer({super.key, required this.selectedAssetList});
 
@@ -22,7 +23,7 @@ class SelectedImagesViewer extends StatelessWidget {
           childAspectRatio: (2 / 3),
         ),
         itemBuilder: (context, index) {
-          AssetEntity currentAsset = selectedAssetList[index];
+          final XFile currentAsset = selectedAssetList[index];
 
           return GestureDetector(
             onTap: () {
@@ -47,11 +48,13 @@ class SelectedImagesViewer extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: AssetEntityImage(
-                  currentAsset,
+                child: Image.file(
+                  File(currentAsset.path),
                   fit: BoxFit.cover,
-                  isOriginal: false,
-                  thumbnailSize: const ThumbnailSize.square(300),
+                  // Decode at tile size, not the photo's full resolution.
+                  cacheWidth: 300,
+                  errorBuilder: (context, error, stack) =>
+                      const SizedBox.shrink(),
                 ),
               ),
             ),

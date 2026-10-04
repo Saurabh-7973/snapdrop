@@ -3,7 +3,7 @@ description: A new Flutter project.
 publish_to: 'none' 
 
 
-version: 1.0.2+6
+version: 1.0.3+8
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -12,12 +12,12 @@ dependencies:
   flutter:
     sdk: flutter
 
-  photo_manager: ^3.6.4
+  # System Photo Picker (no storage/media permission). Play's photo & video
+  # permissions policy rejected the build that read the whole gallery.
+  image_picker: ^1.2.0
   socket_io_client: ^3.0.2
   flutter_launcher_icons: ^0.14.3
   receive_sharing_intent: ^1.8.1
-  photo_manager_image_provider: ^2.1.1
-  permission_handler: ^11.3.1
   lottie: ^3.1.0
   device_info_plus: ^11.3.0
   showcaseview: ^4.0.1

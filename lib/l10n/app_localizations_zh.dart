@@ -113,10 +113,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get qr_help_dismiss => '知道了';
 
   @override
-  String get showcase_one_title => '下拉按钮';
+  String get showcase_one_title => '选择照片';
 
   @override
-  String get showcase_one_subtitle => '选择要从中选择照片的相册';
+  String get showcase_one_subtitle => '点按此处，选择要发送的照片';
 
   @override
   String get showcase_two_title => '选择图片';
@@ -324,4 +324,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get share_dialog_maybe_later => '以后再说';
+
+  @override
+  String get tour_skip => '跳过';
+
+  @override
+  String get pick_photos_button => '选择照片';
+
+  @override
+  String get pick_more_button => '添加更多';
+
+  @override
+  String get picker_empty_title => '选择要发送的照片';
+
+  @override
+  String get picker_empty_body => '从相册中选择照片，然后扫描电脑上的二维码。';
+
+  @override
+  String get photo_remove => '移除';
 }

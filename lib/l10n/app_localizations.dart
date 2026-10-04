@@ -315,13 +315,13 @@ abstract class AppLocalizations {
   /// No description provided for @showcase_one_title.
   ///
   /// In en, this message translates to:
-  /// **'Dropdown Button'**
+  /// **'Choose photos'**
   String get showcase_one_title;
 
   /// No description provided for @showcase_one_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Select albums you want to choose photos from'**
+  /// **'Tap here to pick the photos you want to send'**
   String get showcase_one_subtitle;
 
   /// No description provided for @showcase_two_title.
@@ -731,6 +731,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Maybe later'**
   String get share_dialog_maybe_later;
+
+  /// No description provided for @tour_skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get tour_skip;
+
+  /// No description provided for @pick_photos_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose photos'**
+  String get pick_photos_button;
+
+  /// No description provided for @pick_more_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Add more'**
+  String get pick_more_button;
+
+  /// No description provided for @picker_empty_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick photos to send'**
+  String get picker_empty_title;
+
+  /// No description provided for @picker_empty_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose them from your gallery, then scan the QR code on your computer.'**
+  String get picker_empty_body;
+
+  /// No description provided for @photo_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get photo_remove;
 }
 
 class _AppLocalizationsDelegate

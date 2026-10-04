@@ -33,8 +33,8 @@
     "qr_help_step3": "Un QR code apparaît. Pointez votre téléphone dessus.",
     "qr_help_note": "Il faut Figma sur ordinateur. Le code est généré par le plugin, pas par cette application.",
     "qr_help_dismiss": "J'ai compris",
-    "showcase_one_title": "Menu déroulant",
-    "showcase_one_subtitle": "Choisissez l'album dans lequel piocher vos photos",
+    "showcase_one_title": "Choisir des photos",
+    "showcase_one_subtitle": "Touchez ici pour choisir les photos à envoyer",
     "showcase_two_title": "Sélection des images",
     "showcase_two_subtitle": "Sélectionnez les images à partager",
     "showcase_three_title": "Bouton Connecter",
@@ -59,8 +59,12 @@
     "size_limit_message": "Chaque image doit faire moins de {limit} Mo (la plus lourde fait {size} Mo).",
     "@size_limit_message": {
         "placeholders": {
-            "limit": { "type": "String" },
-            "size": { "type": "String" }
+            "limit": {
+                "type": "String"
+            },
+            "size": {
+                "type": "String"
+            }
         }
     },
     "showcase_four_title": "Scanner de QR code",
@@ -108,5 +112,11 @@
     "share_dialog_title": "Snapdrop vous plaît ?",
     "share_dialog_body": "S'il vous a fait gagner du temps, le partager avec un autre designer aide plus qu'on ne le croit.",
     "share_dialog_share": "Partager",
-    "share_dialog_maybe_later": "Plus tard"
+    "share_dialog_maybe_later": "Plus tard",
+    "tour_skip": "Passer",
+    "pick_photos_button": "Choisir des photos",
+    "pick_more_button": "Ajouter",
+    "picker_empty_title": "Choisissez des photos à envoyer",
+    "picker_empty_body": "Choisissez-les dans votre galerie, puis scannez le code QR sur votre ordinateur.",
+    "photo_remove": "Retirer"
 }

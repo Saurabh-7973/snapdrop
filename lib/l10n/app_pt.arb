@@ -32,8 +32,8 @@
     "qr_help_step3": "Um código QR aparece. Aponte seu telefone para ele.",
     "qr_help_note": "Precisa ser o Figma de desktop. O código é gerado pelo plugin, não por este app.",
     "qr_help_dismiss": "Entendi",
-    "showcase_one_title": "Botão Dropdown",
-    "showcase_one_subtitle": "Selecione álbuns de onde deseja escolher fotos",
+    "showcase_one_title": "Escolher fotos",
+    "showcase_one_subtitle": "Toque aqui para escolher as fotos que quer enviar",
     "showcase_two_title": "Selecionar Imagens",
     "showcase_two_subtitle": "Selecione imagens que deseja compartilhar",
     "showcase_three_title": "Botão de Conectar",
@@ -112,5 +112,11 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "tour_skip": "Pular",
+    "pick_photos_button": "Escolher fotos",
+    "pick_more_button": "Adicionar mais",
+    "picker_empty_title": "Escolha fotos para enviar",
+    "picker_empty_body": "Escolha na sua galeria e depois escaneie o código QR no computador.",
+    "photo_remove": "Remover"
 }

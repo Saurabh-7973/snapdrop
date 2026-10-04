@@ -32,8 +32,8 @@
     "qr_help_step3": "एक QR कोड दिखता है। अपना फ़ोन उसकी ओर करें।",
     "qr_help_note": "यह डेस्कटॉप Figma होना चाहिए। कोड प्लगइन बनाता है, यह ऐप नहीं।",
     "qr_help_dismiss": "समझ गए",
-    "showcase_one_title": "ड्रॉपडाउन बटन",
-    "showcase_one_subtitle": "उन एल्बमों का चयन करें जिनसे आप तस्वीरें चुनना चाहते हैं",
+    "showcase_one_title": "फ़ोटो चुनें",
+    "showcase_one_subtitle": "जो फ़ोटो भेजनी हैं, उन्हें चुनने के लिए यहाँ टैप करें",
     "showcase_two_title": "छवियाँ चुनें",
     "showcase_two_subtitle": "उन छवियों का चयन करें जिन्हें आप साझा करना चाहते हैं",
     "showcase_three_title": "कनेक्ट बटन",
@@ -112,5 +112,11 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "tour_skip": "छोड़ें",
+    "pick_photos_button": "फ़ोटो चुनें",
+    "pick_more_button": "और जोड़ें",
+    "picker_empty_title": "भेजने के लिए फ़ोटो चुनें",
+    "picker_empty_body": "गैलरी से फ़ोटो चुनें, फिर अपने कंप्यूटर पर QR कोड स्कैन करें।",
+    "photo_remove": "हटाएँ"
 }

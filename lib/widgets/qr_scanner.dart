@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:Snapdrop/constant/global_showcase_key.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:image_picker/image_picker.dart';
 import '../utils/firebase_initalization_class.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -23,7 +22,7 @@ import 'figma_logo.dart';
 import 'qr_help_sheet.dart';
 
 class QRScanner extends StatefulWidget {
-  final List<AssetEntity>? selectedAssetList;
+  final List<XFile>? selectedAssetList;
   final List<SharedMediaFile>? listOfMedia;
   final bool isIntentSharing;
 
@@ -48,7 +47,6 @@ class _QRScannerState extends State<QRScanner>
   GlobalKey qrKey = GlobalKey(debugLabel: 'QR-0');
   Barcode? result;
   QRViewController? _qrViewController;
-  List<Uint8List>? bufferList = [];
   String? roomId;
   String? userId;
   bool connectionStatus = false;
@@ -379,14 +377,6 @@ class _QRScannerState extends State<QRScanner>
         }
       }));
     });
-  }
-
-  listDownAsset(List<AssetEntity> selectedAssetList) async {
-    for (int i = 0; i < selectedAssetList.length; i++) {
-      selectedAssetList[i].originBytes.then((value) async {
-        bufferList!.add(value!);
-      });
-    }
   }
 
   /// Dark rounded viewport: corner brackets always; live camera + sweep when

@@ -123,11 +123,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get qr_help_dismiss => 'समझ गए';
 
   @override
-  String get showcase_one_title => 'ड्रॉपडाउन बटन';
+  String get showcase_one_title => 'फ़ोटो चुनें';
 
   @override
   String get showcase_one_subtitle =>
-      'उन एल्बमों का चयन करें जिनसे आप तस्वीरें चुनना चाहते हैं';
+      'जो फ़ोटो भेजनी हैं, उन्हें चुनने के लिए यहाँ टैप करें';
 
   @override
   String get showcase_two_title => 'छवियाँ चुनें';
@@ -346,4 +346,23 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get share_dialog_maybe_later => 'शायद बाद में';
+
+  @override
+  String get tour_skip => 'छोड़ें';
+
+  @override
+  String get pick_photos_button => 'फ़ोटो चुनें';
+
+  @override
+  String get pick_more_button => 'और जोड़ें';
+
+  @override
+  String get picker_empty_title => 'भेजने के लिए फ़ोटो चुनें';
+
+  @override
+  String get picker_empty_body =>
+      'गैलरी से फ़ोटो चुनें, फिर अपने कंप्यूटर पर QR कोड स्कैन करें।';
+
+  @override
+  String get photo_remove => 'हटाएँ';
 }

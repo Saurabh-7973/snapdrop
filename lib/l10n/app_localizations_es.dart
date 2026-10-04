@@ -123,11 +123,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get qr_help_dismiss => 'Entendido';
 
   @override
-  String get showcase_one_title => 'Botón Desplegable';
+  String get showcase_one_title => 'Elegir fotos';
 
   @override
   String get showcase_one_subtitle =>
-      'Seleccione los álbumes de los que quiere elegir fotos';
+      'Toca aquí para elegir las fotos que quieres enviar';
 
   @override
   String get showcase_two_title => 'Seleccionar Imágenes';
@@ -346,4 +346,23 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get share_dialog_maybe_later => 'Quizás más tarde';
+
+  @override
+  String get tour_skip => 'Omitir';
+
+  @override
+  String get pick_photos_button => 'Elegir fotos';
+
+  @override
+  String get pick_more_button => 'Añadir más';
+
+  @override
+  String get picker_empty_title => 'Elige fotos para enviar';
+
+  @override
+  String get picker_empty_body =>
+      'Elígelas de tu galería y luego escanea el código QR en tu ordenador.';
+
+  @override
+  String get photo_remove => 'Quitar';
 }

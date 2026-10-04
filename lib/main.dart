@@ -30,7 +30,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Ceiling on decoded-thumbnail memory so a long grid scroll can't bloat the
-  // image cache (the grid loads many right-sized thumbs via AssetEntityImage).
+  // image cache (picked-photo tiles decode at tile size via cacheWidth).
   PaintingBinding.instance.imageCache.maximumSizeBytes = 100 << 20; // 100 MB
 
   // Edge-to-edge: background bleeds behind transparent status & nav bars, light icons.

@@ -20,10 +20,20 @@
     <uses-feature android:name="android.hardware.screen.landscape" android:required="false" />
     <uses-feature android:name="android.hardware.wifi" android:required="false" />
 
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <!-- maxSdkVersion 32: on Android 13+ READ_MEDIA_IMAGES replaces this -->
+    <!-- Photos come from the system Photo Picker, which needs no permission.
+         Play's photo & video permissions policy rejected the build that held
+         READ_MEDIA_IMAGES, so strip every media/storage read permission in case
+         a library manifest tries to merge one back in. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
+        tools:node="remove" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"/>
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:node="remove" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
    <application

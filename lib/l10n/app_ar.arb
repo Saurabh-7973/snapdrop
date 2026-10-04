@@ -32,8 +32,8 @@
     "qr_help_step3": "يظهر رمز QR. وجّه هاتفك نحوه.",
     "qr_help_note": "يجب أن يكون Figma لسطح المكتب. يتم إنشاء الرمز بواسطة الإضافة، وليس هذا التطبيق.",
     "qr_help_dismiss": "حسنًا",
-    "showcase_one_title": "زر القائمة المنسدلة",
-    "showcase_one_subtitle": "اختر الألبومات التي تريد اختيار الصور منها",
+    "showcase_one_title": "اختر الصور",
+    "showcase_one_subtitle": "اضغط هنا لاختيار الصور التي تريد إرسالها",
     "showcase_two_title": "اختر الصور",
     "showcase_two_subtitle": "اختر الصور التي تريد مشاركتها",
     "showcase_three_title": "زر الاتصال",
@@ -112,5 +112,11 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "tour_skip": "تخطي",
+    "pick_photos_button": "اختر الصور",
+    "pick_more_button": "أضف المزيد",
+    "picker_empty_title": "اختر صورًا لإرسالها",
+    "picker_empty_body": "اخترها من معرض الصور، ثم امسح رمز QR على الكمبيوتر.",
+    "photo_remove": "إزالة"
 }

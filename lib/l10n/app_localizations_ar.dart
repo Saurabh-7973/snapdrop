@@ -118,11 +118,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get qr_help_dismiss => 'حسنًا';
 
   @override
-  String get showcase_one_title => 'زر القائمة المنسدلة';
+  String get showcase_one_title => 'اختر الصور';
 
   @override
   String get showcase_one_subtitle =>
-      'اختر الألبومات التي تريد اختيار الصور منها';
+      'اضغط هنا لاختيار الصور التي تريد إرسالها';
 
   @override
   String get showcase_two_title => 'اختر الصور';
@@ -339,4 +339,23 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get share_dialog_maybe_later => 'ربما لاحقًا';
+
+  @override
+  String get tour_skip => 'تخطي';
+
+  @override
+  String get pick_photos_button => 'اختر الصور';
+
+  @override
+  String get pick_more_button => 'أضف المزيد';
+
+  @override
+  String get picker_empty_title => 'اختر صورًا لإرسالها';
+
+  @override
+  String get picker_empty_body =>
+      'اخترها من معرض الصور، ثم امسح رمز QR على الكمبيوتر.';
+
+  @override
+  String get photo_remove => 'إزالة';
 }

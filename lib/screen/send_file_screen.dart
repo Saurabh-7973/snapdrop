@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
-import 'package:showcaseview/showcaseview.dart';
+import '../widgets/tour.dart';
 
 import '../constant/theme_contants.dart';
 import '../floating_squares.dart';
@@ -20,7 +20,7 @@ import '../widgets/selected_images.dart';
 
 class SendFile extends StatefulWidget {
   final String roomId;
-  final List<AssetEntity>? selectedAssetList;
+  final List<XFile>? selectedAssetList;
   final SocketService? socketService;
   final bool isIntentSharing;
   final List<SharedMediaFile>? listOfMedia;
@@ -119,8 +119,8 @@ class _SendFileState extends State<SendFile> {
                             isIntentSharing: widget.isIntentSharing,
                             onTransferCompleted: _onCompleted,
                           )
-                        : ShowCaseWidget(
-                            blurValue: 1,
+                        : Tour(
+                            screen: 'send',
                             builder: (context) => SendButton(
                               socketService: widget.socketService,
                               selectedAssetList:
@@ -128,7 +128,6 @@ class _SendFileState extends State<SendFile> {
                               isIntentSharing: widget.isIntentSharing,
                               onTransferCompleted: _onCompleted,
                             ),
-                            autoPlayDelay: const Duration(seconds: 3),
                           ),
                     const SizedBox(height: 4),
                   ],

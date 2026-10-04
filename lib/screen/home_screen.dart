@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
 import '../floating_squares.dart';
@@ -8,8 +7,9 @@ import '../services/session_controller.dart';
 import '../services/socket_service.dart';
 import '../widgets/app_background.dart';
 import '../widgets/app_bar_widget.dart';
-import '../widgets/dropdown_view.dart';
 import '../widgets/help_sheet.dart';
+import '../widgets/photo_picker_view.dart';
+import '../widgets/tour.dart';
 import 'qr_screen.dart';
 import '../l10n/app_localizations.dart';
 
@@ -165,13 +165,12 @@ class _HomeBodyState extends State<_HomeBody> {
                     ),
                     const SizedBox(height: 16),
                     Expanded(
-                      child: ShowCaseWidget(
-                        blurValue: 1,
-                        builder: (context) => DropDownView(
+                      child: Tour(
+                        screen: 'home',
+                        builder: (context) => PhotoPickerView(
                           socketService: widget.socketService,
                           isIntentSharing: widget.isIntentSharing,
                         ),
-                        autoPlayDelay: const Duration(seconds: 3),
                       ),
                     ),
                   ],

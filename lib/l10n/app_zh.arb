@@ -32,8 +32,8 @@
     "qr_help_step3": "出现二维码后，用手机对准它。",
     "qr_help_note": "必须是桌面版 Figma。二维码由插件生成，而非此应用。",
     "qr_help_dismiss": "知道了",
-    "showcase_one_title": "下拉按钮",
-    "showcase_one_subtitle": "选择要从中选择照片的相册",
+    "showcase_one_title": "选择照片",
+    "showcase_one_subtitle": "点按此处，选择要发送的照片",
     "showcase_two_title": "选择图片",
     "showcase_two_subtitle": "选择您要分享的图片",
     "showcase_three_title": "连接按钮",
@@ -112,5 +112,11 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "tour_skip": "跳过",
+    "pick_photos_button": "选择照片",
+    "pick_more_button": "添加更多",
+    "picker_empty_title": "选择要发送的照片",
+    "picker_empty_body": "从相册中选择照片，然后扫描电脑上的二维码。",
+    "photo_remove": "移除"
 }

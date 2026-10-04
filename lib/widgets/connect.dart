@@ -6,7 +6,7 @@ import 'package:firebase_performance/firebase_performance.dart';
 import 'package:Snapdrop/constant/global_showcase_key.dart';
 import 'package:Snapdrop/services/in_app_review_service.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -24,7 +24,7 @@ import 'share_app_dialog.dart';
 
 class SendButton extends StatefulWidget {
   final SocketService? socketService;
-  final List<AssetEntity>? selectedAssetList;
+  final List<XFile>? selectedAssetList;
 
   final bool isIntentSharing;
   final List<SharedMediaFile>? listOfMedia;
@@ -276,50 +276,37 @@ class _SendButtonState extends State<SendButton> {
     }
   }
 
-  /// Sends one asset. Images within the resolution ceiling go as untouched
-  /// originals (lossless); larger ones are downscaled to maxSendEdgePx at JPEG
-  /// q95 — visually lossless for Figma but far lighter on the wire.
-  Future<void> _sendOneAsset(AssetEntity asset) async {
-    final int maxEdge =
-        asset.width >= asset.height ? asset.width : asset.height;
-    final int cap = FileImageServices.maxSendEdgePx;
-    final bool scaled = maxEdge > cap;
-
-    String imageName = asset.title ?? 'image_${asset.id}';
-    String imageExtension;
+  /// Sends one picked photo. Images within the resolution ceiling go as
+  /// untouched originals (lossless); larger ones are downscaled to
+  /// maxSendEdgePx at JPEG q95 — visually lossless for Figma but far lighter
+  /// on the wire.
+  Future<void> _sendOneAsset(XFile file) async {
+    final String imageName = getImageName(file.name);
+    String imageExtension = getImageExtension(file.name);
+    if (imageExtension.isEmpty) imageExtension = 'jpg';
     Uint8List? unitFile;
 
-    // CRASHLYTICS: `Thumbnail request error … MediaMetadataRetriever failed`.
-    // One unreadable asset in a multi-file send used to abort the whole
-    // transfer with a fatal. Skip the file instead — the caller already
-    // handles a null payload.
-    if (scaled) {
-      try {
-        unitFile = await asset.thumbnailDataWithSize(
-            ThumbnailSize.square(cap),
-            quality: 95);
-      } catch (e, s) {
-        FirebaseInitalizationClass.recordNonFatal(e, s,
-            reason: 'thumbnail read failed for ${asset.id}');
-        unitFile = null;
+    // One unreadable file in a multi-file send must not abort the whole
+    // transfer. Skip the file instead — the caller already handles a null
+    // payload.
+    try {
+      final scaled = await FileImageServices.downscaleIfLarger(file.path);
+      if (scaled != null) {
+        unitFile = scaled;
+        imageExtension = 'jpg';
+      } else {
+        unitFile = await file.readAsBytes();
       }
-      imageExtension = 'jpg';
-    } else {
-      try {
-        unitFile = await asset.originBytes;
-      } catch (e, s) {
-        FirebaseInitalizationClass.recordNonFatal(e, s,
-            reason: 'originBytes read failed for ${asset.id}');
-        unitFile = null;
-      }
-      imageExtension = getImageExtension(imageName);
-      if (imageExtension.isEmpty) imageExtension = 'jpg';
+    } catch (e, s) {
+      FirebaseInitalizationClass.recordNonFatal(e, s,
+          reason: 'picked file read failed');
+      unitFile = null;
     }
 
     if (unitFile == null) {
       FirebaseInitalizationClass.recordNonFatal(
           'send bytes null', StackTrace.current,
-          reason: 'transfer: bytes unavailable for ${asset.id}');
+          reason: 'transfer: bytes unavailable for a picked file');
       return;
     }
 

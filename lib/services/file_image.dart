@@ -1,4 +1,5 @@
-import 'package:photo_manager/photo_manager.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FileImageServices {
   // The relay caps a single socket.io message at maxHttpBufferSize = 1e7 bytes
@@ -15,40 +16,44 @@ class FileImageServices {
   // quality / ~no speedup.
   static const int maxSendEdgePx = 3072;
 
-  // Resolving AssetEntity.file (and reading its length) is comparatively heavy
-  // and was being recomputed on every grid rebuild for each selected tile.
-  // Cache the formatted MB string per asset id: the first read pays the cost,
-  // every later label/guard read is instant. Sizes don't change for an asset.
+  static const MethodChannel _imageChannel = MethodChannel('snapdrop/image');
+
+  // Reading a picked file's length was being recomputed on every rebuild for
+  // each selected tile. Cache the formatted MB string per path: the first read
+  // pays the cost, every later label/guard read is instant.
   static final Map<String, String> _sizeCache = {};
 
-  Future<String> getImageSize(AssetEntity assetFile) async {
-    final cached = _sizeCache[assetFile.id];
+  Future<String> getImageSize(XFile file) async {
+    final cached = _sizeCache[file.path];
     if (cached != null) return cached;
 
     String size = '0.0';
-    final file = await assetFile.file;
-    if (file != null) {
+    try {
       final length = await file.length();
       size = (length / (1024 * 1024)).toStringAsFixed(2);
+    } catch (_) {
+      // Unreadable file: report 0 and let the send path skip it.
     }
-    _sizeCache[assetFile.id] = size;
+    _sizeCache[file.path] = size;
     return size;
   }
 
   /// Largest single image in the set (MiB). This is what the transport actually
   /// limits — each image is one emit and must fit the relay's per-message cap.
-  Future<double> getMaxImageSize(List<AssetEntity> selectedAssetList) async {
-    if (selectedAssetList.isEmpty) return 0.0;
+  Future<double> getMaxImageSize(List<XFile> selected) async {
+    if (selected.isEmpty) return 0.0;
     final sizes = await Future.wait(
-        selectedAssetList.map((a) async => double.parse(await getImageSize(a))));
+        selected.map((f) async => double.parse(await getImageSize(f))));
     return sizes.reduce((a, b) => a > b ? a : b);
   }
 
-  Future<double> getTotalImageSize(List<AssetEntity> selectedAssetList) async {
-    // Reuses the per-asset cache, so summing the selected set is instant once
-    // their labels have resolved — the <=5 MB guard no longer recomputes.
-    final sizes = await Future.wait(
-        selectedAssetList.map((a) async => double.parse(await getImageSize(a))));
-    return sizes.fold<double>(0.0, (sum, s) => sum + s);
+  /// JPEG bytes downscaled to [maxSendEdgePx] when the image is larger than
+  /// that, or null when it already fits and should go as the original.
+  static Future<Uint8List?> downscaleIfLarger(String path) {
+    return _imageChannel.invokeMethod<Uint8List>('downscaleIfLarger', {
+      'path': path,
+      'maxEdge': maxSendEdgePx,
+      'quality': 95,
+    });
   }
 }

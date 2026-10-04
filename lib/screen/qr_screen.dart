@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
-import 'package:showcaseview/showcaseview.dart';
+import '../widgets/tour.dart';
 
 import '../constant/theme_contants.dart';
 import '../l10n/app_localizations.dart';
@@ -13,7 +13,7 @@ import '../widgets/app_dialog.dart';
 import '../widgets/qr_scanner.dart';
 
 class QRScreen extends StatefulWidget {
-  final List<AssetEntity>? selectedAssetList;
+  final List<XFile>? selectedAssetList;
   final bool isIntentSharing;
   final List<SharedMediaFile>? listOfMedia;
 
@@ -92,8 +92,8 @@ class _QRScreenState extends State<QRScreen> {
                                     isIntentSharing: widget.isIntentSharing,
                                     listOfMedia: widget.listOfMedia,
                                   )
-                                : ShowCaseWidget(
-                                    blurValue: 1,
+                                : Tour(
+                                    screen: 'qr',
                                     builder: (context) => QRScanner(
                                       isIntentSharing: widget.isIntentSharing,
                                       // NOT `!`. The connection-status row on

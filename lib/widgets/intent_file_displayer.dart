@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import '../constant/theme_contants.dart';
 import '../screen/qr_screen.dart';
 import '../services/socket_service.dart';
 
 class IntentFileDisplayer extends StatelessWidget {
-  final List<AssetEntity>? selectedAssetList;
+  final List<XFile>? selectedAssetList;
   final SocketService? socketService;
   final bool isIntentSharing;
   final List<SharedMediaFile>? listOfMedia;
