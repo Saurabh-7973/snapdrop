@@ -113,6 +113,14 @@ class FirebaseInitalizationClass {
       } catch (e, s) {
         recordNonFatal(e, s, reason: 'remoteConfig realtime activate failed');
       }
+    }, onError: (Object e, StackTrace s) {
+      // CRASHLYTICS: `[firebase_remote_config/internal] internal remote config
+      // fetch error`, logged FATAL. The realtime stream reports a failed
+      // background fetch (offline, flaky network, OEM battery savers) as a
+      // stream error. With no onError here it went to PlatformDispatcher.onError,
+      // which records everything as fatal. The defaults are still in force, so
+      // it is a non-fatal at most.
+      recordNonFatal(e, s, reason: 'remoteConfig realtime stream error');
     });
   }
 
