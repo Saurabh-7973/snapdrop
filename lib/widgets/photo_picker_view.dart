@@ -184,64 +184,79 @@ class _PhotoPickerViewState extends State<PhotoPickerView> {
     );
   }
 
-  /// Nothing picked yet: one clear action. This is the tour's only target.
+  /// Nothing picked yet: one framed, tappable panel with one clear action.
+  /// This is the tour's only target. The hero above already says "select
+  /// images", so no second heading here.
   Widget _emptyState(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 60),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 84,
-            height: 84,
-            decoration: BoxDecoration(
-              color: ThemeConstant.accentGreen.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
-            ),
-            child: Icon(
-              Icons.photo_library_outlined,
-              color: ThemeConstant.softGreen.withValues(alpha: 0.7),
-              size: 40,
+      // Clear the gesture nav area, plus a little air under the panel.
+      padding:
+          EdgeInsets.only(bottom: 20 + MediaQuery.of(context).padding.bottom),
+      // The home column is start-aligned, so this child gets a loose width;
+      // without the explicit fill the panel shrink-wraps and hugs the left.
+      child: SizedBox(
+        width: double.infinity,
+        child: Material(
+          color: Colors.white.withValues(alpha: 0.025),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+            side: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: _pick,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 88,
+                    height: 88,
+                    decoration: BoxDecoration(
+                      color: ThemeConstant.accentGreen.withValues(alpha: 0.10),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                          color: ThemeConstant.softGreen
+                              .withValues(alpha: 0.18)),
+                    ),
+                    child: Icon(
+                      Icons.photo_library_outlined,
+                      color: ThemeConstant.softGreen.withValues(alpha: 0.85),
+                      size: 38,
+                    ),
+                  ),
+                  const SizedBox(height: 22),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 280),
+                    child: Text(
+                      l.picker_empty_body,
+                      textAlign: TextAlign.center,
+                      style: ThemeConstant.subtitleMuted
+                          .copyWith(fontSize: 15, height: 1.45),
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  Showcase(
+                    key: GlobalShowcaseKeys.showcaseOne,
+                    targetBorderRadius: BorderRadius.circular(26),
+                    tooltipBackgroundColor: const Color(0xff161616),
+                    textColor: ThemeConstant.whiteColor,
+                    title: l.showcase_one_title,
+                    description: l.showcase_one_subtitle,
+                    child: AppButton(
+                      label: l.pick_photos_button,
+                      icon: Icons.add_photo_alternate_outlined,
+                      width: 240,
+                      onTap: _pick,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 18),
-          Text(
-            l.picker_empty_title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontFamily: 'Inter',
-              color: Color(0xFFE9ECE9),
-              fontSize: 16.5,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 7),
-          SizedBox(
-            width: 260,
-            child: Text(
-              l.picker_empty_body,
-              textAlign: TextAlign.center,
-              style: ThemeConstant.subtitleMuted.copyWith(fontSize: 14),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Showcase(
-            key: GlobalShowcaseKeys.showcaseOne,
-            targetBorderRadius: BorderRadius.circular(26),
-            tooltipBackgroundColor: const Color(0xff161616),
-            textColor: ThemeConstant.whiteColor,
-            title: l.showcase_one_title,
-            description: l.showcase_one_subtitle,
-            child: AppButton(
-              label: l.pick_photos_button,
-              icon: Icons.add_photo_alternate_outlined,
-              width: 240,
-              onTap: _pick,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
