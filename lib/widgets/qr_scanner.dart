@@ -343,9 +343,12 @@ class _QRScannerState extends State<QRScanner>
     sessionController.pair('${result!.code}');
     socketService = sessionController.socket;
 
-    setState(() {
-      connectionStatus = socketService != null;
-    });
+    // The trace await above can outlive this screen (back gesture mid-scan).
+    if (mounted) {
+      setState(() {
+        connectionStatus = socketService != null;
+      });
+    }
 
     FirebaseInitalizationClass.setCustomKey('paired', true);
     FirebaseInitalizationClass.breadcrumb('pairing_success');
@@ -439,7 +442,7 @@ class _QRScannerState extends State<QRScanner>
       );
     }
 
-    return Container(
+    final box = Container(
       width: 208,
       height: 208,
       decoration: BoxDecoration(
@@ -458,6 +461,18 @@ class _QRScannerState extends State<QRScanner>
           Positioned.fill(child: inner),
           ..._corners(),
         ],
+      ),
+    );
+    // Idle or timed out, the viewport itself starts the camera. On a first run
+    // the scanner otherwise only starts from the tour's callbacks, and the
+    // tour's Skip button fires none of them — skipping left a dead screen.
+    if (scannerVisible && !isTimeout) return box;
+    return Semantics(
+      button: true,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: activateQrScanner,
+        child: box,
       ),
     );
   }

@@ -1,18 +1,11 @@
 # Snapdrop R8/ProGuard keep-rules (release minify is on).
 # socket_io_client is pure Dart — no native/reflection rule needed.
 
-# ---- Flutter engine (standard) ----
--keep class io.flutter.app.** { *; }
--keep class io.flutter.plugin.** { *; }
--keep class io.flutter.util.** { *; }
--keep class io.flutter.view.** { *; }
--keep class io.flutter.** { *; }
--keep class io.flutter.plugins.** { *; }
+# Flutter (embedding + plugins) and Firebase/Play services ship their own
+# consumer R8 rules. Blanket `-keep class io.flutter.** / com.google.firebase.**
+# / com.google.android.gms.** { *; }` here kept them all unobfuscated and
+# unshrunk — Play flagged a 37% obfuscation rate. Only warnings stay muted.
 -dontwarn io.flutter.embedding.**
-
-# ---- Firebase: Analytics / Crashlytics / Performance ----
--keep class com.google.firebase.** { *; }
--keep class com.google.android.gms.** { *; }
 -dontwarn com.google.firebase.**
 -dontwarn com.google.android.gms.**
 

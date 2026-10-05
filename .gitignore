@@ -83,3 +83,6 @@ qa/
 
 # The Guidester key for test builds. Never committed.
 tool/.guidester_key
+
+# Dart symbols from tool/build_release.sh (keep a copy per shipped build)
+/symbols/

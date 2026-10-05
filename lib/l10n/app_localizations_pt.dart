@@ -202,7 +202,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get showcase_four_title => 'QR Scanner';
+  String get showcase_four_title => 'Leitor de QR';
 
   @override
   String get showcase_four_subtitle => 'Clique para Escanear o Código QR';

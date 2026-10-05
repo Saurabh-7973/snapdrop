@@ -67,6 +67,10 @@ class _OnboardScreenState extends State<OnboardScreen> {
       await prefs.setInt('selectedLanguageIndex', idx);
     }
     await prefs.setString('selectedLanguage', langCode);
+    // CRASHLYTICS (1.0.3, first launch): setLocale above rebuilds the whole app,
+    // which can dispose this screen before the awaits finish. setState on a
+    // disposed State is a null-check crash in release.
+    if (!mounted) return;
     setState(() {
       _selectedLanguage = langCode;
     });
