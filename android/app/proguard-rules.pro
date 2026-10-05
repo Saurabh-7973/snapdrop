@@ -20,10 +20,6 @@
 -keepattributes SourceFile,LineNumberTable
 -keep public class * extends java.lang.Exception
 
-# ---- photo_manager (native plugin via platform channels + reflection) ----
--keep class com.fluttercandies.photo_manager.** { *; }
--dontwarn com.fluttercandies.photo_manager.**
-
 # ---- qr_code_scanner_plus (ships no consumer rules) + its zxing deps ----
 -keep class net.touchcapture.qr.flutterqrplus.** { *; }
 -keep class com.journeyapps.barcodescanner.** { *; }

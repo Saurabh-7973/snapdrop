@@ -26,6 +26,19 @@ final List<Locale> appLocales = [
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+/// Light status/nav icons over the always-dark app. Also pinned per frame by
+/// the AnnotatedRegion in MyApp: a one-off SystemChrome call is lost when the
+/// window is recreated, and Android 15+ then falls back to dark icons.
+const SystemUiOverlayStyle appOverlayStyle = SystemUiOverlayStyle(
+  statusBarColor: Colors.transparent,
+  statusBarIconBrightness: Brightness.light,
+  statusBarBrightness: Brightness.dark,
+  systemNavigationBarColor: Colors.transparent,
+  systemNavigationBarIconBrightness: Brightness.light,
+  systemNavigationBarContrastEnforced: false,
+  systemStatusBarContrastEnforced: false,
+);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -35,15 +48,7 @@ void main() async {
 
   // Edge-to-edge: background bleeds behind transparent status & nav bars, light icons.
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light,
-    statusBarBrightness: Brightness.dark,
-    systemNavigationBarColor: Colors.transparent,
-    systemNavigationBarIconBrightness: Brightness.light,
-    systemNavigationBarContrastEnforced: false,
-    systemStatusBarContrastEnforced: false,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(appOverlayStyle);
 
   // Critical for first paint + crash/analytics continuity — keep synchronous.
   await FirebaseInitalizationClass.initalizeFireBase();
@@ -181,6 +186,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           FirebaseInitalizationClass.observer!,
       ],
       debugShowCheckedModeBanner: false,
+      builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: appOverlayStyle,
+        child: child!,
+      ),
       home: FutureBuilder<List<SharedMediaFile>>(
         future: receiveSharingIntent.getInitialMedia(),
         builder: (BuildContext context,

@@ -41,6 +41,9 @@ class _PhotoPickerViewState extends State<PhotoPickerView> {
   /// Vertical room reserved under the grid for the send bar + its scrim.
   static const double _sendBarSpace = 108;
 
+  /// Most photos one send takes ("Up to 10 images" on the home screen).
+  static const int _maxPhotos = 10;
+
   @override
   void initState() {
     super.initState();
@@ -65,7 +68,8 @@ class _PhotoPickerViewState extends State<PhotoPickerView> {
       final lost = await _picker.retrieveLostData();
       final files = lost.files;
       if (lost.isEmpty || files == null || files.isEmpty || !mounted) return;
-      setState(() => _picked = [..._picked, ...files]);
+      setState(
+          () => _picked = [..._picked, ...files].take(_maxPhotos).toList());
     } catch (e, s) {
       FirebaseInitalizationClass.recordNonFatal(e, s,
           reason: 'picker lost-data recovery failed');
@@ -74,11 +78,28 @@ class _PhotoPickerViewState extends State<PhotoPickerView> {
 
   Future<void> _pick() async {
     if (_picking) return;
+    final remaining = _maxPhotos - _picked.length;
+    if (remaining <= 0) {
+      _snack(context,
+          AppLocalizations.of(context)!.app_conditions_image_selection_limit);
+      return;
+    }
     _picking = true;
     try {
-      final files = await _picker.pickMultiImage(requestFullMetadata: false);
+      // pickMultiImage's limit must be >= 2, so the last slot is a single pick.
+      final List<XFile> files = remaining == 1
+          ? [
+              if (await _picker.pickImage(
+                      source: ImageSource.gallery, requestFullMetadata: false)
+                  case final file?)
+                file
+            ]
+          : await _picker.pickMultiImage(
+              limit: remaining, requestFullMetadata: false);
       if (!mounted || files.isEmpty) return;
-      setState(() => _picked = [..._picked, ...files]);
+      // The picker honours the limit on Android 13+; older pickers may not.
+      setState(
+          () => _picked = [..._picked, ...files].take(_maxPhotos).toList());
       FirebaseInitalizationClass.eventTracker(
           'photos_picked', {'image_count': files.length});
     } catch (e, s) {
@@ -101,7 +122,8 @@ class _PhotoPickerViewState extends State<PhotoPickerView> {
     final l = AppLocalizations.of(context)!;
     return Stack(children: [
       GridView.builder(
-        itemCount: _picked.length + 1,
+        // No "Add more" tile once the cap is reached.
+        itemCount: _picked.length + (_picked.length < _maxPhotos ? 1 : 0),
         // Last row must clear the send bar + the gesture nav area.
         padding: EdgeInsets.only(
             bottom: _sendBarSpace + MediaQuery.of(context).padding.bottom),
@@ -218,8 +240,8 @@ class _PhotoPickerViewState extends State<PhotoPickerView> {
                       color: ThemeConstant.accentGreen.withValues(alpha: 0.10),
                       shape: BoxShape.circle,
                       border: Border.all(
-                          color: ThemeConstant.softGreen
-                              .withValues(alpha: 0.18)),
+                          color:
+                              ThemeConstant.softGreen.withValues(alpha: 0.18)),
                     ),
                     child: Icon(
                       Icons.photo_library_outlined,
@@ -462,21 +484,24 @@ class _PhotoTile extends StatelessWidget {
                   if (!snap.hasData) return const SizedBox.shrink();
                   // Force LTR for the measurement: in an RTL locale the bidi
                   // algorithm renders "0.32 MB" as "MB 0.32".
+                  // Dark pill: a text shadow alone vanishes on light photos.
                   return Directionality(
                     textDirection: TextDirection.ltr,
-                    child: Text(
-                      "${snap.data} MB",
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        color: Colors.white,
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w500,
-                        shadows: [
-                          Shadow(
-                              blurRadius: 3,
-                              color: Color(0xB3000000),
-                              offset: Offset(0, 1))
-                        ],
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 7, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.55),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        "${snap.data} MB",
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          color: Colors.white,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   );
