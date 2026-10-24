@@ -1,0 +1,30 @@
+Snapdrop: Phone to Figma — Copyright (c) 2024-2026 Saurabh Upadhyay
+
+This source code is provided for reference and personal study. The
+following terms govern its use.
+
+PERMITTED
+- Read and study the source for personal learning.
+- Reuse small snippets (under 50 lines) in unrelated personal projects,
+  with attribution to this repository.
+- Cite or quote the source in articles, talks or educational material,
+  with a link back to this repository.
+
+NOT PERMITTED without prior written permission
+- Redistribute the codebase, in whole or substantially, under any name.
+- Publish a derivative app on Google Play, the Apple App Store or any
+  similar distribution channel, or run a public service based on the
+  relay in this repository.
+- Reuse the name, logo, icons, illustrations or store graphics.
+
+THIRD-PARTY DEPENDENCIES
+Flutter, Dart and the packages listed in pubspec.yaml and package.json
+each carry their own licences (MIT, BSD-3-Clause, Apache-2.0 and others).
+Firebase is used under Google's terms.
+
+NO WARRANTY
+This software is provided "as is", without warranty of any kind. The
+author is not liable for any damage arising from its use.
+
+CONTACT
+For licensing questions or permission, write to hello@saurabhupadhyay.in.
