@@ -32,6 +32,14 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Figma plugin / Node
+node_modules/
+
+# Android signing (never commit keystore or passwords)
+key.properties
+*.jks
+*.keystore
+
 # Symbolication related
 app.*.symbols
 
@@ -63,11 +71,18 @@ pubspec.lock
 *.iml
 misc.xml
 snapdrop.iml
-*.dart_tool
-.lock
-.flutter-plugins-dependencies
-.flutter-plugins
-package_config.json
 version
-firebase_options.dart
+# firebase_options.dart
 google-services.json
+*.env
+# superpowers brainstorm companion
+.superpowers/
+
+# pixel-diff QA artifacts (regenerable via tools/)
+qa/
+
+# The Guidester key for test builds. Never committed.
+tool/.guidester_key
+
+# Dart symbols from tool/build_release.sh (keep a copy per shipped build)
+/symbols/

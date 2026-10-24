@@ -1,0 +1,2 @@
+C:/Users/saura/Downloads/snapdrop/android/app/.cxx/Debug/6h595j1r/x86/CMakeFiles/edit_cache.dir
+C:/Users/saura/Downloads/snapdrop/android/app/.cxx/Debug/6h595j1r/x86/CMakeFiles/rebuild_cache.dir

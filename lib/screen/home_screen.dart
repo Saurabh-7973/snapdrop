@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 import '../constant/theme_contants.dart';
+import '../floating_squares.dart';
+import '../services/session_controller.dart';
 import '../services/socket_service.dart';
-import '../wigets/app_bar_widget.dart';
-import '../wigets/dropdown_view.dart';
-import '../wigets/hero_text.dart';
-import '../wigets/floating_triangles.dart';
-
-//flutter localization
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../widgets/app_background.dart';
+import '../widgets/app_bar_widget.dart';
+import '../widgets/help_sheet.dart';
+import '../widgets/photo_picker_view.dart';
+import '../widgets/tour.dart';
+import 'qr_screen.dart';
+import '../l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
-  SocketService? socketService;
-  bool isIntentSharing = false;
-  HomeScreen(
+  final SocketService? socketService;
+  final bool isIntentSharing;
+  const HomeScreen(
       {super.key, required this.socketService, required this.isIntentSharing});
 
   @override
@@ -30,105 +31,153 @@ class _HomeScreenState extends State<HomeScreen> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {});
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: ThemeConstant.primaryAppColor,
-      child: SafeArea(
-        left: false,
-        right: false,
-        bottom: false,
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                ThemeConstant.primaryAppColor,
-                ThemeConstant.primaryAppColorGradient2,
-                ThemeConstant.primaryAppColorGradient3
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Stack(
-              children: [
-                const FloatingSquares(),
-                Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    children: [
-                      const AppBarWidget(),
-                      Expanded(
-                        flex: 3,
-                        child: TweenAnimationBuilder<Offset>(
-                          tween: Tween<Offset>(
-                            begin: const Offset(0, -0.5),
-                            end: Offset.zero,
-                          ),
-                          duration: const Duration(milliseconds: 1000),
-                          curve: Curves.easeOutQuint,
-                          builder: (context, offset, child) {
-                            return Transform.translate(
-                              offset: offset,
-                              child: HeroText(
-                                firstLine: AppLocalizations.of(context)!
-                                    .home_screen_herotext_1,
-                                secondLine: AppLocalizations.of(context)!
-                                    .home_screen_herotext_2,
-                                thirdLine: AppLocalizations.of(context)!
-                                    .home_screen_herotext_3,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        flex: 9,
-                        child: TweenAnimationBuilder<double>(
-                          tween: Tween<double>(begin: 0.85, end: 1),
-                          duration: const Duration(milliseconds: 1200),
-                          curve: Curves.easeOutBack,
-                          builder: (context, scale, child) {
-                            return Transform.scale(
-                              scale: scale,
-                              child: AnimatedOpacity(
-                                opacity: scale < 0.85
-                                    ? 0.0
-                                    : 1.0, // ✅ Prevent low opacity during transition
-                                duration: const Duration(milliseconds: 1200),
-                                curve: Curves.easeOut,
-                                child: ShowCaseWidget(
-                                  blurValue: 1,
-                                  builder: (context) => DropDownView(
-                                    socketService: widget.socketService,
-                                    isIntentSharing: widget.isIntentSharing,
-                                  ),
-                                  autoPlayDelay: const Duration(seconds: 3),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+    return _HomeBody(
+      socketService: widget.socketService,
+      isIntentSharing: widget.isIntentSharing,
+    );
+  }
+}
+
+/// Connection indicator (top of the picker content). Green dot + "Connected"
+/// with the short room id when live; muted "Not connected — scan to connect"
+/// otherwise (tapping it opens the QR screen). Reacts to the session.
+class _ConnectionIndicator extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: sessionController,
+      builder: (context, _) {
+        final connected = sessionController.isConnected;
+        final l = AppLocalizations.of(context)!;
+        return GestureDetector(
+          onTap: connected
+              ? null
+              : () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const QRScreen(isIntentSharing: false),
+                    ),
                   ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 7,
+                height: 7,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: connected
+                      ? const Color(0xFF46C886)
+                      : ThemeConstant.muted,
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                connected
+                    ? '${l.connection_connected} · ${sessionController.shortRoomId}'
+                    : l.connection_not_connected,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w600,
+                  color: connected
+                      ? const Color(0xFF8FA89A)
+                      : ThemeConstant.muted,
+                ),
+              ),
+            ],
           ),
+        );
+      },
+    );
+  }
+}
+
+class _HomeBody extends StatefulWidget {
+  final SocketService? socketService;
+  final bool isIntentSharing;
+  const _HomeBody({required this.socketService, required this.isIntentSharing});
+  @override
+  State<_HomeBody> createState() => _HomeBodyState();
+}
+
+class _HomeBodyState extends State<_HomeBody> {
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBody: true,
+        extendBodyBehindAppBar: true,
+        body: Stack(
+          children: [
+            const FloatingSquares(),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(22, 6, 22, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Persistent help: onboarding runs once, this is the way
+                    // back to "what is this app / where's the QR".
+                    AppBarWidget(
+                      actionIcon: Icons.help_outline_rounded,
+                      actionTooltip: AppLocalizations.of(context)!.help_button,
+                      onAction: () => showHelpSheet(context),
+                    ),
+                    const SizedBox(height: 14),
+                    Text(
+                      '${AppLocalizations.of(context)!.home_screen_herotext_1}\n${AppLocalizations.of(context)!.home_screen_herotext_2}',
+                      style: ThemeConstant.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      AppLocalizations.of(context)!.home_screen_herotext_3,
+                      style: ThemeConstant.subtitleMuted,
+                    ),
+                    const SizedBox(height: 12),
+                    _ConnectionIndicator(),
+                    const SizedBox(height: 12),
+                    Container(
+                      height: 1,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(1),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.white.withValues(alpha: 0.22),
+                            Colors.white.withValues(alpha: 0.03),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: Tour(
+                        screen: 'home',
+                        builder: (context) => PhotoPickerView(
+                          socketService: widget.socketService,
+                          isIntentSharing: widget.isIntentSharing,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

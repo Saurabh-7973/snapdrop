@@ -1,47 +1,82 @@
 import 'dart:async';
+import 'package:Snapdrop/services/check_app_version.dart';
+import 'package:Snapdrop/services/selected_language.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'widgets/app_background.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../l10n/app_localizations.dart';
 import 'screen/home_screen.dart';
 import 'screen/onboard_screen.dart';
 import 'screen/qr_screen.dart';
 import 'utils/firebase_initalization_class.dart';
-import 'package:upgrader/upgrader.dart';
+import 'package:flutter_upgrade_version/flutter_upgrade_version.dart';
 
-// Flutter localization
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+final List<Locale> appLocales = [
+  const Locale('en'),
+  const Locale('es'),
+  const Locale('zh'),
+  const Locale('hi'),
+  const Locale('ar'),
+  const Locale('pt'),
+  const Locale('fr'),
+];
 
-import 'utils/restart.dart';
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+/// Light status/nav icons over the always-dark app. Also pinned per frame by
+/// the AnnotatedRegion in MyApp: a one-off SystemChrome call is lost when the
+/// window is recreated, and Android 15+ then falls back to dark icons.
+const SystemUiOverlayStyle appOverlayStyle = SystemUiOverlayStyle(
+  statusBarColor: Colors.transparent,
+  statusBarIconBrightness: Brightness.light,
+  statusBarBrightness: Brightness.dark,
+  systemNavigationBarColor: Colors.transparent,
+  systemNavigationBarIconBrightness: Brightness.light,
+  systemNavigationBarContrastEnforced: false,
+  systemStatusBarContrastEnforced: false,
+);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Ceiling on decoded-thumbnail memory so a long grid scroll can't bloat the
+  // image cache (picked-photo tiles decode at tile size via cacheWidth).
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 100 << 20; // 100 MB
+
+  // Edge-to-edge: background bleeds behind transparent status & nav bars, light icons.
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(appOverlayStyle);
+
+  // Critical for first paint + crash/analytics continuity — keep synchronous.
   await FirebaseInitalizationClass.initalizeFireBase();
   FirebaseInitalizationClass.initalizeFireBaseAnalytics();
   FirebaseInitalizationClass.enableDataCollection();
   FirebaseInitalizationClass.catchFatalErrors();
   FirebaseInitalizationClass.catchAsynchronusErrors();
-  FirebaseInitalizationClass.remoteConfigInitialization();
-  FirebaseInitalizationClass.remoteConfigGetDefaultValues();
-  FirebaseInitalizationClass.remoteConfigUpdateValuesRealtime();
-  FirebaseInitalizationClass.remoteConfigFetchAppVersion();
-  await Upgrader.clearSavedSettings(); // REMOVE this for release builds
 
-  // Load stored language before app starts
-  Locale locale = await getStoredLocale();
-  runApp(MyApp(initialLocale: locale));
+  runApp(MyApp());
+
+  // Non-critical — deferred until after the first frame so startup paints fast
+  // (perf instrumentation + remote-config fetch don't gate the UI).
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    FirebaseInitalizationClass.initalizePerformance();
+    // Self-contained + fully guarded: ordered internally and can never throw
+    // out (network failures degrade to defaults, logged as non-fatal).
+    FirebaseInitalizationClass.setupRemoteConfig();
+  });
 }
 
 class MyApp extends StatefulWidget {
-  final Locale initialLocale;
+  const MyApp({
+    super.key,
+  });
 
-  const MyApp({super.key, required this.initialLocale});
-
-  static void setLocale(BuildContext context, Locale locale) {
+  static void setLocale(BuildContext context, Locale newLocale) {
     _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
-    state?.changeLocale(locale);
-    RestartWidget.restartApp(context);
+    state?.setLocale(newLocale);
   }
 
   @override
@@ -52,14 +87,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   ReceiveSharingIntent receiveSharingIntent = ReceiveSharingIntent.instance;
   bool? firstTimeAppOpen;
   StreamSubscription<List<SharedMediaFile>>? _intentDataStreamSubscription;
-  Locale _selectedLocale = const Locale('en'); // Default to English
+  Locale? _locale;
+  PackageInfo _packageInfo = PackageInfo();
+  int? reviewCounter;
 
   @override
   void initState() {
     super.initState();
-    _selectedLocale = widget.initialLocale;
-    firstTimeInstallation();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      firstTimeInstallation();
+    });
     WidgetsBinding.instance.addObserver(this);
+
+    _loadLocale();
 
     // Listen to intent data streams
     _intentDataStreamSubscription = receiveSharingIntent
@@ -78,15 +118,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         );
       }
     }, onError: (err) {
-      debugPrint("Error : $err");
+      // Handle error
     });
+
+    // In App Update
+    //getPackageData();
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _intentDataStreamSubscription?.cancel();
-    super.dispose();
+  Future<void> getPackageData() async {
+    if (!mounted) return;
+    _packageInfo = await PackageManager.getPackageInfo();
+    await CheckAppVersion().checkForAppUpdate(_packageInfo);
+    if (mounted) setState(() {});
   }
 
   @override
@@ -108,41 +151,45 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           );
         }
       }, onError: (err) {
-        debugPrint("Error : $err");
+        // Handle error
       });
     }
   }
 
-  /// ✅ **Updates the language instantly**
-  void changeLocale(Locale locale) async {
-    await setStoredLocale(locale); // Save language preference
-    setState(() {
-      _selectedLocale = locale;
-    });
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _intentDataStreamSubscription?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: _selectedLocale, // Dynamically change language
+      navigatorKey: navigatorKey,
+      // Null until the user has picked a language: leaving it null lets Flutter
+      // resolve the device locale against supportedLocales (English only if the
+      // phone speaks nothing we ship). Pinning appLocales[0] here forced every
+      // fresh install to English regardless of system language.
+      locale: _locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate
+        GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('en'),
-        Locale('es'),
-        Locale('zh'),
-        Locale('hi'),
-        Locale('fr'),
-        Locale('ar')
-      ],
+      supportedLocales: appLocales,
+      // Analytics may be absent if Firebase failed to initialize on this device
+      // — force-unwrapping it here crashed the first build (startup crash).
       navigatorObservers: <NavigatorObserver>[
-        FirebaseInitalizationClass.observer!
+        if (FirebaseInitalizationClass.observer != null)
+          FirebaseInitalizationClass.observer!,
       ],
       debugShowCheckedModeBanner: false,
+      builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: appOverlayStyle,
+        child: child!,
+      ),
       home: FutureBuilder<List<SharedMediaFile>>(
         future: receiveSharingIntent.getInitialMedia(),
         builder: (BuildContext context,
@@ -155,26 +202,36 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               );
             } else {
               return firstTimeAppOpen == true
-                  ? const OnboardScreen() // Navigate to onboarding
+                  ? const OnboardScreen()
                   : HomeScreen(
                       socketService: null,
                       isIntentSharing: false,
                     );
             }
           } else {
-            return const SizedBox(
-                height: 10, width: 10, child: CircularProgressIndicator());
+            return const AppBackground(
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: Center(child: CircularProgressIndicator()),
+              ),
+            );
           }
         },
       ),
     );
   }
 
-  firstTimeInstallation() async {
+  void firstTimeInstallation() async {
+    //firstTimeAppOpen = true; // for debug
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
-    if (firstTimeAppOpen == null || firstTimeAppOpen == false) {
+    reviewCounter = prefs.getInt('reviewCounter');
+    if (reviewCounter == null) {
+      await prefs.setInt('reviewCounter', 0);
+    }
+    // just to check
+    // firstTimeAppOpen = null;
+    if (firstTimeAppOpen == null) {
       await prefs.setBool('firstTimeAppOpen', true);
       FirebaseInitalizationClass.eventTracker(
           'app_install', {'first_time': 'true'});
@@ -183,23 +240,28 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       FirebaseInitalizationClass.eventTracker(
           'app_launch', {'first_time': 'false'});
     }
-
     firstTimeAppOpen = prefs.getBool('firstTimeAppOpen');
     if (mounted) {
       setState(() {});
     }
   }
-}
 
-/// ✅ Get stored language from SharedPreferences
-Future<Locale> getStoredLocale() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? languageCode = prefs.getString('selectedLanguage');
-  return Locale(languageCode ?? 'en'); // Default to English
-}
+  void setLocale(Locale locale) {
+    if (mounted) {
+      setState(() {
+        _locale = locale;
+      });
+    }
+  }
 
-/// ✅ Save selected language
-Future<void> setStoredLocale(Locale locale) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('selectedLanguage', locale.languageCode);
+  void _loadLocale() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? selectedIndex = prefs.getInt('selectedLanguageIndex');
+    if (selectedIndex != null &&
+        selectedIndex >= 0 &&
+        selectedIndex < appLocales.length) {
+      SelectedLanguage.selectedLanguageIndex = selectedIndex;
+      setLocale(appLocales[selectedIndex]);
+    }
+  }
 }

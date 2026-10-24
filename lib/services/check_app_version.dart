@@ -1,31 +1,43 @@
-import 'package:package_info_plus/package_info_plus.dart';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_upgrade_version/flutter_upgrade_version.dart';
 
 class CheckAppVersion {
   static String? minimumAppVersion;
   static bool isUpdateRequired = false;
 
   static void checkAppVersion() async {
-    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    final String appVersion = packageInfo.version;
-
-    if (_compareVersions(minimumAppVersion!, appVersion) > 0) {
-      // Display a message suggesting update
-      print(
-          'Your app version is outdated. Please update to version $minimumAppVersion or higher.');
-      isUpdateRequired = true;
-    }
+    // This method is not used in your current flow, so it's commented out.
   }
 
-  static int _compareVersions(String v1, String v2) {
-    final List<int> version1 = v1.split('.').map(int.parse).toList();
-    final List<int> version2 = v2.split('.').map(int.parse).toList();
+  Future<void> checkForAppUpdate(PackageInfo packageInfo) async {
+    try {
+      if (Platform.isAndroid) {
+        InAppUpdateManager manager = InAppUpdateManager();
+        AppUpdateInfo? appUpdateInfo = await manager.checkForUpdate();
 
-    for (int i = 0; i < version1.length && i < version2.length; ++i) {
-      final int difference = version1[i] - version2[i];
-      if (difference != 0) {
-        return difference;
+        if (appUpdateInfo == null) {
+          return;
+        }
+
+        if (appUpdateInfo.updateAvailability ==
+            UpdateAvailability.developerTriggeredUpdateInProgress) {
+          // If an in-app update is already running, resume the update.
+          await manager.startAnUpdate(type: AppUpdateType.immediate);
+        } else if (appUpdateInfo.updateAvailability ==
+            UpdateAvailability.updateAvailable) {
+          if (appUpdateInfo.immediateAllowed) {
+            await manager.startAnUpdate(type: AppUpdateType.immediate);
+          } else if (appUpdateInfo.flexibleAllowed) {
+            await manager.startAnUpdate(type: AppUpdateType.flexible);
+          }
+        }
+      } else if (Platform.isIOS) {
+        await UpgradeVersion.getiOSStoreVersion(
+            packageInfo: packageInfo, regionCode: "US");
       }
+    } catch (e) {
+      debugPrint('Error checking for updates: $e');
     }
-    return version1.length - version2.length;
   }
 }

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Snapdrop — QR / Pairing (faithful)</title>
+<style>
+  :root{
+    --base:#142C1D;--green:#3BA873;--ink:#fff;--muted:#9BA39E;--pill-ink:#0E1A12;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:Georgia,"Times New Roman",serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0C0D0E;color:#cfd3d1;font-family:var(--sans);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;gap:20px}
+  .label{font-family:var(--serif);font-style:italic;color:#8a908d;font-size:.95rem}
+
+  .phone{position:relative;width:344px;height:746px;border-radius:46px;overflow:hidden;background-color:var(--base);
+    box-shadow:0 30px 70px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.06)}
+  .phone::before{content:'';position:absolute;inset:0;z-index:0;
+    background:radial-gradient(118% 88% at 25% -6%, rgba(44,153,103,.55) 0%, rgba(20,44,29,0) 56%),
+              linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 100%);}
+  .screen{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;padding:13px 22px 0}
+
+  .sb{display:flex;justify-content:space-between;align-items:center;height:28px;color:#fff;font-size:.74rem;font-weight:600}
+  .nav{display:flex;align-items:center;justify-content:center;height:42px;margin-top:2px}
+  .wm{font-family:var(--serif);font-style:italic;font-size:1.24rem;color:#fff}
+
+  .title{font-size:2rem;line-height:1.12;font-weight:800;color:#fff;letter-spacing:-.015em;text-align:center;margin-top:22px}
+
+  .scanline-label{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:24px;color:#e7eae8;font-size:.92rem;font-weight:500}
+
+  .viewport{position:relative;width:208px;height:208px;margin:22px auto 0;border-radius:22px;overflow:hidden;
+    background:linear-gradient(150deg,#1b2c22,#0e1612);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07), inset 0 12px 40px rgba(0,0,0,.45)}
+  .corner{position:absolute;width:30px;height:30px;border:2.5px solid rgba(255,255,255,.55);border-radius:4px}
+  .corner.tl{top:16px;left:16px;border-right:none;border-bottom:none}
+  .corner.tr{top:16px;right:16px;border-left:none;border-bottom:none}
+  .corner.bl{bottom:16px;left:16px;border-right:none;border-top:none}
+  .corner.br{bottom:16px;right:16px;border-left:none;border-top:none}
+  .scan{position:absolute;left:18px;right:18px;height:2px;border-radius:2px;
+    background:linear-gradient(90deg,transparent,rgba(94,210,150,.85),transparent);
+    box-shadow:0 0 10px rgba(94,210,150,.6);animation:sweep 2.6s ease-in-out infinite}
+  @keyframes sweep{0%{top:24px}50%{top:182px}100%{top:24px}}
+
+  .connect-wrap{display:flex;justify-content:center;margin-top:30px}
+  .connect{display:inline-flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.13);color:rgba(255,255,255,.55);font-weight:700;font-size:.98rem;
+    padding:14px 0;border-radius:999px;width:236px;text-align:center}
+
+  .home{height:5px;width:128px;border-radius:3px;background:rgba(255,255,255,.5);margin:auto auto 9px}
+</style>
+</head>
+<body>
+<div class="label">QR / pairing — faithful to your Figma · the white "Steps" card removed</div>
+<div class="phone"><div class="screen">
+
+  <div class="sb"><span>11:27</span>
+    <span><svg width="50" height="12" viewBox="0 0 50 12" fill="#fff">
+      <rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.5" y="5.5" width="3" height="6.5" rx="1"/><rect x="9" y="3" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/>
+      <path d="M22 4.2C24.4 1.9 27 1 29.8 1S35.2 1.9 37.6 4.2" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M24.6 6.6C26 5.4 27.8 4.8 29.8 4.8s3.8.6 5.2 1.8" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round"/><circle cx="29.8" cy="9.4" r="1.3"/>
+      <rect x="42" y="1.5" width="6.4" height="9" rx="2.2" stroke="#fff" stroke-opacity=".5" fill="none"/><rect x="43.2" y="3" width="4" height="6" rx="1"/></svg></span>
+  </div>
+
+  <div class="nav"><span class="wm">Snapdrop</span></div>
+
+  <div class="title">Select a plugin<br>to continue</div>
+
+  <div class="scanline-label">
+    <svg width="13" height="19" viewBox="0 0 38 57" aria-hidden="true">
+      <path d="M0 9.5A9.5 9.5 0 0 1 9.5 0H19v19H9.5A9.5 9.5 0 0 1 0 9.5z" fill="#F24E1E"/>
+      <path d="M19 0h9.5a9.5 9.5 0 1 1 0 19H19V0z" fill="#A259FF"/>
+      <path d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5z" fill="#FF7262"/>
+      <path d="M28.5 19a9.5 9.5 0 1 1 0 19 9.5 9.5 0 0 1 0-19z" fill="#1ABCFE"/>
+      <path d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0z" fill="#0ACF83"/>
+    </svg>
+    Scan QR Code to connect
+  </div>
+
+  <div class="viewport">
+    <span class="corner tl"></span><span class="corner tr"></span>
+    <span class="corner bl"></span><span class="corner br"></span>
+    <span class="scan"></span>
+  </div>
+
+  <div class="connect-wrap"><span class="connect">Connect</span></div>
+
+  <div class="home"></div>
+
+</div></div>
+</body>
+</html>

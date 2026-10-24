@@ -1,13 +1,54 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.saurabh7973.snapdrop">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <!-- Firebase/Play-services merges in advertising-ID permissions; we don't
+         use ad IDs, so strip both (the GMS one + the Android 13+ AdServices one)
+         to keep the data-safety form honest. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_AD_ID"
+        tools:node="remove" />
+
+    <!-- qr_code_scanner_plus (+ a wifi plugin) merge these as required="true",
+         which makes Google Play mark many devices "not compatible" and blocks
+         install. We use these at runtime, not as install gates, so override each
+         to required="false" (app manifest wins the merge over library manifests). -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.front" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+    <uses-feature android:name="android.hardware.screen.landscape" android:required="false" />
+    <uses-feature android:name="android.hardware.wifi" android:required="false" />
+
+    <!-- Photos come from the system Photo Picker, which needs no permission.
+         Play's photo & video permissions policy rejected the build that held
+         READ_MEDIA_IMAGES, so strip every media/storage read permission in case
+         a library manifest tries to merge one back in. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:node="remove" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
    <application
         android:label="Snapdrop"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:enableOnBackInvokedCallback="true">
+
+        <!-- Meta Data for InAppUpdate -->
+            <!-- <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" /> -->
+            <!-- Meta Data for InAppUpdate -->
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,6 +65,7 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -42,6 +84,14 @@
             </intent-filter>
 
         </activity>
+        <!-- zxing-android-embedded merges in its own scanner activity, locked to
+             sensorLandscape. qr_code_scanner_plus drives BarcodeView directly and
+             never starts it, so it is dead weight that only earns a large-screen
+             orientation warning from Play. -->
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            tools:node="remove" />
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
